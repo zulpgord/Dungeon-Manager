@@ -1676,7 +1676,7 @@
       <div class="sub-add"><input id="pNewSub" placeholder="Add a subtask… (Enter to add)"></div>
     </div>
     <div class="subtasks">
-      <h4>🔗 Links</h4>
+      <h4><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M9.5 14.5l5-5M7.5 12.5l-2 2a3.5 3.5 0 0 0 5 5l2-2M16.5 11.5l2-2a3.5 3.5 0 0 0-5-5l-2 2"/></svg> Links</h4>
       <div id="pLinks"></div>
       <div class="sub-add"><input id="pNewLink" placeholder="Paste a URL — optionally add a title after a space (Enter)"></div>
     </div>
@@ -1703,9 +1703,9 @@
     <label>Start from</label>
     <select id="npTemplate"></select>
     <div id="npTplMan"></div>
-    <div style="margin-top:8px"><label class="btn" style="cursor:pointer;font-size:12.5px"><span data-lx-std="⭳ Import project from file…">⭳ Import campaign from file…</span><input type="file" id="npImport" accept=".json" hidden></label></div>
+    <div style="margin-top:8px"><label class="btn" style="cursor:pointer;font-size:12.5px"><span data-lx-std="Import project from file…"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg> Import campaign from file…</span><input type="file" id="npImport" accept=".json" hidden></label></div>
     <label>Visibility</label>
-    <select id="npVis"><option value="">🌐 Public — whole team</option><option value="1">🔒 Private — only me and the project team</option></select>
+    <select id="npVis"><option value="">Public — whole team</option><option value="1">Private — only me and the project team</option></select>
     <label data-lex="team_lbl">Party (project team)</label>
     <div id="npTeam" style="max-height:130px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:4px 10px"></div>
     <label>Color</label>
@@ -1776,7 +1776,7 @@
 <div class="overlay" id="invModal">
   <div class="modal">
     <h2>Members — <span id="invProj" style="font-weight:400;color:var(--text-2)"></span></h2>
-    <p class="muted" style="font-size:12.5px;margin-bottom:10px">Project team: these members can be assigned to its tasks. If the project is 🔒 private, only you (owner) and them can see it.</p>
+    <p class="muted" style="font-size:12.5px;margin-bottom:10px">Project team: these members can be assigned to its tasks. If the project is private, only you (owner) and them can see it.</p>
     <div id="invList"></div>
     <div class="modal-actions"><button class="btn" data-close="invModal">Done</button></div>
   </div>
@@ -1821,7 +1821,7 @@
     <label data-lx-std="Owner">Owner (DM)</label>
     <select id="psOwner"></select>
     <label>Visibility</label>
-    <select id="psVis"><option value="">🌐 Public — whole team</option><option value="1">🔒 Private — owner and project team only</option></select>
+    <select id="psVis"><option value="">Public — whole team</option><option value="1">Private — owner and project team only</option></select>
     <label style="display:flex;gap:9px;align-items:flex-start;margin:14px 0 2px;cursor:pointer;color:var(--text);font-size:13px">
       <input type="checkbox" id="psAutoDone" style="margin-top:2px;width:auto">
       <span><b id="psAutoDoneLbl">Move completed tasks to “Done”</b><br><span class="muted" id="psAutoDoneHint" style="font-size:12px"></span></span>
@@ -2231,12 +2231,12 @@ function toast(msg){
 }
 const taskInd = t => {
   let h = '';
-  if(t.subtasks && t.subtasks.length) h += `<span class="mini-ind" title="Subtasks">☑ ${t.subtasks.filter(s=>s.done).length}/${t.subtasks.length}</span>`;
-  if(t.repeat) h += `<span class="mini-ind" title="Recurring (${t.repeat})">↻</span>`;
-  if(t.links && t.links.length) h += `<span class="mini-ind" title="Links">🔗${t.links.length}</span>`;
-  if(isBlocked(t)) h += `<span class="mini-ind blocked" title="Blocked by an incomplete task">⛔</span>`;
-  if(t.block) h += `<span class="mini-ind blocked" title="${esc(blockLabel(t.block.kind))} · ${Math.max(0,Math.round((Date.now()-t.block.at)/86400000))}d">${blockIcon(t.block.kind)}</span>`;
-  if(t.decision) h += `<span class="mini-ind dec ${decLate(t.decision)?'late':''}" title="${esc(t.decision.q)}${t.decision.who?' · '+esc((user(t.decision.who)||{}).name||''):''}${t.decision.due?' · by '+fmtDate(t.decision.due):''}">⚖ ${decDays(t.decision)}d</span>`;
+  if(t.subtasks && t.subtasks.length) h += `<span class="mini-ind" title="Subtasks">${ico(I.checklist,11)} ${t.subtasks.filter(s=>s.done).length}/${t.subtasks.length}</span>`;
+  if(t.repeat) h += `<span class="mini-ind" title="Recurring (${t.repeat})">${ico(I.repeat,11)}</span>`;
+  if(t.links && t.links.length) h += `<span class="mini-ind" title="Links">${ico(I.chain,11)} ${t.links.length}</span>`;
+  if(isBlocked(t)) h += `<span class="mini-ind blocked" title="Blocked by an incomplete task">${ico(I.ban,11)}</span>`;
+  if(t.block) h += `<span class="mini-ind blocked" title="${esc(blockLabel(t.block.kind))} · ${Math.max(0,Math.round((Date.now()-t.block.at)/86400000))}d">${blockIcon(t.block.kind,11)}</span>`;
+  if(t.decision) h += `<span class="mini-ind dec ${decLate(t.decision)?'late':''}" title="${esc(t.decision.q)}${t.decision.who?' · '+esc((user(t.decision.who)||{}).name||''):''}${t.decision.due?' · by '+fmtDate(t.decision.due):''}">${ico(I.scales,11)} ${decDays(t.decision)}d</span>`;
   return h;
 };
 const onlineUsers = () => liveUsers().filter(u => isOnline(u.id));
@@ -2258,6 +2258,48 @@ const I = {
   target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
   print: '<path d="M7 8V4h10v4M5 8h14a1 1 0 0 1 1 1v7h-4M4 16V9a1 1 0 0 1 1-1M7 14h10v6H7z"/>',
   book: '<path d="M5 3h11l3 3v15H5z"/><path d="M9 3v5h6V3"/>',
+  /* ===== The rest of the chrome, drawn rather than typed =====
+     These places used emoji, which change shape from one operating system to the next
+     and sit at a different weight from the stroked icons beside them. Same grid, same
+     stroke, same currentColor, so a menu reads as one set of marks. */
+  sun:     '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:    '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  sunrise: '<path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 2v5M4.6 9.6l1.4 1.4M18 11l1.4-1.4M2 18h2M20 18h2M2 22h20"/>',
+  briefcase:'<rect x="2.5" y="7" width="19" height="13" rx="2"/><path d="M8.5 7V5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2M2.5 12.5h19"/>',
+  dice:    '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.6" cy="8.6" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="15.4" cy="15.4" r="1.2" fill="currentColor" stroke="none"/>',
+  play:    '<path d="M7 4.3v15.4L19.5 12z"/>',
+  cards:   '<rect x="2.5" y="7" width="13" height="14" rx="2"/><path d="M6.5 7V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>',
+  monitor: '<rect x="2.5" y="3.5" width="19" height="13" rx="2"/><path d="M8.5 21h7M12 16.5V21"/>',
+  face:    '<circle cx="12" cy="8.2" r="4.2"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  key:     '<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.8 12.2 21 2M17.4 5.6l2.6 2.6M14.4 8.6l2.6 2.6"/>',
+  poster:  '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9.5h18M9.5 9.5V21"/>',
+  clock:   '<circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.6 2.1"/>',
+  users:   '<path d="M15.5 21v-1.8a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V21"/><circle cx="8.8" cy="7.2" r="3.8"/><path d="M22 21v-1.8a4 4 0 0 0-3-3.86M16 3.6a3.8 3.8 0 0 1 0 7.2"/>',
+  diamond: '<path d="M12 2.6 21.4 12 12 21.4 2.6 12z"/>',
+  timer:   '<path d="M9.6 2.4h4.8"/><circle cx="12" cy="13.6" r="8"/><path d="M12 9.6v4"/>',
+  ban:     '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6 18.4 18.4"/>',
+  /* the monsters, as marks */
+  coin:    '<ellipse cx="12" cy="6.8" rx="7.6" ry="3.2"/><path d="M4.4 6.8v10.4c0 1.77 3.4 3.2 7.6 3.2s7.6-1.43 7.6-3.2V6.8"/><path d="M4.4 12c0 1.77 3.4 3.2 7.6 3.2s7.6-1.43 7.6-3.2"/>',
+  shuffle: '<path d="M16.5 3.5H21V8M3 21 21 3.5M16.5 20.5H21V16M14.5 14.5 21 21M3 3.5l5.5 5.5"/>',
+  door:    '<path d="M3 21h18M6.5 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17"/><circle cx="14.4" cy="12.4" r="1.1" fill="currentColor" stroke="none"/>',
+  feather: '<path d="M20.2 3.8a5.6 5.6 0 0 0-7.9 0L4 12.1V20h7.9l8.3-8.3a5.6 5.6 0 0 0 0-7.9z"/><path d="M16.2 7.8 2.5 21.5"/>',
+  fog:     '<path d="M3.5 8.5h10M16.5 8.5h4M2 13h6.5M11.5 13h10.5M5 17.5h9.5M17.5 17.5h1.8"/>',
+  question:'<circle cx="12" cy="12" r="9"/><path d="M9.4 9.2a2.7 2.7 0 1 1 3.5 2.6c-.6.2-.9.8-.9 1.4v.5"/><circle cx="12" cy="16.9" r="1.1" fill="currentColor" stroke="none"/>',
+  scales:  '<path d="M12 3.5v17M8 20.5h8M4.5 7.5h15M4.5 7.5 2 14h5zM19.5 7.5 17 14h5z"/>',
+  /* the same marks the sidebar uses, so the header of a page agrees with the nav
+     item that opened it instead of showing an emoji of the same idea */
+  navToday:     '<circle cx="12" cy="13" r="5"/><path d="M12 3v2M4.5 6 6 7.5M19.5 6 18 7.5M3 20h18"/>',
+  navPortfolio: '<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
+  navReports:   '<path d="M3 3v18h18"/><path d="m7 14 4-5 4 3 5-7"/>',
+  navActivity:  '<path d="M2 12h4l3-8 6 16 3-8h4"/>',
+  navTrash:     '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>',
+  navAdmin:     '<path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/>',
+  navHelp:      '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.4 2.3c-.8.4-.9 1-.9 1.7"/><circle cx="12" cy="17" r=".5"/>',
+  /* the marks that ride along a task row */
+  checklist:'<path d="M9 6h12M9 12h12M9 18h12"/><path d="m3 6 1.4 1.4L7 4.8M3 17l1.4 1.4L7 15.8"/>',
+  upload:   '<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
+  ledger:   '<path d="M6 3h12a1 1 0 0 1 1 1v17H6a2 2 0 0 1 0-4h13"/><path d="M6 3a2 2 0 0 0-2 2v12"/><path d="M10 8h6"/>',
+  repeat:   '<path d="M17 2.5 20.5 6 17 9.5"/><path d="M3.5 12V9a3 3 0 0 1 3-3h14"/><path d="M7 21.5 3.5 18 7 14.5"/><path d="M20.5 12v3a3 3 0 0 1-3 3h-14"/>',
 };
 /* ===== Generic popover menu =====
    items: {label, icon, sub, danger, onClick} | '-' (separator) | {head:'…'} | {note:'…'} */
@@ -2515,7 +2557,7 @@ function spawnChicken(){
 function clearChickens(){
   const n = document.querySelectorAll('.egg-chicken').length;
   document.querySelectorAll('.egg-chicken').forEach(x=>x.remove());
-  if(n) toast('🐔 '+n+' chicken'+(n>1?'s':'')+' returned to the coop');
+  if(n) toast(n+' chicken'+(n>1?'s':'')+' returned to the coop');
 }
 
 /* ===== Completion celebration: a kawaii dragon pops up from the bottom,
@@ -2945,7 +2987,7 @@ function renderSidebar(){
   renderEnvSel();
   $('#projList').innerHTML = visProjects().map(p => `
     <div class="side-item ${p.id===db.currentProjectId?'active':''}" data-proj="${p.id}">
-      <span class="proj-dot" style="background:${p.color}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</span>${p.private?'<span title="Private — visible only to you" style="font-size:10px;margin-left:auto">🔒</span>':''}
+      <span class="proj-dot" style="background:${p.color}"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</span>${p.private?'<span title="Private — visible only to you" style="margin-left:auto;display:inline-flex">'+ico(I.lock,11)+'</span>':''}
     </div>`).join('');
   document.querySelectorAll('[data-proj]').forEach(el => el.onclick = () => { bulkSel.clear(); renderBulkBar(); db.currentProjectId = el.dataset.proj; db.currentView = ['today','portfolio'].includes(db.currentView)?'list':db.currentView; save(); render(); });
   const u = me();
@@ -2958,23 +3000,23 @@ function renderSidebar(){
     const dark = document.documentElement.classList.contains('dark');
     openPopMenu(pb, [
       {head: u.name},
-      {label: dark ? 'Light theme' : 'Dark theme', sub: dark ? '☀️' : '🌙', onClick: () => {
+      {label: dark ? 'Light theme' : 'Dark theme', icon: dark ? I.sun : I.moon, onClick: () => {
         document.documentElement.classList.toggle('dark');
         lsSet('dm-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         render();
       }},
-      {label: uiMode==='dnd' ? 'Standard interface' : 'D&D interface', sub: uiMode==='dnd' ? '💼' : '🎲', onClick: () => {
+      {label: uiMode==='dnd' ? 'Standard interface' : 'D&D interface', icon: uiMode==='dnd' ? I.briefcase : I.dice, onClick: () => {
         uiMode = uiMode==='dnd' ? 'std' : 'dnd';
         lsSet('dm-uimode', uiMode);
         applyLex(); render();
-        toast(uiMode==='dnd' ? '🎲 D&D interface — roll for initiative!' : '💼 Standard interface');
+        toast(uiMode==='dnd' ? 'D&D interface — roll for initiative!' : 'Standard interface');
       }},
-      {label: LX('Hold the council','Run the review'), sub: '▶', onClick: () => openStage('review')},
-      {label: 'Steering board · short deck', sub: '◳', onClick: () => openStage('steco')},
-      {label: LX('Hall screen (ambient)','Wall screen (ambient)'), sub: '📺', onClick: () => openStage('ambient')},
+      {label: LX('Hold the council','Run the review'), icon: I.play, onClick: () => openStage('review')},
+      {label: 'Steering board · short deck', icon: I.cards, onClick: () => openStage('steco')},
+      {label: LX('Hall screen (ambient)','Wall screen (ambient)'), icon: I.monitor, onClick: () => openStage('ambient')},
       '-',
-      {label: u.pic ? LX('Change your face','Change your avatar') : LX('Choose your face','Choose your avatar'), sub: '🎭', onClick: openAvatarForge},
-      {label: u.pin ? 'Change or remove PIN' : 'Set a login PIN', sub: '🔑', onClick: managePin},
+      {label: u.pic ? LX('Change your face','Change your avatar') : LX('Choose your face','Choose your avatar'), icon: I.face, onClick: openAvatarForge},
+      {label: u.pin ? 'Change or remove PIN' : 'Set a login PIN', icon: I.key, onClick: managePin},
       '-',
       {label: 'Switch user', onClick: showLogin},
     ]);
@@ -3090,7 +3132,7 @@ function renderList(){
           <button class="tool-btn" id="colsBtn">${ico(I.grid)} Columns</button>
           <button class="tool-btn" id="rulesBtn">${ico(I.bolt)} Rules</button>
           <button class="tool-btn" id="fieldsBtn">${ico(I.tag)} Fields</button>
-          <button class="tool-btn" id="impBtn">📥 ${LX('Import a plan','Import a plan')}</button>
+          <button class="tool-btn" id="impBtn">${ico(I.upload,13)} ${LX('Import a plan','Import a plan')}</button>
           <button class="tool-btn" id="csvBtn">${ico(I.dl)} Export CSV</button>
         </div>
       </div>
@@ -3342,7 +3384,7 @@ function importCampaign(text){
   db.currentProjectId = np.id; db.currentView = 'list';
   logAct('imported '+LX('campaign','project')+' “'+np.name+'” ('+newTasks.length+' '+LX('quests','tasks')+')');
   save(); render();
-  toast('⭳ Imported “'+np.name+'” — '+newTasks.length+' '+LX('quests','tasks'));
+  toast('Imported “'+np.name+'” — '+newTasks.length+' '+LX('quests','tasks'));
 }
 
 function renderMirrorPicker(p){
@@ -3471,7 +3513,7 @@ function bindProjSettings(){
     p.private = !!$('#psVis').value;
     stamp(p);
     logAct('made “'+p.name+'” '+(p.private?'private':'public'));
-    toast(p.private ? '🔒 Private — visible to owner and team only' : '🌐 Public — visible to the whole '+LX('party','team'));
+    toast(p.private ? 'Private — visible to owner and team only' : 'Public — visible to the whole '+LX('party','team'));
     save(); render();
   };
   $('#psTpl').onclick = () => {
@@ -3498,7 +3540,7 @@ function bindProjSettings(){
     db.templates.push(tpl);
     logAct('saved template “'+tpl.name+'” from '+p.name);
     save();
-    toast('📋 Template saved — find it under “Start from” when creating a '+LX('campaign','project')+' ('+tpl.tasks.length+' '+LX('quests','tasks')+')');
+    toast('Template saved — find it under “Start from” when creating a '+LX('campaign','project')+' ('+tpl.tasks.length+' '+LX('quests','tasks')+')');
   };
   $('#psExport').onclick = () => exportCampaign(setPid);
   $('#psArch').onclick = () => {
@@ -4854,13 +4896,13 @@ function renderCharter(){
 
   /* constraints: the real ones first, read from the project, then whatever you add */
   const autoCons = [];
-  if(p.dueDate) autoCons.push({icon:'⏳', label:LX('Campaign deadline','Deadline'),
+  if(p.dueDate) autoCons.push({icon:ico(I.clock,14), label:LX('Campaign deadline','Deadline'),
     val: fmtDate(p.dueDate) + (daysLeft!==null ? ` · ${daysLeft<0 ? Math.abs(daysLeft)+' '+LX('days past','days late') : daysLeft+' '+LX('days left','days left')}` : ''),
     bad: daysLeft!==null && daysLeft < 0});
-  if(+p.budgetHours) autoCons.push({icon:'⚖', label:LX('Budget','Budget'),
+  if(+p.budgetHours) autoCons.push({icon:ico(I.scales,14), label:LX('Budget','Budget'),
     val: `${eur(logged)} / ${p.budgetHours} h · ${Math.round(logged/p.budgetHours*100)}%`,
     bad: logged > +p.budgetHours});
-  autoCons.push({icon:'🛡', label:LX('Party','Team'), val: team.length + ' ' + LX('heroes','people')});
+  autoCons.push({icon:ico(I.users,14), label:LX('Party','Team'), val: team.length + ' ' + LX('heroes','people')});
 
   $('#view').innerHTML = `<div class="charter" style="--pc:${p.color}">
     <section class="ch-hero">
@@ -5033,10 +5075,10 @@ function renderCharter(){
 
     </div>
     <div class="ch-foot">${LX('This pact is written once and reads itself every morning.','This charter is written once and keeps reading itself.')}
-      · <button class="tool-btn" id="chPrint">⎙ ${LX('Print the pact','Print charter')}</button>
-      · <button class="tool-btn" id="chPoster">▦ ${LX('Print the war banner','Print as poster')}</button>
-      · <button class="tool-btn" id="chStage">▶ ${LX('Hold the council','Run the review')}</button>
-      · <button class="tool-btn" id="chSteco">◳ Steering board</button></div>
+      · <button class="tool-btn" id="chPrint">${ico(I.print,13)} ${LX('Print the pact','Print charter')}</button>
+      · <button class="tool-btn" id="chPoster">${ico(I.poster,13)} ${LX('Print the war banner','Print as poster')}</button>
+      · <button class="tool-btn" id="chStage">${ico(I.play,13)} ${LX('Hold the council','Run the review')}</button>
+      · <button class="tool-btn" id="chSteco">${ico(I.cards,13)} Steering board</button></div>
   </div>`;
 
   bindCharter(p);
@@ -5868,7 +5910,7 @@ function openImport(){
           <button class="icon-btn" id="impX">✕</button></div>
         <label class="av-drop" id="impDrop">
           <input type="file" id="impFile" accept=".csv,.txt,.tsv,.xlsx,.xlsm,.xml,.mpp" hidden>
-          <span class="av-drop-i">📥</span>
+          <span class="av-drop-i">${ico(I.upload,22)}</span>
           <b>${LX('Choose a file, or drop it here','Choose a file, or drop it here')}</b>
           <span class="av-sub">Excel .xlsx · CSV · ${LX('MS Project .xml','MS Project .xml')}</span>
         </label>
@@ -6054,7 +6096,7 @@ function runImport(plan, opts){
   render();
   logAct('imported '+made.length+' tasks into “'+p.name+'”');
   pushUndo(`${made.length} ${LX('quests brought in','tasks imported')}`, [], [], made.map(t => t.id));
-  toast(`📥 ${made.length} ${LX('quests','tasks')} · ${plan.sections.length} ${LX('chapters','sections')}${links?` · ${links} ${LX('dependencies','dependencies')}`:''}`);
+  toast(`${made.length} ${LX('quests','tasks')} · ${plan.sections.length} ${LX('chapters','sections')}${links?` · ${links} ${LX('dependencies','dependencies')}`:''}`);
 }
 
 /* ===== Premortem: the only question that makes a team honest =====
@@ -6106,19 +6148,24 @@ function openPremortem(p){
    the department fights the same monsters and calls it bad luck. A blocked quest
    names its monster; when it is freed, the episode is kept with its cost in days.
    After six months that list is worth more than any burndown. */
+/* each monster carries a drawn mark, not an emoji: these turn up in chips, in menus
+   and on the slides, next to the stroked icons the rest of the app uses */
 const BLOCK_KINDS = {
-  supplier: {icon:'🪙', dnd:'The Faithless Merchant', std:'Supplier / external'},
-  spec:     {icon:'🌀', dnd:'The Shapeshifter',       std:'Spec changed'},
-  machine:  {icon:'⚙️', dnd:'The Broken Golem',        std:'Machine / tooling'},
-  person:   {icon:'🚪', dnd:'The Absent Guardian',     std:'Person unavailable'},
-  approval: {icon:'🪶', dnd:'The Seal',                std:'Waiting for a sign-off'},
-  material: {icon:'📦', dnd:'The Famine',              std:'Missing material'},
-  info:     {icon:'🌫', dnd:'The Fog',                 std:'Missing information'},
-  other:    {icon:'❓', dnd:'The Unnamed',             std:'Something else'},
-  decision: {icon:'⚖', dnd:'The Verdict',             std:'Waiting for a decision'},
+  supplier: {path:I.coin,     dnd:'The Faithless Merchant', std:'Supplier / external'},
+  spec:     {path:I.shuffle,  dnd:'The Shapeshifter',       std:'Spec changed'},
+  machine:  {path:I.gear,     dnd:'The Broken Golem',       std:'Machine / tooling'},
+  person:   {path:I.door,     dnd:'The Absent Guardian',    std:'Person unavailable'},
+  approval: {path:I.feather,  dnd:'The Seal',               std:'Waiting for a sign-off'},
+  material: {path:I.box,      dnd:'The Famine',             std:'Missing material'},
+  info:     {path:I.fog,      dnd:'The Fog',                std:'Missing information'},
+  other:    {path:I.question, dnd:'The Unnamed',            std:'Something else'},
+  decision: {path:I.scales,   dnd:'The Verdict',            std:'Waiting for a decision'},
 };
 const blockLabel = k => (BLOCK_KINDS[k] ? (BLOCK_KINDS[k][uiMode] || BLOCK_KINDS[k].std) : k);
-const blockIcon  = k => (BLOCK_KINDS[k] ? BLOCK_KINDS[k].icon : '❓');
+const blockPath  = k => (BLOCK_KINDS[k] ? BLOCK_KINDS[k].path : I.question);
+/* returns MARKUP, so every caller must be an HTML context — the three that were plain
+   text (a toast, a menu label) now take the label alone or pass the path to ico() */
+const blockIcon  = (k, s=13) => ico(blockPath(k), s);
 /* close the open episode and file it, with the days it cost */
 function blockClose(t){
   if(!t.block) return;
@@ -6131,7 +6178,7 @@ function blockSet(t, kind, note){
   blockClose(t);
   t.block = {kind, note: note||'', at: Date.now(), by: currentUserId};
   stamp(t); save(); render();
-  toast(blockIcon(kind) + ' ' + blockLabel(kind));
+  toast(blockLabel(kind));   /* a toast is text: the mark belongs on the chip, not here */
   logAct('marked “'+t.name+'” blocked by '+blockLabel(kind));
 }
 const blockDays = ep => Math.max(0, Math.round(((ep.until || Date.now()) - ep.at) / 86400000));
@@ -6161,7 +6208,7 @@ function decRaise(t, q, who, due){
   stamp(t); save(); render();
   if(who && who !== currentUserId) notify(who, 'needs your decision: ' + q.trim().slice(0,60), t.id);
   logAct('raised a decision on “'+t.name+'”: '+q.trim().slice(0,50));
-  toast('⚖ ' + LX('Decision raised','Decision raised') + (who ? ' · ' + ((user(who)||{}).name||'') : ''));
+  toast(LX('Decision raised','Decision raised') + (who ? ' · ' + ((user(who)||{}).name||'') : ''));
 }
 function decResolve(t, outcome, note, ownerId, due){
   const d = t.decision;
@@ -6192,7 +6239,7 @@ function decResolve(t, outcome, note, ownerId, due){
   }
   save(); render();
   logAct('resolved a decision on “'+t.name+'” after '+waited+' days');
-  toast('⚖ ' + LX('Decision recorded','Decision recorded') + ' · ' + waited + LX(' days waited',' days waited'));
+  toast(LX('Decision recorded','Decision recorded') + ' · ' + waited + LX(' days waited',' days waited'));
 }
 /* how long this project makes people wait for an answer */
 function decLatency(pid){
@@ -6206,7 +6253,8 @@ function blockMenu(t, anchorEl){
   openPopMenu(anchorEl, [
     {head: LX('What holds this quest?','What is stopping this?')},
     ...Object.keys(BLOCK_KINDS).map(k => ({
-      label: blockIcon(k) + '  ' + blockLabel(k),
+      icon: blockPath(k),
+      label: blockLabel(k),
       sub: (t.block && t.block.kind === k) ? '✓' : '',
       onClick: () => blockSet(t, k)
     })),
@@ -6569,11 +6617,11 @@ function stageSlides(p){
 
     <div class="ck-strip">
       ${bestiary ? `<span>${blockIcon(bestiary.kind)} ${esc(blockLabel(bestiary.kind))} · <b>${bestiary.days} days lost</b></span>` : ''}
-      ${topBlock ? `<span class="bad">⛔ blocked now · <b>${esc(String(topBlock.task.name||'').slice(0,28))}</b> ${blockDays(topBlock)}d</span>` : ''}
-      <span class="${V.overdue?'bad':''}">⏰ <b>${V.overdue}</b> late</span>
-      <span>👥 <b>${team.length}</b> people</span>
-      ${msAll.length ? `<span>◆ <b>${msDone.length}</b> / ${msAll.length} milestones</span>` : ''}
-      ${+p.budgetHours ? `<span>⏱ <b>${eur(logged)}</b> / ${p.budgetHours} h</span>` : ''}
+      ${topBlock ? `<span class="bad">${ico(I.ban,13)} blocked now · <b>${esc(String(topBlock.task.name||'').slice(0,28))}</b> ${blockDays(topBlock)}d</span>` : ''}
+      <span class="${V.overdue?'bad':''}">${ico(I.clock,13)} <b>${V.overdue}</b> late</span>
+      <span>${ico(I.users,13)} <b>${team.length}</b> people</span>
+      ${msAll.length ? `<span>${ico(I.diamond,12)} <b>${msDone.length}</b> / ${msAll.length} milestones</span>` : ''}
+      ${+p.budgetHours ? `<span>${ico(I.timer,13)} <b>${eur(logged)}</b> / ${p.budgetHours} h</span>` : ''}
     </div>`});
 
   /* 2 — the milestones: the score overall, what closed since the last report,
@@ -6961,7 +7009,7 @@ function openStage(mode){
         <button class="sg-ok">Raise on “${esc(host.name.slice(0,22))}”</button>`;
       row.querySelector('.sg-ok').onclick = () => {
         decRaise(host, a.q, row.querySelector('.sg-who').value, row.querySelector('.sg-due').value);
-        row.innerHTML = `<span class="ask-done ok">⚖ raised on “${esc(host.name.slice(0,30))}”</span>`;
+        row.innerHTML = `<span class="ask-done ok">${ico(I.scales,12)} raised on “${esc(host.name.slice(0,30))}”</span>`;
       };
     });
     const markDone = (li, label, cls) => {
@@ -7144,7 +7192,7 @@ function renderToday(){
       ${band('Later / no date', later)}
       ${band('Completed today', done, 'var(--green)')}
       ${(late.length+now.length+week.length+later.length+done.length) ? '' :
-        emptyState(LX('No quests assigned to you','No tasks assigned to you'), 'Enjoy the calm ✨')}
+        emptyState(LX('No quests assigned to you','No tasks assigned to you'), 'Enjoy the calm')}
     </div>
     <div class="today-rail">
       ${(() => {
@@ -7163,7 +7211,7 @@ function renderToday(){
         if(!mine.length && !waiting.length) return '';
         const row = (t, kind) => { const d = t.decision, w = user(d.who);
           return `<div class="dec-row ${decLate(d)?'late':''}" data-goto="${t.id}">
-            <b>⚖ ${esc(d.q)}</b>
+            <b>${ico(I.scales,13)} ${esc(d.q)}</b>
             <i>${esc(t.name.slice(0,34))} · ${kind==='mine' ? (d.due?'by '+fmtDate(d.due):'no date') : (w?esc(w.name):'—')} · ${decDays(d)}d</i>
           </div>`; };
         return `<div class="rail-card dec-card">
@@ -7193,7 +7241,7 @@ function renderToday(){
             <span class="hr-name">${esc(t.name)}</span>
             ${u?avatarHtml(u,'sm'):''}
             <span class="hr-meta datecell overdue">${fmtDate(t.dueDate)}</span></div>`;
-        }).join('') : `<div class="muted" style="font-size:12.5px;padding:4px 2px">${LX('The party holds the line ✨','Nothing overdue ✨')}</div>`}
+        }).join('') : `<div class="muted" style="font-size:12.5px;padding:4px 2px">${LX('The party holds the line','Nothing overdue')}</div>`}
       </div>
     </div>
   </div>`;
@@ -7324,7 +7372,7 @@ function renderLinks(t){
     /* a link that is not a real web address is shown as plain text, never as something
        you can click: typed ones are always https, so a dangerous one came from a file */
     const href = safeUrl(l.url), label = esc(l.title || l.url || '');
-    return `<div class="sub-row">🔗
+    return `<div class="sub-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M9.5 14.5l5-5M7.5 12.5l-2 2a3.5 3.5 0 0 0 5 5l2-2M16.5 11.5l2-2a3.5 3.5 0 0 0-5-5l-2 2"/></svg>
       ${href
         ? `<a class="sub-name" href="${esc(href)}" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(href)}">${label}</a>`
         : `<span class="sub-name" title="${LX('this address is not a web link','this address is not a web link')}" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">⚠ ${label}</span>`}
@@ -7511,7 +7559,7 @@ function bindModals(){
         });
       }
       logAct('created “'+name+'” from template “'+fromTpl.name+'” ('+fromTpl.tasks.length+' '+LX('quests','tasks')+')');
-      toast('📋 '+fromTpl.tasks.length+' '+LX('quests','tasks')+' created — dates rebased to today');
+      toast(fromTpl.tasks.length+' '+LX('quests','tasks')+' created — dates rebased to today');
     } else {
       logAct('created project “'+name+'”');
     }
@@ -7652,7 +7700,7 @@ function renderHours(){
           <div class="hbar-val" style="width:70px">${eur(h)} h${rate?' · '+eur(h*rate)+'€':''}</div></div>`).join('') : '<div class="muted" style="font-size:13px">No hours logged yet.</div>'}
     </div>
 
-    <div class="dash-card" style="grid-column:span 4"><h3>📒 Entries (${entries.length})</h3>
+    <div class="dash-card" style="grid-column:span 4"><h3>${ico(I.ledger,14)} Entries (${entries.length})</h3>
       ${entries.length ? entries.slice(0,60).map(h=>`
         <div class="trash-row" style="text-decoration:none">
           <span class="muted" style="width:78px;font-size:12.5px">${fmtDate(h.date)}</span>
@@ -7741,7 +7789,7 @@ function renderPortfolio(){
   }
 
   let html = `<div class="pf">${switchHtml}${headRow}${statsHtml}
-    <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn" id="pfExport">⭳ Export CSV (${activePort?esc(activePort.name):'all projects'})</button></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn" id="pfExport">${ico(I.dl,13)} Export CSV (${activePort?esc(activePort.name):'all projects'})</button></div>
     <div class="pf-grid">` + ps.map(p=>{
       const ts = projTasks(p.id);
       const d = ts.filter(t=>t.completed).length;
@@ -7753,7 +7801,7 @@ function renderPortfolio(){
       return `<div class="pf-card">
         <div class="pf-head">
           <div class="proj-icon" style="background:${p.color};width:32px;height:32px;font-size:14px;border-radius:7px;flex-shrink:0">${esc(p.name[0].toUpperCase())}</div>
-          <span class="pf-name" data-open-proj="${p.id}" title="${esc(p.name)} — open">${p.private?'🔒 ':''}${esc(p.name)}</span>
+          <span class="pf-name" data-open-proj="${p.id}" title="${esc(p.name)} — open">${p.private?ico(I.lock,11)+' ':''}${esc(p.name)}</span>
           <select class="pf-select chip s-${st.replace(/ /g,'-')}" data-pstatus="${p.id}" style="flex-shrink:0" title="Status set manually by the project owner">${['On track','At risk','Off track'].map(s=>`<option ${s===st?'selected':''}>${s}</option>`).join('')}</select>
           <button class="more-btn" data-pmenu="${p.id}" title="Actions" aria-label="Actions for ${esc(p.name)}">${ico(I.dots,16)}</button>
         </div>
@@ -7859,7 +7907,7 @@ function renderPortfolio(){
     if(canManage(p)) items.push({label: p.private ? 'Make public' : 'Make private', icon: p.private ? I.globe : I.lock, onClick: () => {
       p.private = !p.private; stamp(p);
       logAct('made project “'+p.name+'” '+(p.private?'private':'public'));
-      toast(p.private ? '🔒 “'+p.name+'” is now visible only to you' : '🌐 “'+p.name+'” is now visible to the whole team');
+      toast(p.private ? '“'+p.name+'” is now visible only to you' : '“'+p.name+'” is now visible to the whole team');
       save(); render();
     }});
     if(db.portfolios.length){
@@ -7926,7 +7974,7 @@ function renderReports(){
       <span style="font-weight:600">Scope:</span>
       <select class="pf-select" id="repScope"><option value="">All projects</option>${ps.map(p=>`<option value="${p.id}" ${reportScope===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select>
       <span style="flex:1"></span>
-      <button class="tool-btn" id="repCsv">⭳ Export CSV</button>
+      <button class="tool-btn" id="repCsv">${ico(I.dl,13)} Export CSV</button>
     </div>
     <div class="dash">
       <div class="stat-card"><div class="stat-label">Open tasks</div><div class="stat-num">${open.length}</div></div>
@@ -7992,7 +8040,7 @@ function renderReports(){
         const avgAll = closedAll ? Math.round(lats.reduce((a,x)=>a+(x.avg||0)*x.closed,0)/closedAll) : null;
         if(!nAll) return '';
         return `<div class="dash-card" style="grid-column:span 4">
-          <h3>⚖ ${LX('How long a decision waits here','How long a decision waits here')}</h3>
+          <h3>${ico(I.scales,14)} ${LX('How long a decision waits here','How long a decision waits here')}</h3>
           <div class="lat-row">
             <div class="lat"><b>${avgAll===null?'—':avgAll}</b><i>days on average</i><u>${closedAll} answered</u></div>
             <div class="lat ${openAll?'warn':''}"><b>${openAll}</b><i>still waiting</i><u>right now</u></div>
@@ -8047,7 +8095,7 @@ function renderDecision(t){
   const d = t.decision;
   const people = assignableUsers(db.projects.find(x => x.id === t.projectId));
   if(!d){
-    el.innerHTML = `<button class="dec-raise" id="pDecNew">⚖ ${LX('This needs a decision','This needs a decision')}</button>`;
+    el.innerHTML = `<button class="dec-raise" id="pDecNew">${ico(I.scales,13)} ${LX('This needs a decision','This needs a decision')}</button>`;
     $('#pDecNew').onclick = () => {
       el.innerHTML = `<div class="dec-form">
         <input id="pDecQ" placeholder="${LX('What has to be decided? One line.','What has to be decided? One line.')}" autocomplete="off">
@@ -8072,7 +8120,7 @@ function renderDecision(t){
   }
   const who = user(d.who);
   el.innerHTML = `<div class="dec-open ${decLate(d)?'late':''}">
-      <b>⚖ ${esc(d.q)}</b>
+      <b>${ico(I.scales,13)} ${esc(d.q)}</b>
       <i>${who?esc(who.name):LX('nobody named','nobody named')} · ${d.due?LX('by ','by ')+fmtDate(d.due):LX('no date','no date')} · ${LX('waiting','waiting')} ${decDays(d)}${LX('d','d')}</i>
       <div class="dec-acts">
         <button data-decdone>✓ ${LX('Decided','Decided')}</button>
@@ -8212,10 +8260,10 @@ function openProjModal(){
   $('#npName').value = '';
   $('#npTemplate').innerHTML =
     Object.entries(TEMPLATES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('') +
-    (liveTemplates().length ? `<optgroup label="📋 My templates (with ${LX('quests','tasks')})">${liveTemplates().map(t=>`<option value="tpl:${t.id}">${esc(t.name)} · ${t.tasks.length} ${LX('quests','tasks')}</option>`).join('')}</optgroup>` : '') +
+    (liveTemplates().length ? `<optgroup label="My templates (with ${LX('quests','tasks')})">${liveTemplates().map(t=>`<option value="tpl:${t.id}">${esc(t.name)} · ${t.tasks.length} ${LX('quests','tasks')}</option>`).join('')}</optgroup>` : '') +
     (visProjects().length ? `<optgroup label="Copy sections from…">${visProjects().map(p=>`<option value="copy:${p.id}">${esc(p.name)}</option>`).join('')}</optgroup>` : '');
   $('#npTplMan').innerHTML = !liveTemplates().length ? `
-    <div class="muted" style="font-size:11.5px;margin:6px 0 2px">📋 No saved templates yet — open a ${LX('campaign','project')}, ⚙ ${LX('Campaign','Project')} settings → “Save as template”, and it will appear here with its quests.</div>` : `
+    <div class="muted" style="font-size:11.5px;margin:6px 0 2px">No saved templates yet — open a ${LX('campaign','project')}, ⚙ ${LX('Campaign','Project')} settings → “Save as template”, and it will appear here with its quests.</div>` : `
     <div class="muted" style="font-size:11.5px;margin:6px 0 4px">Manage templates — rename or delete:</div>` +
     liveTemplates().map(t=>`
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px">
@@ -8342,8 +8390,8 @@ function renderAdmin(){
 }
 
 /* ================= Help view (embedded versioned manual) ================= */
-const APP_VERSION = '2.40';
-const MANUAL_VERSION = '4.8';
+const APP_VERSION = '2.41';
+const MANUAL_VERSION = '4.9';
 const MANUAL_DATE = '25 November 2026';
 const MANUAL_B64 = 'UEsDBAoAAAAAAChB+FwAAAAAAAAAAAAAAAAFAAAAd29yZC9QSwMECgAAAAAAKEH4XAAAAAAAAAAAAAAAAAsAAAB3b3JkL19yZWxzL1BLAwQKAAAACAAoQfhcWMsNbw8BAAAhBQAAHAAAAHdvcmQvX3JlbHMvZG9jdW1lbnQueG1sLnJlbHOtlM1OwzAQhF8l8p04KVAKqtsLQuoVhQdw7c2PiH9kbxF9e4zStC6qLA4+ztie+bRaeb39VmPxBc4PRjNSlxUpQAsjB90x8tG83a3IdrN+h5FjuOH7wfoiPNGekR7RvlDqRQ+K+9JY0OGkNU5xDNJ11HLxyTugi6paUhdnkOvMYicZcTtZk6I5WvhPtmnbQcCrEQcFGm9UUI/HEXxI5K4DZGTSZcgh9Hb9Ime9Pqg9uDDHC8HZSkHc54RojUFtMB7D2UpBPOSEAC3/MMxOCuEx6y4AYph7vA0nJ4WwzIkgjPo9ihBmJ4XwlBOhBy7BXQAmXaf6V7m3Me6fdLL/OW+/xobvR4gRTtYMQa/+us0PUEsDBAoAAAAIAChB+FyxyEEpvBkAAE83AQARAAAAd29yZC9kb2N1bWVudC54bWztXV9vHEdy/yoVPgQUvNrhkhRFrSyfKVJ/aIsSj5Tt5N56Z3pn+zgzPe7pWYp6EvJg3OGCw+Ui4GDfHZw85HIHXBAkeQgC5Cn6JvwC8UdIVfXMDv8sJf6ZFcy4DUPc3Znp6a7+dVV1d/WvPvzRizSBsTSF0tm9uV53YQ5kFupIZfG9uc+eP7y5OgeFFVkkEp3Je3MHspj70Ucf7vcjHZapzCykYX8zzrQRgwSv7/eWYb93C/bz3vIcYOFZ0d/Pw3tzI2vzfhAU4UimouimKjS60EPbDXUa6OFQhTLY1yYKFhd6C/wpNzqURYE1WRfZWBR1cenp0nQuM7w41CYVFr+aOEiF2Svzm1h6LqwaqETZAyx7YaUuRt+bK03Wr4q4OakQPdJ3Far+1E+Y87zXPbJRSYffGBiZYB10VoxU3jTjsqXhxVFdyPhtjRinSdMFveWr9cGGEfv4pynwPNWP3ENp4mr+9hJ7C+foESpi8sR5qnD8nXVNUqGy5sWXEs0R4fZuXayAxZMF5PHVOueR0WXelKauVtpmtjcpi8b8BcqqOvlo04qrVWZ3JPLJCAxfnK+wCndU3nIQjoSx8kVTRu/ChdwK7gSrpwtavERB2MDF3umili5c1EpAtTpV0DmxfKIgrNWpks4J6pMlTWncyuVKWjxd0u3LlbR0uqTVy5V0Ck6oSPYuUZRqxphIl6ILl3A7SHUkk6VGGfZWQnnO4VGPtdVqsAZh0x4qR52zPnU5K5Ny1NH6XK4yRwooIhuNLlTKYq2bA3pWWDESxehoiRdTZzhe6+IOUpQROT4DHR3Q35z/2Tb0p8hFiB0D+30xtBL9hJWFueCjD4PJDe4f93kQ8L/rBf8NdaINPjgWyb255fWljTt35vhC8bL+9dZK/ct6cfy3YFKopTZyPbCFuZGFNGM599FGmcVSZ7AlMhFLQw9Y95ir3cmG5PcjV0dtrU7rl5EeTlAJV7W9N/ewd39jZZ1+KF5iY/mDe/Vq3e6qoFOSWV54i2iOCWNlY+XBysOTwlhcPS2MxdVzCQOFUIpEQmnRl5IwXuouwOGr16ASiI1KtVEacEzhHbaUEAr0HONMvltmu/YAn6nq8lgKcp57Uxp5RrV6XVgf4ft0cfjq6zd/hIv22SkR9xanifiMt6/lOUQKYlmQhyoBLW8srVUgwOL4qGtTwF+iPO4COm0xfuuAyqCk/1WoYaiw/fNWFHvDRO93RzZNbnThKRrwMhN4J04gkkS85PKzN38CfrXpQ4FvwZpg0xMYGL2Pv8P8+sjoVAYPoljeAAkKcBgr6hfIUfEewFiJOFYi01UV+OWhziI1VoWGogR0GYzc1god5meZ3DBqLLuwmcD2FqB4sbcbCRcosA79ZKVIq6v8GvyxEUWh8W01HugKNdX9+mWJguvOuI/WUT55mRSCYIutHogCWypQfpkqrBF4UWN18VdsON2g40xBqmnOoIFuQFlIMxRhqLBHuSc3SLZHfnWTPBP1SQrUbUUoE4tF49xQZzRsJBjsbENatQtrSYJoFeMxjhn+hDAiwfHr0TQJnG+9+YdJqe+W0NRRtHiRUdSDR4kmEWCV6jYefvUadqs6TK2CHSTVn0p1DJIvsBL2IMfSoxeCVBvOM+4sLFZKGG+4j0JAqfA3nZ+pJEVpda0il93DiRzai9z/DjU85Qmj4tGFXoGjU0Xy8cUf+fz8jwTHxRYcl/cjoyL6iDo4IqSzwJcWnJ0478+LK82L6gKte0Po/q3eF07r3qZYG56zd9f5v7qZvXP079Qn3tHDU595ex9PeSQ40a5iFOFlVJz4/IOHD9Ye3p+riwsTKUwtii1hGjGclNnqwrE2n7xcKbgjLTyrgLo5Z5QQTGoSNN2Yv92pOuIu9Ka4C73z+U5Oh0xRG0GDKo8tj61LYOstNumC4JrYJQ8uD67aXSwEenFnYyuY2EZvIacD7XpBqG7pUCSFnKsBNeXXduBFEyEVZ94weki1BKlto38qQ+utoUdUS4jaTOrlG+3toIfYLCD2Y1r680bQ46klPD0XxZ63gB5OLcHpCa3KW6vGtBDvbaAH2UzmgiOR26l7lN4KekRdamUU54FKt7C44A2hR5QzhBIKScEHKiCBZlNDOrw19Ei7MtLu66KAIVXcG0QPqpZAtaUSWVj9Nq3lTaLH1EVXR60RcSlMpOHwN195g+hxNgucPZbmLcvvHk4eTheC01pRqDiT3hJ6SLU2OaRV0qKQcSYsRQ57S+hxNpMIBzpU4E2hx1Nbm4VSpN4Meji1NyGMTZnnms6CJWKs3+a3e0vooXaVMIexNBkEsHUAHEJTeLPowdXWgoNOpYMWRdO0gCxvIT2yGFk7SuYq0fFITY7EKm8iPdZmgTU2i/BEx6jK3Of7upXDYh5hHmFu2UshqIK2YOWNpIcVw+pBQuSBIGFPZAPxliAubx89zC4Ps090aTJ5gApsNzQHxKvyzAy8dfT4amuJQqUyURnNJDdEMRp4K+nh1SK8HonMWjSSsRFDFfpZpIfZTGD2hTCwo7FZARCnWqbCRPq1Vo+vtvC1rY0d6kRpBNiOzPGbX2/16GoLXT8uRWQa1kU0l4KWXAtvLj3gZrMkJqPpbKvePnpAXW4vsjTeIno8tYWnZ4asYKgL622gh9hMILalikKNZYEe/Vo0lpktEXNuH/KREWN54HchPdzag9tmNtAvCGsh05TQgv5zI4qRN5oeYi1B7Km2aqjCkeyAkTGx5esOhJTsIHt3hCv9cfzwbeZ7WOzCtjSgMvVSCXPJ/BIXYMZf7PZg2+ihSmhndnvz6QXfSLEC28KI2Ih85DoiK1N3p0rGSX3fwuTaZjTppaqakwfOlynlzFwVxuVemKSZgPlCppRCorCSciLUWSQ4jwW1+EYXdkMZJ4qTPJQaxNjZNSWNBk0JLIpQFYoySMDhq999olUGdiRdFojDV7/vwrpIB0rXWUOq+3b3lQ1HdP3aShORAEOBasYKVL+6DwrbJiAcKbT0lMaBWP4HwsDhV7+G5ZurEKqhkV14rmCsZCYh1ZR8wpIQgVIGhpKix40My5yEO89ZJHQiYEzvuNGHQiTYDo1dQndSdgocmdwzWJcO/hQrK2AHRAKJjrEGEspC0HVXfAd0npNLgk/JiFKU4JtFlKps9vklFruLsK6TRMacY6PORjKPCjukxfWXL12CkxvvEQ9LreKBKTNVyjlwOB9Kn4BOB02gOMhCxDojAX9bN1LgUCgoz0rECVgOX/2BrkvXxZMxepOK6f60wDHDyVoQXZQjJEFM1BlbxNR0LddWiI9Q04jEGnW28IiBJrQgXyiyQvFR+RVlgkq60mX0O5oKkSRoqyhHZyThHhzBm9V3gTSbGNPZRZIwvllXwxIfwbGnaahQRhed8YY23vNlid1b5YZ5H8NmCdZQf9JYh7RMrGJMvPO9V0uYs4kKSaUCKO3QRI2FLr0SDt1CJkQMi+M4YtMgqgp24Rklzqm+SpcJB2WVRShMiQMeRd4/kXCo4wyD6hxJEGTRJiU0QiTg+22JKiyieygjTsS9Til0aBSxAqtfh1rTZe7hZESVofnf//4FPJX7ILOxwn6nbkOkdChnEukibk7pwNIhs0dJgCASnJ6nRBC4TwRJzUVGlNoqUeFeFzZdaqVMk6qHFA3hiPMqpUJdEhgX8IKW6P2pwG7Ipi1nzGq0L7c62msq9D6wt04Gaj+jJFYbWzc6lPzIEnBSMdTkdiJcXCJahMF33/7tryAvBwPsCoHznu++ff1rUr80lDuVbYkmKai0Q9eR0HMa/op9Wp2w2aWkO6kzQR0QBrtyrMSAVMj1la4jF0THxB1OU9ROTrjFadsMqkU0/SgumSj6gPDf2Xy2s7H5dI3HUoSNqNKWRQanRpTbDccCZb3CrnHpyOY5Ela6SNgb11dWHCbeh5EkoOGwRhAgmrQhsFVIxN9lERpVYSTUKXtgrBU+xo9MkYb3lgMy3x14svn0U3Sx6kTPCiRlS6NbIpXLDDXaS0ka6n6iwz30AwbkLsP8AL+GldOGalBa4dKQDdFwjd78iS64WyoNK7CrrMbhwtnFDJaKPWpVrqGh0yKOmuvbN9snR3Mfv5CuZeeZbVSItsABEt0vAYfffA21bkEFYslPKNBtLlWlIyghXohGhc37WEbyLiW+s6U9foXE68gNLqMJLq7Ul7vwRJKes9OntT7b2vcz29ri8tS0aisrV0ur1hT7g1iH89mJzrMi9zlqB3HVFd4amR5ZHlnN8iBtjgqXXbbVHdIfmB67XjiqW/o+2Qu8+vKAai3sjLON87S2Aydyj9OkyOLE9Ej+a5y4JejT06aWgL/abi5M8+69yvMIvXpQSFs8LV7reUxN0XogYCiKUPbhGW1ylHTs7rmOBIWDfJaHtMZHAUhPhJXGKzkPyJlGvnkd5yHVdugRr7APRBRL2mu7SXuPUzfYvCLzqLsy6ibcQV6TeUy1hKmK1oX2VEO3J9ulWCgKZMEJKkdyFUrzJpMKUKTKfexQVII1CoyIeQOX9q0KEhBtGz7Ea9JwLAMHzEBhTbXROLnn8Bf/yiF4W882Nh9urq/Bztr25sZavc852eGkwCO32a5o7jzgMAaKcggFxW5EyqDO5X1IVMEcfoTdILwO9uNlhjq4FXItr4U9qipUfcqcWqeiWsi5dHrW6zOPvJkgr+Lb8rrMI6olRDEFUp+SkBUhRe4NhDEyGJDvyG4mxTRyENvG5u6DR0/XODLaeW30kLUyjpWwgm/O0d3j/RAjOcbcrSoWFElWlfKSaHA2xEHwhZR7wZbO7Cj4aylMB9ZKq28WI4V9cPjbv+fiihw7W1KQP741DCUtDJEva2ToTjhMwt9EB9I6Ox/sbj9YX3+8ufb8AUVwkUvb7ON04YmAIhTYhFQWdEYC3VXU2hSrW7iot2hqMLZX336wXXmwtUiS6FW4R1Wtwh17HUdVi1rTCfgAvtBmL9EimpwjOhr6CvMrLqA1FZmcGm/tVZ4H55XBWXPfeX3nIdVW5FeJXic5prVT16+PVfCZnw6rug4dxkPHkI88dIDOu6Uaypzc0C56oOib0snAb76eRPUfOxY0ObmjJ4da8MML4tbzqtLjeia4bo8b1CtLD6o6FNtxNUJodFHcnOYcxokeiOlnkrxa8whsIcKsDTpHr9I8oE7T78H8mOhHQpF3YcVPYj3iZmREz6Lgo7wUZRZLncGWoEPZ+MNjkUUDrfe8xvP4awl/OycJ03B6muKclH6smSZ4r4UoQ7LyXN4c/WmfUu1WFzaTKm8xrTYyi0qstJlK8jYr1oBbVYVbYr8wUhjJNEIfMAMMi5ooFrTbB8MaqkgQpc+QGWpEUkdnwfxmNlbEffbk8NXXFCtF5Apy7LbHUg51nhr9dD0ks6WjersP2zzGsd6nqC5o0ia60C+OEgsmQWKBCxFr4r/u8nafSng7DuVH7HJM7JXRPRcmR/r+CGijzBOWj5NL3aD6kBkF1v3zz6G6y0rCVOjIiIiXK1eCaPVo97TmCOkwSVDN52HFeyVKaXlYuSaxcI4L5i58zICoqFAIXvMUXJO5OO5r3mjuOWo0kz/Rfjo231GLETFZUm+bjwVjZoO2tCPH39dxMUZE/0K77o7O5btvf/VzJvJ788eKz8UKOPzta+IdKXnDhwi4sNgJ2UsXdhSTvRC/C6pmopYZo36S5hrrorUso8gEEizFMAj4jFTx/EpxA9X0ujXJBz9hThQn3GpN10oUc5axLmq8OjrsiVIjS8vhs9dXKLsykY7Nhhnf8kT0WRbBLgVa3HQIPK6xCYNOgBxlzDG8OABdnG9l1o5RGoUTSKOgK7kaJrhjwF1j7b0ujdPdDJ9PQY/LDOHz7gZdjTNvG00mEQYWMjaSOIr49WuJ/WADyF7m0jrqKPws01xJoJtD7KGUfa5coza5Cw+KEBIFNPozjoPhC0JdlmvwAl7gSheOTdLdEtD7JORslzdqM801xQlRczRoIxD9cPg3fw5GHRiU2DYLmtuLryMfj46By1ChVbPYEWUVViUqQkjHyJUVZcXw6Uq4vqxa1exE0JacpuESMXVeKtMB6Qxm42N+sje/gccoHlkwCeer18wErC1OV5gYEyWId1QiRBzjH8SOLLqwPKIrS3APeot0381Sp/oac8R9ur3Z5/Zy64mxkoGFiKp2KhXcdrMmRXKMVBVe18CKCQnoe6UJnLtEAucIN56WPBgOtbEMMcNZwZjDl2g2mddUOVG/B4bJ2xXPdnJiseQ99t9Kq/13+Ltfwme8lTwhkFPVuZcPQMTcc5V3ltHAJ1Zn57thNxO7HqmKypmteEF56/p9Irpdibi0cySDNGeKuz4gyDvgMmySaKjVLIEm+FI2ExlF/kKMsKUN90FDNygqsTpSTSoEdYnDNY6fgO3L9ZXa50d4SGXF9Ex8pAGTkEr8/Hf/dCYLIWtQkdGx1qKcxHXRaguWJsZjRVJFPVHgdakcO3enJic8Fj9xfQW4pYzBAZXFfShyGdJIZHe2zkuNdW7igiN1Ihi4U4miImgmPmZ8oAhlYt0CDU/Er6901iZMtI4E+/Cbf4SdMmns75cln8prQrXRDDdrCyQX9nuscKThjftfcVkG7nrgZgnNpCColiv4uWboXl9JPq94pCvm/IpAvdpLx8YSBX/ECxjzbrjeIOVmpHCwy0o95kl88ubPdyGmNdwiRJXX8FNHgqjA6V/sJ1pjDKvh/p4TG7QMwCqGqg/HxJWFCXoiDTky2gNCIz6Ok+6QhYGtSYi8FASqtDHnDOFkBmxbWFpuqZWcmzrEcPaOzGoXdhnx5pj+RCeVI8MgAJXSh/c507ndao894Ib0z7I4jjj/8F/+DdyNTJWPc2TyY47GHs83dNnVUifPAthDJZ5jlVEmCnWj0itM5N6N0hr0nKjgfcK+XSFupk6IZw3oRo7/Ae7eyVUYGp0eSUTA3vxErKhSDRs4ZpKv2erdsZUqIwqpGlWx3JN7SfmcYD5Df59zg2RD9DasvnEXlU/VG2OZxTrjjQn8g3qptO7oT0Z6TbMaO4+TdbVFjzc/o/kBSkxXR3+qYYa1nkSsU+PrDAFBFc8+lqbASZJ7aijQ6tMjAxHulTmlaIg1pTmpph/Vz5WJ40nmUdp/dxhokiqCu8nhHD7ZffZ09vrlThfWju/rXdsp7raI6TjZ8Qkf2gE+xuVmAqYkr4v9Uuo/9Cn2tYkg5Vuv7+R+Bz9YyqODxmkyyI7tX5Cvb1ASSpCbsCX2ZLAjx3pPXimFzgVw1lvowoamdUFJp+lQRWdTU1nue57w7ylP+NLSVJ7wW7evxhPeFPuDiDnxbM7niT7ZNnqQyPTKVOE1OD24PLiaHUqdlGd5OsGxgCWvx3zs3KXI/zLKy6LdWmCc0BIVEZvSEs6wzNz2Cc2avH7zoGsLdOsaZ+q0206rIjxF1S7n36lkeHXkTq7e/BfOTzlnnJvf80ag4JRRikLiZL1U6wLDxtVyN62ADXnDpaDNEFvS0mLSMqWa16ce2tP0qYv/HEme6oacCHE0bSLp9agH29X0KGV6PshCGR2++n2AX3Zk6NK3umy3rFCP5/+Ft+Ww9arQo/PK6NygHXbEIm9cWYVI9KrPg6slcH2GnmCTgnpg9D5eCHKj0dnTtH0TORLfKni5ugGYVvdUZmQ6NFBtGz1+vvWkC/d5J6R/sc0OrzQ9rq+M681JNGKV7pqmNjgf3954WDEFMgWh16Qece05kQWzmVNofF7mnKH3oTJyqF+4+BLnXnLsIhQUWKLOCLvxGtDjsZUZ9CQEYRJ75xWeB1hLAHvzs2MHAfuTmM7mLKAL92xOBHpd56E4CyhyGIzio8sIx2kcAF7JeWRdihODTjQmOlYZfIAKLlKOEryKE6ZzZ3leugDCM6OqvIrzQLz6Qk1W7XwIGJc6Ibb6TKf0j0lF4ndDPNJaM6ZlUpC3xmfrBS0L8q4HRwv38UcrzZDDSmnPOIuYyQB1YaGz1vkdvf7zqKwP+VTnXdHW1pEOXud5dLUWHzgJagErir1hove7I4u3ug0Q6XYv+OhGdo7MLfSnfdqzXq8Lu6E2qHutVtNPbfhQeh9K//9Xh/lo5/NtRdChG78M4rHVPrYeDId0StK7+d4Rm8kuKnOgec3lAdXWAq4KiV+vzj/h9ZaH2cz01k+83vKAamu9yxHNen3l4TULeDFhPMwfIZafxibklZdH16WsIbHLJ+8MOfMqzIPsai4XBHAmx7jXZx5qbW0PnSK490rNI20WSPsYdZia5GHxKswDqyVgbVVZbihS0VG4exXmkTYLpG3oPMe55STvENGTqExKy6ktEp1lngPHo60ttD0RJh7Jly9FwwDunTOPtZlg7bkRRUh8s5RNrSL/96rMw6utWaZLc2AUH2Uq2Fsj9mhOgkBxiH730iNvdruXLvXb4as/UE43r9Y8uNo6T0KJAil/6GsGl4SxereHRn+mBFDfj8zFYLTMH1yVVqvq1qU0/OsDOdQG71heqMV4NBq7ah6XX7/2zvrawtrySSn1Vk9Lqbd6Lik1FPaZiKWB8WK314P/+U/6gVJtw3ipu0Dfd1CcgNUFlSlL2ZfG8i9Qur/8d8rQOkWuWBsZWvfukRSI2B05lEZmoWyAJIeiTOwcmL6K7s2Zzei2a8hQa3u+B6qW5/HuywqSvTsLKyT9EX5eWV1apc/EippZbLc21ghl64cQs8DdivcuLy/QrQz15qsbGs13GkrNN9ewe3O3F/g1rtqTrzHlXzITVv48flqmz7Ed/C3SIYVdU5E4S91WNsQKL02o+GvhBVSF6IA/4CMlrc999H9QSwMECgAAAAgAKEH4XDQJ7IJpAwAASxQAAA8AAAB3b3JkL3N0eWxlcy54bWzlWG1P2zAQ/itRvo80aVKgoqCupQIJbYiB9tl1nMYisTPboXS/fnbipCEvtECAaftEfXd9fM89d7XNydljHBkPiHFMycS0DwamgQikPiariXl3u/hyZBpcAOKDiBI0MTeIm2enJ+sxF5sIcSOG48sVoQwsI+ld266xtj3TkKiEj2M4MUMhkrFlcRiiGPADmiAinQFlMRByyVZWDNh9mnyBNE6AwEscYbGxnMFgVMCwfVBoEGCI5hSmMSIi+77FUCQRKeEhTniBtt4HbU2ZnzAKEeeyEnGU48UAkxLGdhtAMYaMchqIA0lGZ5RBya/bg+xTHG0BvJcBOAWAKr9P4RwFII0EV0t2zfRSr7I/C0oEN9ZjwCHGE3PKMJDbr8eQVxYIcDHlGFRM4ZTwMt7K1P4tzQ8gmpiOU1hm/KnN0htb9XSScpVH1XLPOklCiU0iWygBDKwYSEKVSOa69CfmLRYRyogTEKNi39yapbMEHPnfSeH5prTUuRP0KNrsvxaZ4FalYlua3qhJM7dVaGbp7UvhAgE1VXaDhXYYdp9MII0oK/U5P3S/enUlhy1KDutKvoai00nR+WCKTouKTh8qDjspDt+Nor1w54dHDYpuC0W3B4puJ0W3T4o4W+AZt57R9I1UvE4q3gc05BuTH3UmP/qAVntt8j8Eo2TVSF2be8x7mWNl/fPaZK8wF9elp56z8hpb967ctzl2pwFDCQcFYk8Flz4WYXLfVLz0tO2uD9MyRXXs54EpvmaYMnmhKmKPj7WHhNhHP0NE7iRWZyMMvNFwpg+mtDCqK1F+7u4ueDvTBaWCUIFuUICYvG82j/ZARxisDOmLOkcxvsC+j8iOSshrsZhGeFXuxlMpA4cMJ+Its1Gwv5Vd3k1cKO+uZlM9UdirsDNZ9rfXIdG3ogRA9XsjL5KBVFJ2haIjt0bqqCkXN6l6AoBUUF0c/fXG3coZtBxZgz76qaRer2oRYKgIY1udvdupq9C9Ndt7luec+M9PG8oD/sVh09xbZ62g/eJRq4D+Z5NWZ14vqfb3MmdV6f6uMfvUF15Xr9ijrEGWKKAMqaecJkhToZrm6iEqT/XWtunx3wXVS1n9anluLxy78RZtEWPYhxjv/RbtFMN5IoYa3g4x7E8Uw50N5+UIbSfDa5mMjqdM8Ymf/gFQSwMECgAAAAAAKEH4XAAAAAAAAAAAAAAAAAkAAABkb2NQcm9wcy9QSwMECgAAAAgAKEH4XELWr4g4AQAAgwIAABEAAABkb2NQcm9wcy9jb3JlLnhtbKWSXWvCMBSG/0rJfZu0FXWljbANryYMpmx4F5KjhjUfJJnVf7+2alXm3S6T98nDe05bzg6qjvbgvDS6QmlCUASaGyH1tkKr5TyeosgHpgWrjYYKHcGjGS25Lbhx8O6MBRck+Kj1aF9wW6FdCLbA2PMdKOaTltBtuDFOsdAe3RZbxr/ZFnBGyBgrCEywwHAnjO1gRGel4IPS/ri6FwiOoQYFOnicJim+sgGc8g8f9MkNqWQ4WniIXsKBPng5gE3TJE3eo23/FH8t3j76UWOpu01xQLQUvOAOWDCOrnSsmQJR4pvLboE182HRbnojQTwfb7i/WYc72MvuK9G0J4ZjeR765AYRtWWL02iX5DN/eV3OEc1INo7JJM5GSzItyFORTpJRnq+7aneOq1SdS/zLepHQvvn9j0N/AVBLAwQKAAAACAAoQfhc5FHcGNQCAADRFgAAEgAAAHdvcmQvbnVtYmVyaW5nLnhtbO1Yy46bMBT9FWSpywmPAInQMKO2o6lS9SU1/QAHnMQaP5AxZLLrvovu2m3VT+uX1CaBPDqZSWCQqJSVg33vOcfHvheRy+t7SowciRRzFgK7ZwEDsYjHmM1C8GV8ezEERiohiyHhDIVgiVJwfXW5CFhGJ0ioMINGwWjGuIATogIWtmssbM9YJLYLDIXO0mCRRCGYS5kEpplGc0Rh2qM4EjzlU9mLODX5dIojZC64iE3Hsq3iVyJ4hNJUcbyGLIdpCUf/ReMJYmpxygWFUj2KmUmhuMuSC4WeQIknmGC5VNiWX8LwEGSCBWuIi0qQTglWgtZDmSGO4V2l3PAoo4jJgtEUiCgNnKVznGy2URdNLc5LkPyxTeSUbI7AdpudwY2ACzVsAI+RH6+SKFkpfxzRto44EQ1RZRwjYZezVEIhZhviWtZsmWt7pwE4+wDJrNnhvBE8SzZouBnaiN1VWLroT8BaH/L21tJmYj7PYYKAbjlwkkoBI/kho8bO0yhWrQvothMIpLqV0JOr7vRyKpF4JRC8C4FVoNCMSPwO5YiMlwlSQDkkSuFyInD8Xq8RvQZMHUtyogKwGnR2QSBVGapazpGm1DEFXwljr/JUc7yl1eQkIwTJCnGM7qulPz+/V/Nvo3KWoOk6PPkk9IBZrNb0dAgGjlYSzCGbFU2671s61lwHmwXWvni7HfHfThVvu24N9U4r6n/8OlW9Y/s11Pc7cnGc4bCGercjN0eJraHe68jNcft1qtbvyM3xrDpVO+iK+kGdqh12RL3vHle15s4b8cnXpfN/vi6//j7Zv/3Cs57Dvn537YtRhCkkD/r3wu51wz/37F8j/7yzf43888/+NfJvcPbvKf9Y4Rsrv073LB3Fe5tQKB9zJJQtaMuEastba5sscyeteGYPkDuHyfutk/cPk7utk7uHyZ3Wyb3D5F7r5P5hcr918sFh8sHzk5tbf0Zf/QVQSwMECgAAAAAAKEH4XAAAAAAAAAAAAAAAAAYAAABfcmVscy9QSwMECgAAAAgAKEH4XB+jkpbmAAAAzgIAAAsAAABfcmVscy8ucmVsc62Sz0oDMRCHXyXMvTvbVkSkaS9S6E2kPkBIZneDzR8mU61vbyiKVuraQ4+Z/ObLN0MWq0PYqVfi4lPUMG1aUBRtcj72Gp6368kdrJaLJ9oZqYky+FxUbYlFwyCS7xGLHSiY0qRMsd50iYOReuQes7Evpiecte0t8k8GnDLVxmngjZuC2r5nuoSdus5bekh2HyjKmSd+JSrZcE+i4S2xQ/dZbioW8LzN7HKbvyfFQGKcEYM2MU0y124WT+VbqLo81nI5JsaE5tdcDx2EoiM3rmRyHjO6uaaR3RdJ4Z8VHTNfSnjyMZcfUEsDBAoAAAAIAChB+FzSd/y3bQAAAHsAAAAbAAAAd29yZC9fcmVscy9oZWFkZXIxLnhtbC5yZWxzTYxBDgIhDEWvQrp3ii6MMcPMbg5g9AANViAOhVBiPL4sXf689/68fvNuPtw0FXFwnCwYFl+eSYKDx307XGBd5hvv1IehMVU1IxF1EHuvV0T1kTPpVCrLIK/SMvUxW8BK/k2B8WTtGdv/B+DyA1BLAwQKAAAACAAoQfhc0nf8t20AAAB7AAAAGwAAAHdvcmQvX3JlbHMvZm9vdGVyMS54bWwucmVsc02MQQ4CIQxFr0K6d4oujDHDzG4OYPQADVYgDoVQYjy+LF3+vPf+vH7zbj7cNBVxcJwsGBZfnkmCg8d9O1xgXeYb79SHoTFVNSMRdRB7r1dE9ZEz6VQqyyCv0jL1MVvASv5NgfFk7Rnb/wfg8gNQSwMECgAAAAgAKEH4XC9sZeX2AQAATggAABAAAAB3b3JkL2hlYWRlcjEueG1spdZdbpswAAfwqyC/JwaSZikqqapErfYwadK2A3jGAav4Q7aBdE87xE64k8wmfKRhqoC82MTEP/+NbcHD44nlXkmUpoLHIFj6wCMci4TyNAY/vj8vtuBx91BFWaI8+1euo0riGGTGyAhCjTPCkF4yipXQ4miWWDAojkeKCayESmDoB359JZXARGvr7hEvkQYNx4aakITbm0ehGDL2p0ohQ+q1kAurS2ToT5pT82Ztf9MyIgaF4lFDLLpArkt0DtRUbQ81Ztxzl4PABSPc1CNCRXKbQXCdUdlPY65mb2YtUn40iZLloFuCYH3bGhwUqmzVg2PiJ+dOLD8n/1gM/BEr4oiux5gI78dskzBEeT/wrEdz8XCDu2lAeA3I9LbFeVGikL1Gb9M+89fO4mSS1Szy5dT0bWG+ZUh2JxCfxmHNvnPeGuIMKUNOvRFMRu7gPdwOoXAGZCcYBkNqNZnaQJdqAI3cy1eQTTWQRm7qa+k/k9vMk8Kh9GmetBpK23nSYDtVwQbTZNoebw8JtD0vHD3trNnN1DD6jdlA7qUrXaHq4mtdYZEL5VVRifIY3O+f/Kc1gO6G/tW2Btu2Za/ft8GOMS5lpCXCNqNURBNVErA7FDwlgntfEEcpUd7f33/cdYFy4hXGvrGIV66WvoPMmatLWZf2A2H3D1BLAwQKAAAACAAoQfhcaRLCZ7YBAAAjBgAAEAAAAHdvcmQvZm9vdGVyMS54bWy1lNtu2zAMhl/F0H0iu2iH1ogTBGlX7K7A0gdQZTrWah1AKXa7p58U2U4PaJAm2I0oS+THnySs2eJFNkkLaIVWBcmmKUlAcV0KtSnI4/rn5Jos5rMurxwm3lXZvDO8ILVzJqfU8hoks1MpOGqrKzflWlJdVYID7TSW9CLN0t3OoOZgreeumGqZJT1OfqZpA8pfVholc/4TN1QyfN6aiacb5sSTaIR79ez0x4DRBdmiynvEZBQUQvIoqDdDBB6TN4bcar6VoNwuI0VovAatbC3MvoxTaf6yHiDtoSJa2ZBxBNnleTO4RdZ5swceI7+MQbKJyg8Ts/SIiQTEGHGMhPc5ByWSCbVPfFJr3jQ3u/oe4OIjwGzOG8496q3Z08R5tF/qeWQp+BarH/Lb0ux5Yn7XzAAJD4rZLQ8YzB+edHnLmoJw/18AEjqf0fE2LnHPdaNxcL5ZLdPlZXDucvt3OM2uh5OVfX9GR4wL9eTWMO4bYhAsYOtlPbCNUCwJji66/6f8VVOuahZA/W79arySJ/D5Y7RQ1uEaXr5Sury/C7zR7QDVgmHIHETwF06gykFi7P1u9a/+/B9QSwMECgAAAAgAKEH4XFNQVxOuAQAAOAkAABMAAABbQ29udGVudF9UeXBlc10ueG1stVbBbtswDP0Vw9chVrrDUAxJetjW49pD9wGKRDvaLFGQ6LT9+1J2YsBdnGZrdTP5+PieRArw6ubJtsUeQjTo1uVVtSwLcAq1cc26/PVwu7gubzarh2cPseBSF9fljsh/FSKqHVgZK/TgGKkxWEkchkZ4qf7IBsTn5fKLUOgIHC0o9Sg3q+9Qy66l4tuQT63XpbGp3rumLH48cXqwk2JxlvHbw5TSJ/6Z8xZla/2EkeLzjMbUE0aKzzPivvnE9zhhcW6WJb1vjZLEhWLv9Ks5LA4zqAK0fU3cGR//EmA0XqTwmpji/3SGdW0UaFSdZUqF27qLXA36lptMRFAT9dd2xxsajIb36Dxi0D6gghh5uW1bjYiVxg03cy8D/ZSWe4tULsaSw3Gz+Ij03EI8bWDA3iV/XASFARYs7CGQOaHHBu8ZjSIVfuSBVRcJ7WXSfelHikPaJg36InlunXXSrrNbCPx9etgjnNVEjUgOaW7jRjirCZ7JGQ9HNO+zAyL+mnt4BzSrBYU2ATMWjmjmbeBGctvC3DYc4KwmdiA1hNMOBuwq+5OY0x+wUV/0v0KbF1BLAwQKAAAACAAoQfhcWHnbIpIAAADkAAAAEwAAAGRvY1Byb3BzL2N1c3RvbS54bWydzkEKwjAQheGrlNnbVBcipWk34tpFdR/SaRtoZkImLfb2RgQP4PLxw8drupdfig2jOCYNx7KCAsny4GjS8OhvhwsUkgwNZmFCDTsKdG1zjxwwJodSZIBEw5xSqJUSO6M3UuZMuYwcvUl5xknxODqLV7arR0rqVFVnZVdJ7A/hx8HXq7f0Lzmw/byTZ7+H7Kn2DVBLAwQKAAAACAAoQfhc4vyd2pMAAADmAAAAEAAAAGRvY1Byb3BzL2FwcC54bWydzkEKwjAQheGrhOxtqguR0rQbce2iug/JtA00MyETS3t7I4IHcPn44eO1/RYWsUJiT6jlsaqlALTkPE5aPobb4SIFZ4POLISg5Q4s+669J4qQsgcWBUDWcs45NkqxnSEYrkrGUkZKweQy06RoHL2FK9lXAMzqVNdnBVsGdOAO8QfKr9is+V/Ukf384+ewx+Kp7g1QSwMECgAAAAgAKEH4XJyJyZHOAQAArQYAABIAAAB3b3JkL2Zvb3Rub3Rlcy54bWzVlM1O4zAQx18l8r11UgFaRU05gEDcEN19AOM4jYXtsWwnoW+/k8RNuiyqCj1xib9mfvOfmdjr23etklY4L8EUJFumJBGGQynNriB/fj8sfpHEB2ZKpsCIguyFJ7ebdZdXAMFAED5BgvF5Z3lB6hBsTqnntdDML7XkDjxUYclBU6gqyQXtwJV0lWbpMLMOuPAew90x0zJPIk7/TwMrDB5W4DQLuHQ7qpl7a+wC6ZYF+SqVDHtkpzcHDBSkcSaPiMUkqHfJR0FxOHi4c+KOLvfAGy1MGCJSJxRqAONraec0vkvDw/oAaU8l0WpFphZkV5f14N6xDocZeI78cnTSalR+mpilZ3SkR0we50j4N+ZBiWbSzIG/VZqj4mbXXwOsPgLs7rLmPDpo7EyTl9GezNvE6i/2F1ixycep+cvEbGtm8QZqnj/tDDj2qlARtizBqif9b02On5yky8PeooUXljkWwBHckmVBFtlgaIfPs+sHbxnHCGjAqiDwdqe9sZJ9zqurafHS9CFZE4DQzZpO7uMnzrdhr/roLVMFeYhqXkQlHL6ZIjpG42o+jvsTbpI9HdBBM529Pk2XgwnSNMMrs/2YevoTMv80g1NVOFr4zV9QSwMECgAAAAgAKEH4XNJ3/LdtAAAAewAAAB0AAAB3b3JkL19yZWxzL2Zvb3Rub3Rlcy54bWwucmVsc02MQQ4CIQxFr0K6d4oujDHDzG4OYPQADVYgDoVQYjy+LF3+vPf+vH7zbj7cNBVxcJwsGBZfnkmCg8d9O1xgXeYb79SHoTFVNSMRdRB7r1dE9ZEz6VQqyyCv0jL1MVvASv5NgfFk7Rnb/wfg8gNQSwMECgAAAAgAKEH4XD9Kjo3BAQAAkgYAABEAAAB3b3JkL2VuZG5vdGVzLnhtbM2U227jIBCGX8XiPsGOutXKitOLHla9q5rdB6AYx6jAIMD25u13fAjOtlWUNje9MaeZb/6ZMaxv/mqVtMJ5CaYg2TIliTAcSml2Bfnz+2Hxk9xs1l0uTGkgCJ+gvfF5Z3lB6hBsTqnntdDML7XkDjxUYclBU6gqyQXtwJV0lWbpMLMOuPAe4bfMtMyTCaff08AKg4cVOM0CLt2OauZeG7tAumVBvkglwx7Z6fUBAwVpnMknxCIK6l3yUdA0HDzcOXFHlzvgjRYmDBGpEwo1gPG1tHMaX6XhYX2AtKeSaLUisQXZ1WU9uHOsw2EGniO/HJ20GpWfJmbpGR3pEdHjHAn/xzwo0UyaOfCXSnNU3OzH5wCrtwC7u6w5vxw0dqbJy2iP5jWyjPgUa2rycWr+MjHbmlm8gZrnjzsDjr0oVIQtS7DqSf9bk6MXJ+nysLdo4IVljgVwBLdkWZBFNtjZ4fPk+sFbxjEAGrAqCLzcaW+sZJ/y6iounps+ImsCELpZ0+g+fqb5NuxVH71lqiD3o5hnUQmH76OY/CZbEU+n7QiLouMBHRTT6PRRqhxMkKYZHpjt27TT75/1h/pPVGCe+80/UEsDBAoAAAAIAChB+FzSd/y3bQAAAHsAAAAcAAAAd29yZC9fcmVscy9lbmRub3Rlcy54bWwucmVsc02MQQ4CIQxFr0K6d4oujDHDzG4OYPQADVYgDoVQYjy+LF3+vPf+vH7zbj7cNBVxcJwsGBZfnkmCg8d9O1xgXeYb79SHoTFVNSMRdRB7r1dE9ZEz6VQqyyCv0jL1MVvASv5NgfFk7Rnb/wfg8gNQSwMECgAAAAgAKEH4XE2fysqhAQAAcwUAABEAAAB3b3JkL3NldHRpbmdzLnhtbKWU3W7bMAyFX8XQfSK7WIvBqFt0K9b1YthFtwdgJdkWIlGCJNvL24+O47g/QJE0V5JB8TtHpMXr23/WZL0KUTusWLHOWaZQOKmxqdjfPz9WX1kWE6AE41BVbKsiu725HsqoUqJDMSMAxnLwomJtSr7kPIpWWYhrq0Vw0dVpLZzlrq61UHxwQfKLvMh3Ox+cUDES6DtgD5HtcfY9zXmFFKxdsJDoMzTcQth0fkV0D0k/a6PTltj51YxxFesClnvE6mBoTCknQ/tlzgjH6E4p9050VmHaKfKgDHlwGFvtl2t8lkbBdob0H12it4YdWlB8Oa8H9wEGWhbgMfbllGTN5PxjYpEf0ZERccg4xsJrzdmJBY2L8KdK86K4xeVpgIu3AN+c15yH4Dq/0PR5tEfcHFjjuz6BtW/yy6vF88w8teDpBVpRPjboAjwbckQty6jq2fhbs3HiSB29ge03EJuGaoFyl8bHkOoV3qH8LeVPBZKmWTaUPZiK1WCiYrsz05RYdk/TAJtPFpeMtgiWpF8NlF9OqjHUhRNKPkryRZMv8/LmP1BLAwQKAAAACAAoQfhci4Y5xMUBAADGCAAAEQAAAHdvcmQvY29tbWVudHMueG1spdTdcuIgGAbgW3E4V5JYUzfTtCed7fR42wuggMI0/Ayg0btfUiVJl51OgkfqJN+Tl9fAw9NJNIsjNZYrWYN8lYEFlVgRLvc1eH/7vdyChXVIEtQoSWtwphY8PT60FVZCUOnswgPSVvhUA+acriC0mFGB7EpwbJRVO7fy90K123FMITGo9TYssvwOYoaMoyfQG/lsZAN/wW0MFQlQnsEij6n1bKqEXaoIukuCfKpI2qRJ/1lcmSYVsXSfJq1jaZsmRa+TwBGkNJX+4k4ZgZz/afZQIPN50EsPa+T4B2+4O3szKwODuPxMSOSnekGsyWzhHgpFaLMmQVE1OBhZXeeX/XwXvbrMXz/ChJmy/svIs8KHbjt/rRwa2vgulLSMa9vXmar5iywgx58WcRRNuK/V+cTt0ipDur6yr2/aKEyt9R0+X6ocwCnxr/2L5pL8ZzHPJvwjHdFPTInw/ZkhifBv4fDgpGpG5eYTD5AAFBFQYjrxwA/G9mpAPOzQzuETt0Zwyt7hZOSkhRkBljjCZilF6BV2s8ghhiwbi3ReqE3PncWoI72/bSO8GHXQg8Zv016HY62V8xaYlf+2ru1tYf4wpCmAj38BUEsDBAoAAAAIAChB+FzSd/y3bQAAAHsAAAAcAAAAd29yZC9fcmVscy9jb21tZW50cy54bWwucmVsc02MQQ4CIQxFr0K6d4oujDHDzG4OYPQADVYgDoVQYjy+LF3+vPf+vH7zbj7cNBVxcJwsGBZfnkmCg8d9O1xgXeYb79SHoTFVNSMRdRB7r1dE9ZEz6VQqyyCv0jL1MVvASv5NgfFk7Rnb/wfg8gNQSwMECgAAAAgAKEH4XGPtXtYdAQAAQwMAABIAAAB3b3JkL2ZvbnRUYWJsZS54bWyd0d1uwiAUB/BXIdwrtZmNaazeLEt2vz0AArVEDqfh4NS3H622a+KN3RUQ8v/lfGz3V3DsxwSy6Cu+WmacGa9QW3+s+PfXx2LDGUXptXToTcVvhvh+t72UNfpILKU9laAq3sTYlkKQagxIWmJrfPqsMYCM6RmOAmQ4nduFQmhltAfrbLyJPMsK/mDCKwrWtVXmHdUZjI99XgTjkoieGtvSoF1e0S4YdBtQGaLUMbi7B9L6kVm9PUFgVUDCOi5TM4+KeirFV1l/A/cHrOcB+RNQKHOdZ2wehkjJqWP1PKcYHasnzv+KmQCko25mKfkwV9FlZZSNpGYqmnlFrUfuBt2MQJWfR49BHlyS0tZZWhzrYXafXHew+zLY0AIXu19QSwMECgAAAAgAKEH4XNJ3/LdtAAAAewAAAB0AAAB3b3JkL19yZWxzL2ZvbnRUYWJsZS54bWwucmVsc02MQQ4CIQxFr0K6d4oujDHDzG4OYPQADVYgDoVQYjy+LF3+vPf+vH7zbj7cNBVxcJwsGBZfnkmCg8d9O1xgXeYb79SHoTFVNSMRdRB7r1dE9ZEz6VQqyyCv0jL1MVvASv5NgfFk7Rnb/wfg8gNQSwECFAAKAAAAAAAoQfhcAAAAAAAAAAAAAAAABQAAAAAAAAAAABAAAAAAAAAAd29yZC9QSwECFAAKAAAAAAAoQfhcAAAAAAAAAAAAAAAACwAAAAAAAAAAABAAAAAjAAAAd29yZC9fcmVscy9QSwECFAAKAAAACAAoQfhcWMsNbw8BAAAhBQAAHAAAAAAAAAAAAAAAAABMAAAAd29yZC9fcmVscy9kb2N1bWVudC54bWwucmVsc1BLAQIUAAoAAAAIAChB+FyxyEEpvBkAAE83AQARAAAAAAAAAAAAAAAAAJUBAAB3b3JkL2RvY3VtZW50LnhtbFBLAQIUAAoAAAAIAChB+Fw0CeyCaQMAAEsUAAAPAAAAAAAAAAAAAAAAAIAbAAB3b3JkL3N0eWxlcy54bWxQSwECFAAKAAAAAAAoQfhcAAAAAAAAAAAAAAAACQAAAAAAAAAAABAAAAAWHwAAZG9jUHJvcHMvUEsBAhQACgAAAAgAKEH4XELWr4g4AQAAgwIAABEAAAAAAAAAAAAAAAAAPR8AAGRvY1Byb3BzL2NvcmUueG1sUEsBAhQACgAAAAgAKEH4XORR3BjUAgAA0RYAABIAAAAAAAAAAAAAAAAApCAAAHdvcmQvbnVtYmVyaW5nLnhtbFBLAQIUAAoAAAAAAChB+FwAAAAAAAAAAAAAAAAGAAAAAAAAAAAAEAAAAKgjAABfcmVscy9QSwECFAAKAAAACAAoQfhcH6OSluYAAADOAgAACwAAAAAAAAAAAAAAAADMIwAAX3JlbHMvLnJlbHNQSwECFAAKAAAACAAoQfhc0nf8t20AAAB7AAAAGwAAAAAAAAAAAAAAAADbJAAAd29yZC9fcmVscy9oZWFkZXIxLnhtbC5yZWxzUEsBAhQACgAAAAgAKEH4XNJ3/LdtAAAAewAAABsAAAAAAAAAAAAAAAAAgSUAAHdvcmQvX3JlbHMvZm9vdGVyMS54bWwucmVsc1BLAQIUAAoAAAAIAChB+FwvbGXl9gEAAE4IAAAQAAAAAAAAAAAAAAAAACcmAAB3b3JkL2hlYWRlcjEueG1sUEsBAhQACgAAAAgAKEH4XGkSwme2AQAAIwYAABAAAAAAAAAAAAAAAAAASygAAHdvcmQvZm9vdGVyMS54bWxQSwECFAAKAAAACAAoQfhcU1BXE64BAAA4CQAAEwAAAAAAAAAAAAAAAAAvKgAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUAAoAAAAIAChB+FxYedsikgAAAOQAAAATAAAAAAAAAAAAAAAAAA4sAABkb2NQcm9wcy9jdXN0b20ueG1sUEsBAhQACgAAAAgAKEH4XOL8ndqTAAAA5gAAABAAAAAAAAAAAAAAAAAA0SwAAGRvY1Byb3BzL2FwcC54bWxQSwECFAAKAAAACAAoQfhcnInJkc4BAACtBgAAEgAAAAAAAAAAAAAAAACSLQAAd29yZC9mb290bm90ZXMueG1sUEsBAhQACgAAAAgAKEH4XNJ3/LdtAAAAewAAAB0AAAAAAAAAAAAAAAAAkC8AAHdvcmQvX3JlbHMvZm9vdG5vdGVzLnhtbC5yZWxzUEsBAhQACgAAAAgAKEH4XD9Kjo3BAQAAkgYAABEAAAAAAAAAAAAAAAAAODAAAHdvcmQvZW5kbm90ZXMueG1sUEsBAhQACgAAAAgAKEH4XNJ3/LdtAAAAewAAABwAAAAAAAAAAAAAAAAAKDIAAHdvcmQvX3JlbHMvZW5kbm90ZXMueG1sLnJlbHNQSwECFAAKAAAACAAoQfhcTZ/KyqEBAABzBQAAEQAAAAAAAAAAAAAAAADPMgAAd29yZC9zZXR0aW5ncy54bWxQSwECFAAKAAAACAAoQfhci4Y5xMUBAADGCAAAEQAAAAAAAAAAAAAAAACfNAAAd29yZC9jb21tZW50cy54bWxQSwECFAAKAAAACAAoQfhc0nf8t20AAAB7AAAAHAAAAAAAAAAAAAAAAACTNgAAd29yZC9fcmVscy9jb21tZW50cy54bWwucmVsc1BLAQIUAAoAAAAIAChB+Fxj7V7WHQEAAEMDAAASAAAAAAAAAAAAAAAAADo3AAB3b3JkL2ZvbnRUYWJsZS54bWxQSwECFAAKAAAACAAoQfhc0nf8t20AAAB7AAAAHQAAAAAAAAAAAAAAAACHOAAAd29yZC9fcmVscy9mb250VGFibGUueG1sLnJlbHNQSwUGAAAAABoAGgCKBgAALzkAAAAA';
 function downloadManual(){
@@ -8539,7 +8587,8 @@ function renderHelp(){
       <b>Grafica dei mazzi</b>: consiglio e steco hanno profondità vera — le schede si sollevano dal piano, la luce e l'inclinazione seguono il puntatore, e <b>il riquadro che chiede una decisione sta più in alto di tutti</b>. La profondità serve a ordinare l'importanza, non a fare scena: con “riduci animazioni” attivo torna tutto piatto.<br><br>
       <b>Due palette, e la differenza è il punto.</b> Rosso, ambra e verde qui <i>significano</i> qualcosa: in ritardo, a rischio, in linea. Finché gli stessi colori venivano distribuiti anche a sezioni, progetti e barre dei grafici, una barra “To do” usciva rosso allarme e la timeline sembrava in fiamme a progetto sano. Ora i colori di segnale sono riservati allo stato, e per distinguere le cose fra loro c'è una palette separata, volutamente fredda. Anche la riga di <i>oggi</i> sulla timeline non è più rossa: oggi è il fatto più normale della pagina.<br><br>
       <b>Leggibilità.</b> Le pillole di stato e priorità e le iniziali negli avatar passano il contrasto AA: l'inchiostro delle iniziali è scelto colore per colore, chiaro o scuro a seconda di cosa quella tinta regge davvero. I colori che hai già assegnato a persone e progetti restano i tuoi — non li ho riscritti, è solo l'inchiostro sopra che si adatta.<br><br>
-      <b>Schermi stretti.</b> Sotto i 1024px la barra laterale non tiene più aperta una colonna: scompare e il pulsante ☰ la fa comparire sopra la pagina, con il resto velato. Si chiude toccando fuori, con Esc, o appena scegli dove andare. Sotto gli 860px i pulsanti in alto perdono l'etichetta e tengono l'icona, così l'azione principale non finisce mai tagliata fuori dallo schermo.
+      <b>Schermi stretti.</b> Sotto i 1024px la barra laterale non tiene più aperta una colonna: scompare e il pulsante ☰ la fa comparire sopra la pagina, con il resto velato. Si chiude toccando fuori, con Esc, o appena scegli dove andare. Sotto gli 860px i pulsanti in alto perdono l'etichetta e tengono l'icona, così l'azione principale non finisce mai tagliata fuori dallo schermo.<br><br>
+      <b>Un solo alfabeto di icone.</b> Dove prima c'erano emoji — nel menu Preferenze, nell'intestazione di Today e delle altre pagine speciali, nella striscia del cockpit, sui segni di riga di una quest, e per i mostri che bloccano il lavoro — ora ci sono icone disegnate: stesso reticolo, stesso tratto, stesso colore del testo accanto. Le emoji cambiavano forma da Mac a Windows e pesavano diverso dalle icone della barra laterale; una pagina speciale ora porta in testa <i>lo stesso segno</i> della voce di menu che l'ha aperta. Restano emoji solo dove sono contenuto e non interfaccia: il selettore del tuo volto, e queste pagine di manuale. Il segno di spunta ✓ resta quello tipografico, perché è testo.
     </div></details>
 
     <details><summary>2 · Per iniziare &amp; ambienti</summary><div class="hbody"><ul>
@@ -8776,12 +8825,13 @@ function renameProject(pid){
   }
 }
 
+/* `icon` is an icon PATH from I, drawn into the tile — not a character set as text */
 function specialTopbar(icon, iconBg, title, sub, stackHtml){
   $('#projRen').style.display = 'none';
   $('#projSet').style.display = 'none';
   $('#updBtn').style.display = 'none';
   $('#projIcon').style.background = iconBg;
-  $('#projIcon').textContent = icon;
+  $('#projIcon').innerHTML = ico(icon, 19);
   $('#projTitle').textContent = title;
   $('#projSub').textContent = sub;
   $('#teamStack').innerHTML = stackHtml;
@@ -8806,7 +8856,7 @@ function render(){
   if(['home','mytasks','inbox'].includes(db.currentView)) db.currentView = 'today';
   if(db.currentView==='today'){
     const meUser = me();
-    specialTopbar('🌅','var(--accent)',L('nav_today'),
+    specialTopbar(I.navToday,'var(--accent)',L('nav_today'),
       new Date().toLocaleDateString(DATE_LOCALE,{weekday:'long', day:'numeric', month:'long'})
         + (meUser?' · '+LX('Hail, ','Hello, ')+meUser.name.split(' ')[0]:''),
       meUser?avatarHtml(meUser):'');
@@ -8814,35 +8864,35 @@ function render(){
     return;
   }
   if(db.currentView==='portfolio'){
-    specialTopbar('🏰','var(--blue)',L('nav_war'), `${visProjects().length} ${LX('campaigns','projects')} · ${liveUsers().length} ${LX('party members','team members')}`, teamStackHtml(onlineUsers()));
+    specialTopbar(I.navPortfolio,'var(--blue)',L('nav_war'), `${visProjects().length} ${LX('campaigns','projects')} · ${liveUsers().length} ${LX('party members','team members')}`, teamStackHtml(onlineUsers()));
     atb.textContent = L('btn_newproj');
     atb.onclick = openProjModal;
     renderPortfolio();
     return;
   }
   if(db.currentView==='reports'){
-    specialTopbar('📜','var(--green)',L('nav_chron'), LX('Cross-campaign analytics','Cross-project analytics'), teamStackHtml(onlineUsers()));
+    specialTopbar(I.navReports,'var(--green)',L('nav_chron'), LX('Cross-campaign analytics','Cross-project analytics'), teamStackHtml(onlineUsers()));
     renderReports();
     return;
   }
   if(db.currentView==='activity'){
-    specialTopbar('⚡','var(--teal)',L('nav_act'), LX('Latest party actions','Latest team activity'), teamStackHtml(onlineUsers()));
+    specialTopbar(I.navActivity,'var(--teal)',L('nav_act'), LX('Latest party actions','Latest team activity'), teamStackHtml(onlineUsers()));
     renderActivity();
     return;
   }
   if(db.currentView==='trash'){
     const n = db.tasks.filter(t=>t.deleted).length;
-    specialTopbar('🪦','var(--text-3)',L('nav_trash'), `${n} deleted task${n===1?'':'s'}`, '');
+    specialTopbar(I.navTrash,'var(--text-2)',L('nav_trash'), `${n} deleted task${n===1?'':'s'}`, '');
     renderTrash();
     return;
   }
   if(db.currentView==='admin'){
-    specialTopbar('🛡','var(--sidebar-bg)',L('nav_admin'), LX('Party, PIN resets and roles','Team, PIN resets and roles'), teamStackHtml(onlineUsers()));
+    specialTopbar(I.navAdmin,'var(--sidebar-bg)',L('nav_admin'), LX('Party, PIN resets and roles','Team, PIN resets and roles'), teamStackHtml(onlineUsers()));
     renderAdmin();
     return;
   }
   if(db.currentView==='help'){
-    specialTopbar('📖','var(--teal)',L('nav_help'), 'Manuale v'+MANUAL_VERSION+' · App v'+APP_VERSION, '');
+    specialTopbar(I.navHelp,'var(--teal)',L('nav_help'), 'Manuale v'+MANUAL_VERSION+' · App v'+APP_VERSION, '');
     renderHelp();
     return;
   }
