@@ -892,6 +892,9 @@
   .gt-bar.late u{background:linear-gradient(90deg,#ff9d95,#ffcf8a)}
   .gt-bar b{position:absolute;left:8px;top:2px;font-size:11.5px;font-weight:650;z-index:2;
     text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  /* too narrow to hold its own label: the % sits just past the end of the bar instead */
+  .gt-out{position:absolute;top:50%;transform:translateY(-50%);font-size:11.5px;font-weight:650;
+    z-index:3;color:rgba(255,255,255,.72);white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6)}
   .gt-gem{position:absolute;top:50%;width:11px;height:11px;margin-left:-5.5px;z-index:4;
     transform:translateY(-50%) rotate(45deg);background:#ffd166;border-radius:2px;box-shadow:0 0 0 2px rgba(20,20,26,.55)}
   .gt-gem.done{background:#7fe3b4}
@@ -1927,6 +1930,13 @@ function normalizeDb(){
   db.templates = db.templates || [];
   db.hours = db.hours || [];
   db.tasks.forEach((t,i) => { if(t.order == null) t.order = i + 1; });
+  /* Thirty-odd places put a name straight into a sentence — undo labels, toasts, the
+     review's own prose — with .slice() or .split() on it. Guarding each of those is
+     thirty chances to miss one. Guarantee the invariant here instead, where everything
+     that enters the database passes: a name is always a string. */
+  db.tasks.forEach(t => { if(typeof t.name !== 'string') t.name = 'Untitled task'; });
+  db.users.forEach(u => { if(typeof u.name !== 'string') u.name = 'Unknown'; });
+  db.projects.forEach(p => { if(typeof p.name !== 'string') p.name = 'Untitled project'; });
   /* ===== Portfolios: named groupings of projects, for a strategic roll-up view =====
      Migration: first time this runs on an existing db, every current project is enrolled
      in one auto-created "Main portfolio" so nothing silently vanishes from the Portfolio page. */
@@ -1939,6 +1949,13 @@ function normalizeDb(){
   db.projects.forEach(p => {
     if(!p.portfolioIds) p.portfolioIds = [];
     if(p.dueDate === undefined) p.dueDate = null;
+    /* Every view assumes a project HAS sections. One can arrive without them — an old
+       export, a hand-edited file, a teammate on an older build — and then the list, the
+       board, the timeline, the dashboard and the map all throw. Give it the one section
+       the rest of the code takes for granted instead of letting five screens go blank. */
+    if(!Array.isArray(p.sections)) p.sections = [];
+    if(!p.sections.length) p.sections = [{id: uid(), name: 'Tasks', assigneeId: null, dueDate: null, priority: null}];
+    p.sections.forEach(s => { if(typeof s.name !== 'string') s.name = 'Section'; });
   });
   if(db.currentPortfolioId === undefined) db.currentPortfolioId = null; /* null = "All projects" pseudo-view */
   if(db.currentPortfolioId && !db.portfolios.find(x=>x.id===db.currentPortfolioId)) db.currentPortfolioId = null;
@@ -1950,6 +1967,12 @@ const save = () => { try { localStorage.setItem(DK(), JSON.stringify(db)); } cat
 /* ================= Helpers ================= */
 const $ = s => document.querySelector(s);
 const esc = s => (s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* esc() stops a URL breaking out of the attribute, but it does not stop the URL itself
+   being code: javascript: and data: are valid href schemes. Typing a link here always
+   gets https:// put in front of it, so these can only arrive in a file — an import or
+   the shared sync file — and a JSON file must never be able to run anything. */
+const SAFE_SCHEME = /^(https?:|mailto:|tel:|ftp:|file:|\/|#|\.)/i;
+const safeUrl = u => { const s = String(u ?? '').trim(); return SAFE_SCHEME.test(s) ? s : ''; };
 const liveUsers = () => db.users.filter(u=>!u.deleted);
 const liveProjects = () => db.projects.filter(p=>!p.deleted);
 /* visibility: private projects are shown only to their owner and invited members */
@@ -2008,6 +2031,10 @@ const L = k => (LEX[uiMode] && LEX[uiMode][k]) || LEX.dnd[k] || k;
 const LX = (dnd, std) => uiMode==='dnd' ? dnd : std;
 /* locale for every displayed date (month names, day-first order) — one place to change it */
 const DATE_LOCALE = 'it-IT';
+/* The review deck is written in English, so its dates are read in English too: a slide
+   that says "deadline 30 giu" in the middle of an English sentence reads as a mistake.
+   Change this to DATE_LOCALE if the room would rather see Italian dates. */
+const STAGE_LOCALE = 'en-GB';
 function applyLex(){
   document.querySelectorAll('[data-lex]').forEach(el => el.textContent = L(el.dataset.lex));
   /* static markup: the D&D text is what's written in the HTML, data-lx-std holds the standard one */
@@ -2469,7 +2496,7 @@ function celebrate(){
 
 /* Completing a task moves it to the project's Done section; reopening restores it.
    Recurring tasks regenerate; dependents get an "unblocked" notification. */
-const findDoneSection = p => p.sections.find(s=>/^(done|completed?|finished|fatto|completat\w*)$/i.test(s.name.trim()));
+const findDoneSection = p => (p.sections||[]).find(s=>/^(done|completed?|finished|fatto|completat\w*)$/i.test(String((s&&s.name)||'').trim()));
 function toggleComplete(t){
   /* dependency gate: a blocked task cannot be completed until its blockers are done */
   if(!t.completed && isBlocked(t)){
@@ -2516,7 +2543,7 @@ function toggleComplete(t){
   if(t.sectionId !== before.sectionId) applyRules(t, {type:'moved', to:t.sectionId});
   logAct((t.completed?'completed':'reopened')+' “'+t.name+'”');
   if(!bulkMode){
-    pushUndo((t.completed ? 'Completed' : 'Reopened')+' “'+t.name.slice(0,42)+'”'+(t.completed && t.assigneeId ? ' · +'+xpFor(t)+' XP for '+((user(t.assigneeId)||{}).name||'').split(' ')[0] : ''), [before], [], cloneId?[cloneId]:[]);
+    pushUndo((t.completed ? 'Completed' : 'Reopened')+' “'+String(t.name||'').slice(0,42)+'”'+(t.completed && t.assigneeId ? ' · +'+xpFor(t)+' XP for '+((user(t.assigneeId)||{}).name||'').split(' ')[0] : ''), [before], [], cloneId?[cloneId]:[]);
     if(t.completed) celebrate();
   }
 }
@@ -2652,8 +2679,8 @@ const matchFilters = t =>
   (!listFilters.status || t.status===listFilters.status) &&
   !(listFilters.hideDone && t.completed);
 const me = () => { const u = user(currentUserId); return u && !u.deleted ? u : null; };
-const fmtDate = ds => { if(!ds) return ''; const d = new Date(ds+'T00:00');
-  return d.toLocaleDateString(DATE_LOCALE,{month:'short',day:'numeric'}); };
+const fmtDate = (ds, loc) => { if(!ds) return ''; const d = new Date(ds+'T00:00');
+  return d.toLocaleDateString(loc || DATE_LOCALE,{month:'short',day:'numeric'}); };
 const isOverdue = t => t.dueDate && !t.completed && t.dueDate < todayStr();
 const initialsOf = u => esc(u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
 /* a chosen face when there is one, initials otherwise — same box either way */
@@ -3145,46 +3172,86 @@ function exportCampaign(pid){
   a.click();
   logAct('exported '+LX('campaign','project')+' “'+p.name+'”');
 }
+/* An import either lands whole or does not land at all. The file comes from outside and
+   can be any shape: an older export, something hand-edited, something truncated. Build
+   the whole import in local variables first and only then write it into db, so a bad
+   file leaves nothing behind — the earlier version pushed the new users before it read
+   the sections, and a file without sections left those users in the address book with
+   no project, no error and no way for anyone to know why. */
 function importCampaign(text){
   let data;
   try { data = JSON.parse(text); } catch(e){ toast('Invalid file'); return; }
   if(!data || !data.dmCampaign || !data.project){ toast('Not a campaign file'); return; }
-  /* remap ids so nothing collides with existing data */
-  const idMap = {};
-  const nid = old => { if(!old) return old; if(!idMap[old]) idMap[old] = uid(); return idMap[old]; };
-  /* users: reuse by matching name, otherwise create */
-  const userMap = {};
-  for(const su of (data.users||[])){
-    const ex = db.users.find(u=>!u.deleted && u.name.toLowerCase()===su.name.toLowerCase());
-    if(ex) userMap[su.id] = ex.id;
-    else { const id = uid(); db.users.push({id, name:su.name, color:su.color||COLORS[db.users.length%8], updatedAt:Date.now()}); userMap[su.id] = id; }
+
+  const newUsers = [], newTasks = [], newHours = [];
+  let np;
+  try {
+    /* remap ids so nothing collides with existing data */
+    const idMap = {};
+    const nid = old => { if(!old) return old; if(!idMap[old]) idMap[old] = uid(); return idMap[old]; };
+    /* users: reuse by matching name, otherwise create */
+    const userMap = {};
+    for(const su of (data.users||[])){
+      const nm = String((su && su.name) || '').trim();
+      if(!su || !su.id || !nm) continue;
+      const ex = db.users.find(u=>!u.deleted && String(u.name||'').toLowerCase()===nm.toLowerCase());
+      if(ex) userMap[su.id] = ex.id;
+      else { const id = uid();
+        newUsers.push({id, name:nm, color:su.color||COLORS[(db.users.length+newUsers.length)%8], updatedAt:Date.now()});
+        userMap[su.id] = id; }
+    }
+    const mu = id => userMap[id] || null;
+    const src = data.project;
+    /* a project with no sections is a shape nothing here can draw, so make the one
+       section the rest of the code assumes rather than refusing the whole file */
+    const srcSecs = Array.isArray(src.sections) && src.sections.length
+      ? src.sections
+      : [{id: uid(), name: 'Tasks'}];
+    np = {...src, id: uid(), name: String(src.name || 'Untitled') + ' (imported)',
+      owner: mu(src.owner) || currentUserId,
+      members: (Array.isArray(src.members)?src.members:[]).map(mu).filter(Boolean), mirrors: [], archived: false,
+      /* portfolio membership never crosses an import — those ids belong to the source db and would dangle here */
+      portfolioIds: db.currentPortfolioId ? [db.currentPortfolioId] : [],
+      sections: srcSecs.map(s=>({id: nid(s.id || uid()), name: String((s && s.name) || 'Section'),
+        assigneeId: (s&&s.assigneeId)||null, dueDate: (s&&s.dueDate)||null, priority: (s&&s.priority)||null})),
+      lastReview: src.lastReview || null, updatedAt: Date.now()};
+    const firstSec = np.sections[0].id;
+    let ord = 1;
+    for(const t of (Array.isArray(data.tasks)?data.tasks:[])){
+      if(!t) continue;
+      /* a task has to have a name: half this app puts it in a sentence, and one of
+         those sentences is the undo label, which would throw on an empty one */
+      const sec = nid(t.sectionId);
+      newTasks.push({...t, id: nid(t.id || uid()), projectId: np.id,
+        name: String(t.name || '').trim() || 'Untitled task',
+        sectionId: np.sections.some(s=>s.id===sec) ? sec : firstSec,
+        assigneeId: mu(t.assigneeId), blockedBy: (Array.isArray(t.blockedBy)?t.blockedBy:[]).map(nid),
+        comments:(Array.isArray(t.comments)?t.comments:[]).map(c=>({...c, id:uid(), userId: mu(c.userId)})),
+        subtasks:(Array.isArray(t.subtasks)?t.subtasks:[]).map(s=>({...s, id:uid()})),
+        /* an imported link is a URL from a stranger: anything that is not a real
+           web address is dropped rather than rendered as something clickable */
+        links:(Array.isArray(t.links)?t.links:[]).map(l=>({...l, id:uid(), url: safeUrl(l && l.url)})).filter(l=>l.url),
+        order: ord++, updatedAt: Date.now(), updatedBy: currentUserId, deleted:false});
+    }
+    for(const h of (Array.isArray(data.hours)?data.hours:[])){
+      if(!h) continue;
+      newHours.push({...h, id: uid(), projectId: np.id, userId: mu(h.userId),
+        hours: Number(h.hours) || 0, updatedAt: Date.now(), deleted:false});
+    }
+  } catch(e){
+    toast('⚠ That campaign file could not be read — nothing was imported');
+    return;
   }
-  const mu = id => userMap[id] || null;
-  const src = data.project;
-  const np = {...src, id: uid(), name: src.name + ' (imported)', owner: mu(src.owner) || currentUserId,
-    members: (src.members||[]).map(mu).filter(Boolean), mirrors: [], archived: false,
-    /* portfolio membership never crosses an import — those ids belong to the source db and would dangle here */
-    portfolioIds: db.currentPortfolioId ? [db.currentPortfolioId] : [],
-    sections: src.sections.map(s=>({id: nid(s.id), name: s.name, assigneeId: s.assigneeId||null, dueDate: s.dueDate||null, priority: s.priority||null})),
-    updatedAt: Date.now()};
+
+  /* nothing above touched db: from here it is a single commit */
+  db.users.push(...newUsers);
   db.projects.push(np);
-  let ord = 1;
-  const oldTasks = data.tasks||[];
-  for(const t of oldTasks){
-    db.tasks.push({...t, id: nid(t.id), projectId: np.id, sectionId: nid(t.sectionId),
-      assigneeId: mu(t.assigneeId), blockedBy: (t.blockedBy||[]).map(nid),
-      comments:(t.comments||[]).map(c=>({...c, id:uid(), userId: mu(c.userId)})),
-      subtasks:(t.subtasks||[]).map(s=>({...s, id:uid()})),
-      links:(t.links||[]).map(l=>({...l, id:uid()})),
-      order: ord++, updatedAt: Date.now(), updatedBy: currentUserId, deleted:false});
-  }
-  for(const h of (data.hours||[])){
-    db.hours.push({...h, id: uid(), projectId: np.id, userId: mu(h.userId), updatedAt: Date.now(), deleted:false});
-  }
+  db.tasks.push(...newTasks);
+  db.hours.push(...newHours);
   db.currentProjectId = np.id; db.currentView = 'list';
-  logAct('imported '+LX('campaign','project')+' “'+np.name+'” ('+oldTasks.length+' '+LX('quests','tasks')+')');
+  logAct('imported '+LX('campaign','project')+' “'+np.name+'” ('+newTasks.length+' '+LX('quests','tasks')+')');
   save(); render();
-  toast('⭳ Imported “'+np.name+'” — '+oldTasks.length+' '+LX('quests','tasks'));
+  toast('⭳ Imported “'+np.name+'” — '+newTasks.length+' '+LX('quests','tasks'));
 }
 
 function renderMirrorPicker(p){
@@ -4486,7 +4553,10 @@ function chDrift(p){
    work is actually done, and the marker is today — so "behind" is something you see
    rather than something you calculate. In D&D mode the bar is the party's wand: same
    numbers, carved in wood and lit from inside. */
-function chTimelineHtml(p){
+/* Shared by the charter page and the review cockpit, which do not speak the same
+   language: `loc` lets the deck draw this rail with its own dates. */
+function chTimelineHtml(p, loc){
+  const fdl = ds => fmtDate(ds, loc);
   const ts = projTasks(p.id);
   const ms = ts.filter(t => t.milestone && t.dueDate).sort((a,b) => a.dueDate < b.dueDate ? -1 : 1);
   const all = [...ms.map(m=>m.dueDate), p.dueDate, ...ts.map(t=>t.startDate), ...ts.map(t=>t.dueDate)].filter(Boolean);
@@ -4507,21 +4577,21 @@ function chTimelineHtml(p){
   const gems = ms.map(m => {
     const x = at(m.dueDate);
     const state = m.completed ? 'done' : isOverdue(m) ? 'late' : 'next';
-    const label = `${esc(m.name)} · ${fmtDate(m.dueDate)}${m.completed ? ' ✓' : isOverdue(m) ? ' ⚠' : ''}`;
+    const label = `${esc(m.name)} · ${fdl(m.dueDate)}${m.completed ? ' ✓' : isOverdue(m) ? ' ⚠' : ''}`;
     return `<button class="ch-gem ${state}" style="left:${x}%" data-goto="${m.id}" title="${label}">
-        <span class="ch-gem-mark">◆</span><span class="ch-gem-date">${fmtDate(m.dueDate)}</span></button>`;
+        <span class="ch-gem-mark">◆</span><span class="ch-gem-date">${fdl(m.dueDate)}</span></button>`;
   }).join('');
 
   const legend = `<div class="ch-tl-legend">
-      <span>${fmtDate(start)}</span>
+      <span>${fdl(start)}</span>
       <span class="ch-tl-mid ${tone}">${LX('The party has done','Done')} <b>${pct}%</b> · ${LX('the hourglass is at','time elapsed')} <b>${elapsed}%</b>
         ${lag < -6 ? `· <b>${LX('behind the hourglass','behind')}</b>` : lag > 6 ? `· <b>${LX('ahead of the hourglass','ahead')}</b>` : `· ${LX('in step','on pace')}`}</span>
-      <span>${fmtDate(end)}</span>
+      <span>${fdl(end)}</span>
     </div>`;
 
   if(!wand) return `<div class="ch-tl ${tone}" style="--p:${pct}%;--t:${elapsed}%">
       <div class="ch-tl-rail"><div class="ch-tl-track"></div><div class="ch-tl-fill"></div>
-        <div class="ch-tl-today" title="${LX('today','today')} · ${fmtDate(today)}"></div>${gems}</div>
+        <div class="ch-tl-today" title="${LX('today','today')} · ${fdl(today)}"></div>${gems}</div>
       ${legend}</div>`;
 
   /* --- the wand: carved shaft, brass ferrule, a crystal that lights with progress --- */
@@ -4551,7 +4621,7 @@ function chTimelineHtml(p){
           </svg>
           <span class="wand-spark s1">✦</span><span class="wand-spark s2">✧</span><span class="wand-spark s3">✦</span>
         </div>
-        <div class="ch-tl-today wandy" title="${LX('today','today')} · ${fmtDate(today)}"></div>${gems}
+        <div class="ch-tl-today wandy" title="${LX('today','today')} · ${fdl(today)}"></div>${gems}
       </div>
       ${legend}</div>`;
 }
@@ -6235,7 +6305,8 @@ function stageSlides(p){
   const chain = mapCriticalPath(open.length ? open : ts).map(id => ts.find(t => t.id === id)).filter(Boolean);
   const logged = projHours(p.id).reduce((a,h)=>a+effH(h), 0);
   const slides = [];
-  const fd = ds => ds ? fmtDate(ds) : '—';
+  /* every date on a slide goes through fd, in the deck's own language */
+  const fd = ds => ds ? fmtDate(ds, STAGE_LOCALE) : '—';
 
   /* 1 — the cockpit: the five questions a board asks, in the order it asks them.
      Every number carries its comparison underneath: a number without one is
@@ -6335,7 +6406,9 @@ function stageSlides(p){
   if(msLate.length) devs.push({lv:'bad', n: msLate.length, k: LX('boss fights','milestones'),
     b: `${msLate.length} milestone${msLate.length>1?'s are past their date':' is past its date'}`,
     i: msLate.slice(0,2).map(t => t.name).join(' · ')});
-  if(gap !== null && gap <= -10) devs.push({lv: gap <= -20 ? 'bad' : 'warn', n: gap, k: LX('schedule','schedule'),
+  /* the badge carries the size of the gap, the sentence carries its direction: showing
+     "-40" next to "40 points behind" asks the room to read one minus sign twice */
+  if(gap !== null && gap <= -10) devs.push({lv: gap <= -20 ? 'bad' : 'warn', n: Math.abs(gap), k: LX('schedule','schedule'),
     b: `The work is ${Math.abs(gap)} points behind the clock`,
     i: `${V.pct}% done against ${elapsed}% of the time spent`});
   if(V.overdue) devs.push({lv: V.overdue >= 4 ? 'bad' : 'warn', n: V.overdue, k: LX('late','late'),
@@ -6352,7 +6425,7 @@ function stageSlides(p){
   slides.push({kind:'cockpit', html:`
     <div class="ck-band ${V.tone}"><span class="ck-dot"></span>
       <b>${V.tone === 'ok' ? 'ON TRACK' : V.tone === 'warn' ? 'NEEDS ATTENTION' : 'OFF TRACK'}</b>
-      <span class="ck-proj">${esc(p.name)} · ${new Date().toLocaleDateString(DATE_LOCALE,{day:'numeric', month:'long', year:'numeric'})}</span></div>
+      <span class="ck-proj">${esc(p.name)} · ${new Date().toLocaleDateString(STAGE_LOCALE,{day:'numeric', month:'long', year:'numeric'})}</span></div>
 
     <h1 class="stg-verdict ${V.tone}">${esc(V.head)}.</h1>
     ${V.why ? `<p class="stg-lead">The risk is ${esc(V.why)}.</p>` : ''}
@@ -6395,11 +6468,11 @@ function stageSlides(p){
       </div>
     </div>
 
-    <div class="ck-time">${chTimelineHtml(p)}</div>
+    <div class="ck-time">${chTimelineHtml(p, STAGE_LOCALE)}</div>
 
     <div class="ck-strip">
       ${bestiary ? `<span>${blockIcon(bestiary.kind)} ${esc(blockLabel(bestiary.kind))} · <b>${bestiary.days} days lost</b></span>` : ''}
-      ${topBlock ? `<span class="bad">⛔ blocked now · <b>${esc(topBlock.task.name.slice(0,28))}</b> ${blockDays(topBlock)}d</span>` : ''}
+      ${topBlock ? `<span class="bad">⛔ blocked now · <b>${esc(String(topBlock.task.name||'').slice(0,28))}</b> ${blockDays(topBlock)}d</span>` : ''}
       <span class="${V.overdue?'bad':''}">⏰ <b>${V.overdue}</b> late</span>
       <span>👥 <b>${team.length}</b> people</span>
       ${msAll.length ? `<span>◆ <b>${msDone.length}</b> / ${msAll.length} milestones</span>` : ''}
@@ -6411,8 +6484,13 @@ function stageSlides(p){
   slides.push({kind:'ms', title: !msAll.length
       ? LX('No boss fights have been set yet','No milestones have been set yet')
       : msDone.length === msAll.length
-        ? LX(`All ${msAll.length} boss fights are behind us`,`All ${msAll.length} milestones are done`)
-        : LX(`${msDone.length} of ${msAll.length} boss fights are won`,`${msDone.length} of ${msAll.length} milestones are done`),
+        ? (msAll.length === 1
+            ? LX('The one boss fight is behind us','The one milestone is done')
+            : LX(`All ${msAll.length} boss fights are behind us`,`All ${msAll.length} milestones are done`))
+        /* "1 of 3 milestones are done" is the subject disagreeing with its verb, and a
+           board deck is the last place to put one */
+        : LX(`${msDone.length} of ${msAll.length} boss fights ${msDone.length===1?'is':'are'} won`,
+             `${msDone.length} of ${msAll.length} milestones ${msDone.length===1?'is':'are'} done`),
     html: !msAll.length
       ? `<p class="stg-lead">${LX('Mark the fixed points of the campaign as ◆ boss fights and this page keeps the score.',
           'Mark the fixed points of the plan as ◆ milestones and this page keeps the score.')}</p>`
@@ -6439,6 +6517,10 @@ function stageSlides(p){
           ? msOpen.slice(0,6).map(t => `<div class="ms-item ${isOverdue(t)?'late':''}"><span class="ms-gem">◆</span>
               <span class="nm">${esc(t.name)}</span>
               <i>${fd(t.dueDate)}${t.assigneeId ? ' · ' + esc((user(t.assigneeId)||{}).name||'') : ''}</i></div>`).join('')
+            /* six fit in the column: say so rather than let the rest disappear */
+            + (msOpen.length > 6
+                ? `<div class="ms-item"><span class="nm stg-dash">+ ${msOpen.length-6} ${LX('more ahead','more ahead')}</span></div>`
+                : '')
           : `<div class="stg-dash">${LX('Every boss fight is behind us.','Every milestone is behind us.')}</div>`}
       </div>
     </div>`});
@@ -6446,13 +6528,23 @@ function stageSlides(p){
   /* 3 — every section is a stream of work: who owns it and how far it has got.
      The owner is the one set on the section, or, failing that, the person who is
      in fact carrying most of it — stated as such, so nobody is quietly appointed. */
-  if(streams.length) slides.push({kind:'secs',
-    title: LX('Where each front stands','Where each stream stands'),
-    html: `<div class="sec-tab">
+  /* A slide holds about nine rows. Past that the rest goes under the fold, where on a
+     projector it does not exist: the room sees twelve streams and never learns there
+     were eighteen. So the table runs over as many slides as it needs, each saying which
+     part of the whole it is showing. */
+  const SEC_PER = 9;
+  if(streams.length){
+    const pages = [];
+    for(let i = 0; i < streams.length; i += SEC_PER) pages.push(streams.slice(i, i + SEC_PER));
+    const un = streams.filter(r => !r.owner).length;
+    pages.forEach((rows, pi) => slides.push({kind:'secs',
+      title: LX('Where each front stands','Where each stream stands')
+        + (pages.length > 1 ? ` · ${pi*SEC_PER+1}–${pi*SEC_PER+rows.length} ${LX('of','of')} ${streams.length}` : ''),
+      html: `<div class="sec-tab">
       <div class="sec-hd"><span>${LX('Front','Stream')}</span><span>${LX('Owner','Owner')}</span>
         <span>${LX('Progress','Progress')}</span><span style="text-align:right">%</span>
         <span style="text-align:right">${LX('Status','Status')}</span></div>
-      ${streams.map(r => `<div class="sec-row ${r.late?'late':''}">
+      ${rows.map(r => `<div class="sec-row ${r.late?'late':''}">
         <b>${esc(r.s.name)}<i>${r.dn}/${r.st.length} ${LX('quests','tasks')}${r.ms.length?` · ◆ ${r.ms.length}`:''}</i></b>
         <span class="sec-own">${r.owner
           ? avatarHtml(r.owner,'sm') + `<span>${esc(r.owner.name)}${r.inferred?' <u>(de facto)</u>':''}</span>`
@@ -6465,25 +6557,40 @@ function stageSlides(p){
           : r.nextDue ? fd(r.nextDue.dueDate) : LX('no date','no date')}</span>
       </div>`).join('')}
     </div>
-    ${(() => { const un = streams.filter(r => !r.owner).length;
-      return un ? `<div class="stg-foot">${un} ${LX('front','stream')}${un>1?'s':''} ${LX('has no owner at all — that is the first thing to settle.','has nobody on it — that is the first thing to settle.')}</div>` : ''; })()}`});
+    ${pi === pages.length - 1 && un
+      ? `<div class="stg-foot">${un} ${LX('front','stream')}${un>1?'s':''} ${un>1
+          ? LX('have no owner at all — that is the first thing to settle.','have nobody on them — that is the first thing to settle.')
+          : LX('has no owner at all — that is the first thing to settle.','has nobody on it — that is the first thing to settle.')}</div>`
+      : ''}`}));
+  }
 
   /* 4 — the same streams laid on one calendar: a gantt at the altitude a board
      reads at. One bar per stream, the fill is the work done inside it, the gems
      are its milestones, and the two vertical lines are today and the deadline. */
-  if(gt) slides.push({kind:'stream',
-    title: LX('The fronts on one axis','The streams on one calendar'),
-    html: `<div class="gt">
+  /* the same ten-rows-to-a-slide rule as the table, and for the same reason: the axis
+     at the bottom is the one thing nobody can afford to lose off the edge */
+  const GT_PER = 10;
+  if(gt){
+    const gpages = [];
+    for(let i = 0; i < gt.rows.length; i += GT_PER) gpages.push(gt.rows.slice(i, i + GT_PER));
+    gpages.forEach((rows, pi) => slides.push({kind:'stream',
+      title: LX('The fronts on one axis','The streams on one calendar')
+        + (gpages.length > 1 ? ` · ${pi*GT_PER+1}–${pi*GT_PER+rows.length} ${LX('of','of')} ${gt.rows.length}` : ''),
+      html: `<div class="gt">
       <div class="gt-row gt-head"><div></div><div class="gt-track">
         <span class="gt-tag now" style="left:${gt.at(todayStr())}%;transform:translateX(${gt.at(todayStr())>78?'-100%':gt.at(todayStr())<8?'0':'-50%'})">${LX('today','today')} ${fd(todayStr())}</span>
         ${p.dueDate ? `<span class="gt-tag due" style="left:${gt.at(p.dueDate)}%;transform:translateX(${gt.at(p.dueDate)>78?'-100%':gt.at(p.dueDate)<8?'0':'-50%'})">${LX('deadline','deadline')} ${fd(p.dueDate)}</span>` : ''}
       </div></div>
-      ${gt.rows.map(r => {
+      ${rows.map(r => {
         const x = gt.at(r.start), w = Math.max(1.8, gt.at(r.end) - x);
+        /* a short bar has no room for its own label: put the % just outside it rather
+           than let the text spill over the bar's end and sit on top of a milestone */
+        const tight = w < 9;
         return `<div class="gt-row">
           <div class="gt-name">${esc(r.s.name)}<i>${r.owner?esc(r.owner.name):'—'}</i></div>
           <div class="gt-track">
-            <div class="gt-bar ${r.late?'late':''}" style="left:${x}%;width:${w}%;--f:${r.pct}%"><u></u><b>${r.pct}%</b></div>
+            <div class="gt-bar ${r.late?'late':''}${tight?' tight':''}" style="left:${x}%;width:${w}%;--f:${r.pct}%"><u></u>${tight?'':`<b>${r.pct}%</b>`}</div>
+            ${tight?`<b class="gt-out" style="left:${Math.min(92, x + w + 1)}%">${r.pct}%</b>`:''}
             ${r.ms.map(m => `<span class="gt-gem ${m.completed?'done':''}" style="left:${gt.at(m.dueDate)}%" title="${esc(m.name)} · ${fd(m.dueDate)}"></span>`).join('')}
             <i class="gt-now" style="left:${gt.at(todayStr())}%"></i>
             ${p.dueDate ? `<i class="gt-dl" style="left:${gt.at(p.dueDate)}%"></i>` : ''}
@@ -6491,7 +6598,8 @@ function stageSlides(p){
       }).join('')}
       <div class="gt-axis"><div></div><div><span>${fd(gt.A)}</span><span>${fd(gt.B)}</span></div></div>
     </div>
-    <div class="stg-foot">◆ ${LX('boss fights','milestones')} · ${LX('the fill is the work closed inside the front','the fill is the work closed inside the stream')}</div>`});
+    <div class="stg-foot">◆ ${LX('boss fights','milestones')} · ${LX('the fill is the work closed inside the front','the fill is the work closed inside the stream')}</div>`}));
+  }
 
   /* 5 — the deviations: everything that moved against the plan, each with the
      size of the move. No deviation is a finding in itself, and it is said so. */
@@ -6531,7 +6639,10 @@ function stageSlides(p){
                      `${V.pct-burn} points more work than budget — the project is running lean.`)
                 : LX('Ledger and work are moving together.','Budget and work are moving together.')}</div>
           ${eac ? `<div class="stg-foot">${LX('At this rate','At this rate')}: <b>${eac} h</b> ${LX('at completion','at completion')} — ${eac > bgtH
-              ? `<b class="bad">${eac-bgtH} h ${LX('over','over')}</b>` : `${bgtH-eac} h ${LX('under','under')}`} ${LX('the','the')} ${bgtH} h ${LX('budget','budget')}.${
+              ? `<b class="bad">${eac-bgtH} h ${LX('over','over')}</b> ${LX('the','the')} ${bgtH} h ${LX('budget','budget')}`
+              : eac === bgtH
+                ? LX(`exactly the ${bgtH} h budget`,`exactly the ${bgtH} h budget`)
+                : `${bgtH-eac} h ${LX('under','under')} ${LX('the','the')} ${bgtH} h ${LX('budget','budget')}`}.${
               +p.hourlyRate ? ` · ${eur(logged*p.hourlyRate)} € ${LX('spent','spent')}` : ''}</div>` : ''}`
           : `<div class="stg-foot">${LX('No budget of hours has been set on this campaign — Settings › Budget hours.','No hour budget has been set on this project — Settings › Budget hours.')}</div>`}
       </div>
@@ -6634,7 +6745,7 @@ function stageSlides(p){
         const d = t.decision, w = user(d.who);
         return `<li data-decix="${ai}" class="${decLate(d)?'overdue':''}">
           <b>${esc(d.q)}</b>
-          <span>on “${esc(t.name)}” · ${w?esc(w.name):'nobody named'} · ${d.due?'by '+fmtDate(d.due):'no date'}
+          <span>on “${esc(t.name)}” · ${w?esc(w.name):'nobody named'} · ${d.due?'by '+fd(d.due):'no date'}
             · <b class="${decLate(d)?'late':''}">waiting ${decDays(d)} days</b></span>
           <div class="ask-act">
             <button data-decdo="${ai}">✓ Decided</button>
@@ -6669,7 +6780,10 @@ function openStage(mode){
      decisions. Everything else is detail for the team's own review. */
   if(mode === 'steco'){
     const want = ['cockpit','ms','secs','stream','dev','bgt','ask'];
-    slides = want.map(k => slides.find(s2 => s2.kind === k)).filter(Boolean);
+    /* a kind can run to more than one slide — the streams table and the stream gantt
+       paginate when a project has many of them. Take every page of each, in the order
+       the committee asks for them, not just the first one of each kind. */
+    slides = want.flatMap(k => slides.filter(s2 => s2.kind === k));
   }
   let i = 0;
   const ov = document.createElement('div');
@@ -7108,11 +7222,16 @@ function renderSubs(t){
 }
 
 function renderLinks(t){
-  $('#pLinks').innerHTML = (t.links||[]).map(l=>`
-    <div class="sub-row">🔗
-      <a class="sub-name" href="${esc(l.url)}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(l.url)}">${esc(l.title||l.url)}</a>
+  $('#pLinks').innerHTML = (t.links||[]).map(l=>{
+    /* a link that is not a real web address is shown as plain text, never as something
+       you can click: typed ones are always https, so a dangerous one came from a file */
+    const href = safeUrl(l.url), label = esc(l.title || l.url || '');
+    return `<div class="sub-row">🔗
+      ${href
+        ? `<a class="sub-name" href="${esc(href)}" target="_blank" rel="noopener noreferrer" style="color:var(--blue);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(href)}">${label}</a>`
+        : `<span class="sub-name" title="${LX('this address is not a web link','this address is not a web link')}" style="color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">⚠ ${label}</span>`}
       <button class="sub-del" data-lnkdel="${l.id}" title="Remove">×</button>
-    </div>`).join('') || '<div class="muted" style="font-size:12.5px;margin-bottom:6px">No links yet — paste a SharePoint/Drive URL below.</div>';
+    </div>`;}).join('') || '<div class="muted" style="font-size:12.5px;margin-bottom:6px">No links yet — paste a SharePoint/Drive URL below.</div>';
   document.querySelectorAll('[data-lnkdel]').forEach(el => el.onclick = () => {
     t.links = (t.links||[]).filter(x=>x.id!==el.dataset.lnkdel);
     stamp(t); save(); renderLinks(t); render();
@@ -8125,8 +8244,8 @@ function renderAdmin(){
 }
 
 /* ================= Help view (embedded versioned manual) ================= */
-const APP_VERSION = '2.38';
-const MANUAL_VERSION = '4.6';
+const APP_VERSION = '2.39';
+const MANUAL_VERSION = '4.7';
 const MANUAL_DATE = '25 November 2026';
 const MANUAL_B64 = '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';
 function downloadManual(){
@@ -8240,6 +8359,8 @@ function renderHelp(){
       <li><b>Le decisioni</b>: quelle che il PM ha alzato durante la settimana, da quanti giorni aspettano e su quale quest o milestone stanno; sotto, come suggerimento, quelle che i dati indicherebbero. È l'unica schermata che chiede qualcosa, ed è quella che fa finire bene una riunione.</li>
       <li><b>La settimana</b> e il consumo del budget ore.</li></ol>
       <b>Lo steco</b> prende il mazzo corto, sette schermate nell'ordine in cui un comitato fa le domande: <i>stato progetto → milestone → filoni con owner e % → gantt dei filoni → deviazioni → budget ore → decisioni</i>. Le schermate che non hanno dati spariscono da sole: senza sezioni non c'è lo specchietto, senza date non c'è il gantt, senza ore non c'è il budget.<br><br>
+      <b>Quando i filoni sono tanti</b>, lo specchietto e il gantt si spezzano su più schermate — nove righe per lo specchietto, dieci per il gantt — e il titolo dice sempre quale fetta stai guardando (<i>1–9 di 18</i>). Prima una tabella di diciotto righe finiva mezza sotto il bordo dello schermo: in sala quella metà semplicemente non esiste, perché su un proiettore nessuno scrolla. Allo stesso modo la colonna <i>Next up</i> delle milestone ne mostra sei e poi scrive quante altre ce ne sono, invece di farle sparire.<br><br>
+      <b>Le date del mazzo sono in inglese</b>, come il resto del mazzo: una slide che scrive <i>deadline 30 giu</i> dentro una frase inglese sembra un errore. Il resto del programma continua a usare le date italiane. Si cambia in un punto solo, <code>STAGE_LOCALE</code> in cima al codice.<br><br>
       <b>Importante</b>: <i>Close the council</i> (in basso a destra) chiude e <b>registra il punto di riferimento</b>; la ✕ e Esc escono senza registrare nulla.<br><br>
       La riunione non si prepara: <b>si apre</b>. Da <b>Preferences → Hold the council</b>, dal fondo del patto, o dal pulsante nelle tre domande.<ul>
       <li><b>Consiglio (rassegna)</b>: schermo intero, una cosa per schermata — copertina con obiettivo e anello di avanzamento, bacchetta del tempo con le boss fight, i tesori promessi, <b>le tre domande</b>, ciò che è in ritardo o bloccato, i pericoli, la settimana che viene. Si gira con <b>← →</b> o <b>spazio</b>, <b>⛶</b> per il pieno schermo, <b>Esc</b> per uscire. Nessuna slide da fare: è la campagna viva, raccontata una pagina alla volta.</li>
@@ -8324,6 +8445,7 @@ function renderHelp(){
       <li><b>Profilo</b>: scegli l'avventuriero o unisciti; “Switch” per cambiare.</li>
       <li><b>PIN</b>: chiave in sidebar → 4-8 cifre + codice di recupero. Dimenticato? R al login, o un admin.</li>
       <li><b>Team sync</b>: il primo crea il file condiviso, gli altri si collegano. Verde = sincronizzato; avatar in alto = solo chi è online.</li>
+      <li><b>Cosa succede se due persone toccano la stessa cosa</b>: la fusione lavora campo per campo contro l'ultima versione condivisa, quindi se tu sposti una data e un collega riassegna la stessa quest si tengono tutte e due. Lo stesso vale ora per le <b>sezioni</b> e per il <b>patto</b>: due persone che aggiungono un filone a testa li ritrovano entrambi, dove prima uno dei due spariva. Se davvero avete scritto nello <i>stesso</i> campo, vince il più recente e un avviso ti dice quanti campi erano in conflitto. Al primo collegamento non esiste ancora una versione comune a cui riferirsi: lì la fusione prende la copia più recente intera, e te lo dice — è l'unico momento in cui una modifica può andare persa davvero.</li>
       <li><b>Ambienti multi-team</b>: selettore in cima alla sidebar — ogni ambiente ha file, utenti e identità separati. “＋ New environment” per un secondo team.</li>
     </ul></div></details>
 
@@ -8788,6 +8910,9 @@ const exportShared = () => ({app:'taskflow', users:db.users, projects:db.project
    so the user is told instead of losing work quietly. */
 let baseSnap = null;
 let mergeConflicts = 0;
+/* records reconciled whole because there was no common version to compare against —
+   the only case where someone's edit can actually disappear, so it gets said out loud */
+let mergeBlind = 0;
 const baseMap = coll => {
   const m = new Map();
   if(baseSnap && Array.isArray(baseSnap[coll])) for(const x of baseSnap[coll]) m.set(x.id, x);
@@ -8829,20 +8954,37 @@ function mergeObjField(l, r, b, preferLocal){
   }
   return out;
 }
+/* arrays whose entries carry their own id can be merged entry by entry instead of being
+   taken whole from one side. Sections are the one that costs real work: two people each
+   adding a section between two polls used to lose one of them. */
+const ITEM_KEYS = ['subtasks', 'sections'];
+/* objects merged key by key, so two people filling two different parts both keep theirs */
+const OBJ_KEYS = ['fields', 'charter'];
 function mergeRecord(l, r, b){
   if(!b){
-    /* no common ancestor for this record (first sync, or it predates the base):
-       the old whole-record rule is the best available */
+    /* No common ancestor for this record — the first sync, or a record older than the
+       base. Field-by-field is impossible without one, so the newer copy wins whole; what
+       we CAN do is stop that happening silently, because this is the one case where an
+       edit really can vanish. */
     const w = (r.updatedAt||0) > (l.updatedAt||0) ? {...r} : {...l};
     for(const k in UNION_KEYS) if(l[k] || r[k]) w[k] = unionById(l[k], r[k], UNION_KEYS[k]);
+    if(!sameVal({...l, updatedAt:0, updatedBy:0}, {...r, updatedAt:0, updatedBy:0})) mergeBlind++;
     return w;
   }
   const preferLocal = (l.updatedAt||0) >= (r.updatedAt||0);
   const out = {};
   for(const k of new Set([...Object.keys(l), ...Object.keys(r), ...Object.keys(b)])){
     if(k in UNION_KEYS){ if(l[k] || r[k]) out[k] = unionById(l[k], r[k], UNION_KEYS[k]); continue; }
-    if(k === 'subtasks'){ out[k] = mergeItems(l[k], r[k], b[k], preferLocal); continue; }
-    if(k === 'fields'){ out[k] = mergeObjField(l[k], r[k], b[k], preferLocal); continue; }
+    if(ITEM_KEYS.includes(k) && (Array.isArray(l[k]) || Array.isArray(r[k]))){
+      out[k] = mergeItems(l[k], r[k], b[k], preferLocal); continue; }
+    if(OBJ_KEYS.includes(k)){
+      /* "fields" is an object of values on a task but an ARRAY of column definitions on
+         a project. Spreading that array into an object turned a project's custom fields
+         into {0:…,1:…} on every merge, and everything that maps over them then broke. */
+      out[k] = (Array.isArray(l[k]) || Array.isArray(r[k]))
+        ? mergeItems(l[k], r[k], b[k], preferLocal)
+        : mergeObjField(l[k], r[k], b[k], preferLocal);
+      continue; }
     const lv = l[k], rv = r[k], bv = b[k];
     const lc = !sameVal(lv,bv), rc = !sameVal(rv,bv);
     let v = lv;
@@ -8883,6 +9025,11 @@ function mergeRemote(remote){
   /* presence: freshest heartbeat per user */
   for(const [k,v] of Object.entries(remote.presence||{})) db.presence[k] = Math.max(db.presence[k]||0, v);
   if(!db.projects.find(p=>p.id===db.currentProjectId && !p.deleted)) db.currentProjectId = liveProjects()[0] && liveProjects()[0].id;
+  /* a record written by an older build arrives in that build's shape. Put it back into
+     this one's before anything tries to draw it: without this a teammate on an old
+     version can blank five screens here, and the error dies inside pullOnce's catch
+     where it reads as nothing worse than "Sync issue". */
+  normalizeDb();
   try { localStorage.setItem(DK(), JSON.stringify(db)); } catch(e){}
 }
 
@@ -8912,7 +9059,7 @@ async function pullOnce(force){
       lastText = txt;
       const remote = JSON.parse(txt);
       const ext = externalChanges(remote);
-      mergeConflicts = 0;
+      mergeConflicts = 0; mergeBlind = 0;
       mergeRemote(remote);
       /* the text we just merged is the common ancestor from here on. Parsed fresh:
          mergeRemote keeps references to remote objects, so reusing `remote` as the
@@ -8921,6 +9068,7 @@ async function pullOnce(force){
       render();
       if(!force && ext.n) toast(`${ext.n} task update${ext.n>1?'s':''}${ext.who.length?' from '+ext.who.join(', '):''}`);
       if(mergeConflicts) toast(`⚠ ${mergeConflicts} field${mergeConflicts>1?'s':''} edited by two people at once — the newer edit was kept`);
+      if(mergeBlind) toast(`⚠ ${mergeBlind} record${mergeBlind>1?'s':''} had no shared version yet — the newer copy was taken whole`);
     }
     updateSyncUI('ok');
   } catch(e){ updateSyncUI('warn'); }
@@ -8930,8 +9078,17 @@ async function writeFile(){
   try {
     /* merge remote changes first so we never clobber teammates' edits */
     try { const f = await fileHandle.getFile(); const txt = await f.text();
-      if(txt && txt !== lastText){ mergeConflicts = 0; mergeRemote(JSON.parse(txt));
-        if(mergeConflicts) toast(`⚠ ${mergeConflicts} field${mergeConflicts>1?'s':''} edited by two people at once — the newer edit was kept`); } } catch(e){}
+      if(txt && txt !== lastText){ mergeConflicts = 0; mergeBlind = 0;
+        const ext = externalChanges(JSON.parse(txt));
+        mergeRemote(JSON.parse(txt));
+        /* whatever came in on this path has to reach the screen HERE. A moment from now
+           lastText becomes the text we are about to write, which already contains it, so
+           the next poll sees no difference and never redraws: without this the toast
+           announces a change the user is then left staring past. */
+        render();
+        if(ext.n) toast(`${ext.n} task update${ext.n>1?'s':''}${ext.who.length?' from '+ext.who.join(', '):''}`);
+        if(mergeConflicts) toast(`⚠ ${mergeConflicts} field${mergeConflicts>1?'s':''} edited by two people at once — the newer edit was kept`);
+        if(mergeBlind) toast(`⚠ ${mergeBlind} record${mergeBlind>1?'s':''} had no shared version yet — the newer copy was taken whole`); } } catch(e){}
     if(currentUserId) db.presence[currentUserId] = Date.now();
     const out = JSON.stringify(exportShared());
     const w = await fileHandle.createWritable();
