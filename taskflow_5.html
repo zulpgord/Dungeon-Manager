@@ -839,6 +839,102 @@
   .stg-risk.lv-low{border-left-color:#7fe3b4}
   .stg-week{display:flex;flex-direction:column}
   .stg-foot{margin-top:24px;font-size:14px;color:rgba(255,255,255,.55)}
+  /* ===== Review: milestones, streams, budget hours, deviations =====
+     Four screens a steering committee always asks for, in the order it asks:
+     what is finished, who owns what is not, how it lies on the calendar, and
+     what has moved against the plan. Every bar carries its own comparison. */
+  .ms-grid{display:grid;grid-template-columns:.8fr 1.1fr 1.1fr;gap:34px;align-items:start}
+  .ms-grid h4,.bgt-h4{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;
+    color:rgba(255,255,255,.5);margin-bottom:14px}
+  .ms-score{display:flex;align-items:center;gap:18px}
+  .ms-score .ch-ring{color:#fff}
+  .ms-score b{font-size:42px;font-weight:750;line-height:1}
+  .ms-score b u{text-decoration:none;font-size:.46em;font-weight:600;color:rgba(255,255,255,.5);margin-left:5px}
+  .ms-score i{display:block;font-style:normal;font-size:13.5px;color:rgba(255,255,255,.55);margin-top:7px}
+  .ms-score i .bad{color:#ffb3ac}
+  .ms-item{display:flex;align-items:baseline;gap:10px;padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);font-size:15.5px}
+  .ms-item span.nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ms-item i{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.5);white-space:nowrap}
+  .ms-item.new{color:#b9f2d6}
+  .ms-item.late{color:#ffb3ac}
+  .ms-gem{color:#ffd166;flex-shrink:0}
+  .ms-item.new .ms-gem{color:#7fe3b4}
+
+  .sec-tab{display:flex;flex-direction:column}
+  .sec-hd,.sec-row{display:grid;grid-template-columns:1.5fr 1.05fr 1.5fr 58px 108px;gap:16px;align-items:center}
+  .sec-hd{font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.45);
+    padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.16)}
+  .sec-row{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:15.5px}
+  .sec-row>b{font-weight:600;overflow:hidden}
+  .sec-row>b i{font-style:normal;display:block;font-size:12px;color:rgba(255,255,255,.45);margin-top:2px}
+  .sec-own{display:flex;align-items:center;gap:8px;font-size:14px;color:rgba(255,255,255,.78);overflow:hidden}
+  .sec-own .avatar{width:26px;height:26px;font-size:11px;flex-shrink:0}
+  .sec-own .avatar .pic-g{font-size:15px}
+  .sec-own u{text-decoration:none;opacity:.5}
+  .sec-bar{display:block;height:9px;border-radius:5px;background:rgba(255,255,255,.13);overflow:hidden}
+  .sec-bar span{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#7fe3b4,#58c8ff)}
+  .sec-row.late .sec-bar span{background:linear-gradient(90deg,#ffb36b,#ff8279)}
+  .sec-pct{font-size:16px;font-weight:650;text-align:right}
+  .sec-st{font-size:12.5px;text-align:right;color:rgba(255,255,255,.55)}
+  .sec-st.bad{color:#ffb3ac}
+  .sec-st.ok{color:#9ae6c4}
+
+  .gt-row{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:center;padding:8px 0}
+  .gt-name{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gt-name i{display:block;font-style:normal;font-size:11.5px;color:rgba(255,255,255,.45)}
+  .gt-track{position:relative;height:26px;border-radius:7px;background:rgba(255,255,255,.06)}
+  .gt-bar{position:absolute;top:3px;height:20px;border-radius:6px;background:rgba(255,255,255,.16);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);overflow:hidden}
+  .gt-bar u{position:absolute;left:0;top:0;bottom:0;width:var(--f,0%);text-decoration:none;
+    background:linear-gradient(90deg,color-mix(in srgb,var(--pc) 80%,#fff),color-mix(in srgb,var(--pc) 40%,#6fd3ff))}
+  .gt-bar.late{background:rgba(255,120,110,.22)}
+  .gt-bar.late u{background:linear-gradient(90deg,#ff9d95,#ffcf8a)}
+  .gt-bar b{position:absolute;left:8px;top:2px;font-size:11.5px;font-weight:650;z-index:2;
+    text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .gt-gem{position:absolute;top:50%;width:11px;height:11px;margin-left:-5.5px;z-index:4;
+    transform:translateY(-50%) rotate(45deg);background:#ffd166;border-radius:2px;box-shadow:0 0 0 2px rgba(20,20,26,.55)}
+  .gt-gem.done{background:#7fe3b4}
+  .gt-now,.gt-dl{position:absolute;top:-5px;bottom:-5px;width:2px;z-index:5;border-radius:1px}
+  .gt-now{background:#fff;opacity:.5}
+  .gt-dl{background:#ff8279;opacity:.9}
+  .gt-head .gt-track{background:none;height:18px}
+  .gt-tag{position:absolute;top:0;font-size:11px;letter-spacing:.6px;white-space:nowrap;
+    color:rgba(255,255,255,.6);background:none;padding:0;border-radius:0;box-shadow:none}
+  .gt-tag.due{color:#ffb3ac}
+  .gt-axis{display:grid;grid-template-columns:200px 1fr;gap:18px;margin-top:6px;
+    font-size:11.5px;color:rgba(255,255,255,.45)}
+  .gt-axis>div:last-child{display:flex;justify-content:space-between}
+
+  .bgt-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:38px;align-items:start}
+  .bgt-num{font-size:clamp(38px,5vw,62px);font-weight:750;line-height:1}
+  .bgt-num em{font-style:normal;font-size:.4em;font-weight:600;color:rgba(255,255,255,.55);margin-left:10px}
+  .bgt-track{position:relative;height:16px;border-radius:9px;background:rgba(255,255,255,.12);margin:22px 0 9px}
+  .bgt-track>span{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#7fe3b4,#58c8ff)}
+  .bgt-track.over>span{background:linear-gradient(90deg,#ffb36b,#ff8279)}
+  .bgt-track>i{position:absolute;top:-5px;bottom:-5px;width:2px;background:#fff;opacity:.9;border-radius:1px}
+  .bgt-legend{display:flex;justify-content:space-between;font-size:12.5px;color:rgba(255,255,255,.55)}
+  .bgt-cmp{margin-top:18px;font-size:16px;line-height:1.45}
+  .bgt-cmp.bad{color:#ffb3ac}
+  .bgt-cmp.ok{color:#9ae6c4}
+  .bgt-who{display:flex;flex-direction:column;gap:11px}
+  .bgt-who .row{display:grid;grid-template-columns:1fr 72px;gap:12px;align-items:center;font-size:14.5px}
+  .bgt-who .hb{height:8px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px}
+  .bgt-who .hb u{display:block;height:100%;text-decoration:none;background:color-mix(in srgb,var(--pc) 65%,#fff)}
+  .bgt-who .row i{font-style:normal;text-align:right;font-size:13.5px;color:rgba(255,255,255,.62)}
+
+  .dev-list{display:flex;flex-direction:column;gap:11px}
+  .dv{display:grid;grid-template-columns:60px 1fr auto;gap:18px;align-items:center;padding:13px 18px;
+    border-radius:13px;background:rgba(255,255,255,.07);border-left:4px solid rgba(255,255,255,.25)}
+  .dv.bad{border-left-color:#ff8279;background:rgba(255,120,110,.12)}
+  .dv.warn{border-left-color:#f2c14e}
+  .dv .dv-n{font-size:24px;font-weight:750;text-align:center;line-height:1}
+  .dv.bad .dv-n{color:#ff9d95}
+  .dv.warn .dv-n{color:#f2c14e}
+  .dv b{font-size:16.5px;font-weight:600;display:block}
+  .dv i{font-style:normal;font-size:13px;color:rgba(255,255,255,.55);display:block;margin-top:3px}
+  .dv .dv-k{font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;
+    color:rgba(255,255,255,.45);white-space:nowrap}
   .stg-rail{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);display:flex;gap:7px}
   .stg-rail span{width:26px;height:4px;border-radius:2px;background:rgba(255,255,255,.22);cursor:pointer;transition:background .2s}
   .stg-rail span.on{background:#fff}
@@ -853,6 +949,154 @@
   .stage.ambient .stg-head{font-size:16px}
   .stage.ambient .stg-rail{opacity:.35}
   @media (prefers-reduced-motion:reduce){ .stage,.stg-slide{animation:none} }
+  /* ===== The deck in three dimensions =====
+     Depth is used to rank, never to decorate: the slide sits on a plane, the tiles
+     lift off it, and the thing that needs attention lifts most. Everything stays
+     flat under prefers-reduced-motion. */
+  .stage{perspective:1700px;perspective-origin:50% 42%}
+  .stg-bg{background:
+      radial-gradient(60% 85% at calc(14% + var(--mx,0) * 26px) calc(12% + var(--my,0) * 18px),
+        color-mix(in srgb, var(--pc) 58%, transparent), transparent 70%),
+      radial-gradient(52% 78% at calc(86% - var(--mx,0) * 22px) calc(88% - var(--my,0) * 16px),
+        color-mix(in srgb, var(--pc) 34%, transparent), transparent 70%),
+      linear-gradient(160deg,#1b1b24,#0e0e14);
+    transition:background-position .2s}
+  /* a faint floor, so the cards have something to stand on */
+  .stg-bg::before{content:'';position:absolute;left:-10%;right:-10%;bottom:-18%;height:56%;
+    background:radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.055), transparent 70%);
+    transform:rotateX(68deg);transform-origin:50% 0;pointer-events:none}
+  .stg-slide{transform-style:preserve-3d;animation:stgIn3d .46s cubic-bezier(.17,.84,.3,1.02)}
+  @keyframes stgIn3d{
+    from{opacity:0;transform:perspective(1700px) translateZ(-180px) translateY(26px) rotateX(6deg)}
+    to{opacity:1;transform:perspective(1700px) translateZ(0) translateY(0) rotateX(0)}}
+  .stg-head,.stg-verdict,.stg-lead,.ck-band{transform:translateZ(34px)}
+  /* the tiles float above the slide and tilt with the pointer */
+  .ck-kpis,.stg-delta,.stg-grid,.stg-chain,.stg-qs,.stg-two,.stg-risks,.stg-fore,.dev-list{transform-style:preserve-3d}
+  .ck-tile,.dl,.stg-card,.chn,.stg-risk,.dv{
+    transform:translateZ(22px) rotateY(calc(var(--mx,0) * -2.2deg)) rotateX(calc(var(--my,0) * 1.6deg));
+    box-shadow:0 2px 4px rgba(0,0,0,.28), 0 14px 28px -12px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.14);
+    background-image:linear-gradient(165deg, rgba(255,255,255,.1), rgba(255,255,255,.015) 48%, rgba(0,0,0,.14));
+    transition:transform .35s cubic-bezier(.2,.8,.3,1), box-shadow .35s}
+  .ck-tile{transform:translateZ(30px) rotateY(calc(var(--mx,0) * -2.6deg)) rotateX(calc(var(--my,0) * 1.9deg))}
+  /* the one that must be looked at stands highest */
+  .ck-tile.call{transform:translateZ(58px) rotateY(calc(var(--mx,0) * -3.4deg)) rotateX(calc(var(--my,0) * 2.4deg));
+    box-shadow:0 6px 10px rgba(0,0,0,.3), 0 30px 54px -18px rgba(255,80,70,.45), inset 0 1px 0 rgba(255,255,255,.2)}
+  .ck-tile:hover,.stg-card:hover,.chn:hover{transform:translateZ(56px) rotateY(calc(var(--mx,0) * -1.2deg))}
+  /* numbers get a thin extrusion instead of a flat fill */
+  .ck-big,.dl b,.kpi b,.stg-verdict,.lat b{
+    text-shadow:0 1px 0 rgba(255,255,255,.22), 0 2px 2px rgba(0,0,0,.35), 0 10px 26px rgba(0,0,0,.5)}
+  .ck-bar{box-shadow:inset 0 2px 5px rgba(0,0,0,.45), inset 0 -1px 0 rgba(255,255,255,.08)}
+  .ck-bar span{box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 1px 6px rgba(95,176,255,.5)}
+  .ck-spark span,.fore-spark>span{box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 4px 10px -4px rgba(0,0,0,.6)}
+  .ck-strip{transform:translateZ(14px)}
+  .ck-time{transform:translateZ(18px)}
+  .stg-rail span.on{box-shadow:0 0 12px rgba(255,255,255,.65)}
+  .stage.ambient .ck-tile,.stage.ambient .dl{transform:translateZ(26px)}
+  @media (prefers-reduced-motion:reduce){
+    .stg-slide{animation:none}
+    .ck-tile,.dl,.stg-card,.chn,.stg-risk,.dv,.ck-tile.call{transform:none}
+  }
+
+  /* ===== Decisions: the field, the row, the Today card ===== */
+  .dec-raise{font-size:12.5px;font-weight:600;color:var(--text-2);border:1px dashed var(--border-strong);
+    border-radius:9px;padding:6px 12px;background-image:var(--gloss)}
+  .dec-raise:hover{color:var(--text);border-style:solid;box-shadow:var(--d1)}
+  .dec-form{display:flex;flex-direction:column;gap:7px}
+  .dec-form input,.dec-form select{border:1px solid var(--border-strong);border-radius:8px;padding:7px 9px;
+    font:inherit;font-size:13px;background:var(--bg);color:var(--text);outline:none}
+  .dec-form input:focus,.dec-form select:focus{border-color:var(--accent)}
+  .dec-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .dec-row select{flex:1;min-width:110px} .dec-row .btn{padding:6px 12px}
+  .dec-hint{font-size:11px;color:var(--text-3);line-height:1.4}
+  .dec-open{border-left:3px solid var(--amber);background:var(--amber-bg);border-radius:0 11px 11px 0;padding:10px 13px}
+  .dec-open.late{border-left-color:var(--red);background:var(--red-bg)}
+  .dec-open b{display:block;font-size:13.5px;line-height:1.35}
+  .dec-open i{display:block;font-style:normal;font-size:11.5px;color:var(--text-2);margin-top:3px}
+  .dec-acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
+  .dec-acts button{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:7px;border:1px solid var(--border-strong);
+    background:var(--bg);color:var(--text-2)}
+  .dec-acts button:hover{color:var(--text);box-shadow:var(--d1)}
+  .dec-acts input,.dec-acts select{border:1px solid var(--border-strong);border-radius:7px;padding:5px 8px;
+    font:inherit;font-size:12px;background:var(--bg);color:var(--text);outline:none}
+  .dec-acts input#pDecNote{flex:1;min-width:150px}
+  .mini-ind.dec{background:var(--amber-bg);color:var(--amber);font-weight:700}
+  .mini-ind.dec.late{background:var(--red-bg);color:var(--red)}
+  .dec-card{border-left:3px solid var(--amber)}
+  .dec-row[data-goto]{padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}
+  .dec-row[data-goto]:last-child{border-bottom:none}
+  .dec-row[data-goto] b{display:block;font-size:12.5px;font-weight:600;line-height:1.35}
+  .dec-row[data-goto] i{display:block;font-style:normal;font-size:11px;color:var(--text-3);margin-top:2px}
+  .dec-row[data-goto].late b{color:var(--red)}
+  .lat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .lat{padding:13px 15px;border-radius:12px;border:1px solid var(--border);background-image:var(--gloss);box-shadow:var(--hl), var(--d1)}
+  .lat b{display:block;font-size:30px;font-weight:750;line-height:1}
+  .lat i{display:block;font-style:normal;font-size:12px;color:var(--text-2);margin-top:3px}
+  .lat u{display:block;text-decoration:none;font-size:11px;color:var(--text-3);margin-top:2px}
+  .lat.warn b{color:var(--amber)} .lat.bad b{color:var(--red)}
+  .ask-sugg{margin-top:26px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+  .ask-sugg h4{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:10px}
+  .sg{display:flex;align-items:center;gap:12px;padding:7px 0;font-size:14px;color:rgba(255,255,255,.65);flex-wrap:wrap}
+  .sg i{font-style:normal;font-size:12px;color:rgba(255,255,255,.4)}
+  .sg button{margin-left:auto;font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.14);
+    padding:5px 12px;border-radius:8px}
+  .sg button:hover{background:rgba(255,255,255,.26)}
+  .sg select,.sg input{border:none;border-radius:7px;padding:5px 8px;font:inherit;font-size:12px;background:rgba(255,255,255,.16);color:#fff}
+  .sg select option{color:#222}
+  .stg-qs li.overdue b{color:#ffb3ac}
+  .stg-qs span b.late{color:#ff9d93}
+
+  /* --- the cockpit: one screen, five answers, readable from the back of the room --- */
+  .ck-band{display:flex;align-items:center;gap:11px;font-size:12px;font-weight:800;letter-spacing:2px;
+    padding:8px 16px;border-radius:30px;align-self:flex-start;margin-bottom:22px;
+    background:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+  .ck-band .ck-dot{width:11px;height:11px;border-radius:50%;background:#9df0c6;box-shadow:0 0 12px currentColor}
+  .ck-band.ok{color:#9df0c6} .ck-band.warn{color:#ffd79a} .ck-band.bad{color:#ff9d93}
+  .ck-band.warn .ck-dot{background:#ffd79a} .ck-band.bad .ck-dot{background:#ff9d93}
+  .ck-proj{margin-left:10px;letter-spacing:.4px;font-weight:500;text-transform:none;color:rgba(255,255,255,.55)}
+  .ck-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0 20px}
+  .ck-tile{padding:15px 17px;border-radius:15px;background:rgba(255,255,255,.07);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;gap:9px;min-height:132px}
+  .ck-tile.call{background:rgba(255,120,110,.14);box-shadow:inset 0 0 0 1px rgba(255,140,130,.35)}
+  .ck-lab{font-size:11px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.55)}
+  .ck-big{font-size:clamp(26px,3.3vw,42px);font-weight:750;letter-spacing:-1px;line-height:1;display:flex;align-items:baseline;gap:8px}
+  .ck-big em{font-style:normal;font-size:16px;opacity:.7}
+  .ck-big.ok{color:#9df0c6} .ck-big.bad{color:#ff9d93}
+  /* two bars, not a ring: here the comparison is the message */
+  .ck-bars{display:flex;flex-direction:column;gap:7px;margin-top:2px}
+  .ck-bar{position:relative;height:22px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden;display:flex;align-items:center}
+  .ck-bar span{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#8fd8ff,#5fb0ff);border-radius:6px}
+  .ck-bar.time span{background:linear-gradient(90deg, rgba(255,255,255,.5), rgba(255,255,255,.3))}
+  .ck-bar i{position:relative;font-style:normal;font-size:12.5px;font-weight:800;padding-left:8px}
+  .ck-bar u{position:relative;text-decoration:none;font-size:10.5px;margin-left:auto;padding-right:8px;color:rgba(255,255,255,.7)}
+  .ck-cmp{font-size:12px;color:rgba(255,255,255,.62);line-height:1.35;margin-top:auto}
+  .ck-cmp.ok{color:#9df0c6} .ck-cmp.warn{color:#ffd79a} .ck-cmp.bad{color:#ff9d93}
+  .ck-spark{display:flex;align-items:flex-end;gap:4px;height:34px}
+  .ck-spark span{flex:1;background:rgba(255,255,255,.45);border-radius:3px 3px 1px 1px;min-height:3px}
+  .ck-time{margin:6px 0 14px}
+  .ck-time .ch-tl-track{background:rgba(255,255,255,.12);box-shadow:none}
+  .ck-time .ch-gem-date,.ck-time .ch-tl-legend{color:rgba(255,255,255,.6)}
+  .ck-time .ch-tl-today,.ck-time .ch-tl-today::after{background:#fff}
+  .ck-time .ch-tl-mid{display:none}
+  .ck-strip{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:rgba(255,255,255,.65);
+    padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
+  .ck-strip b{color:#fff;font-weight:650}
+  .ck-strip .bad{color:#ff9d93} .ck-strip .bad b{color:#ff9d93}
+  /* decisions taken in the room */
+  .stg-qs.asks li{padding-bottom:4px}
+  .ask-cost{display:block;margin-top:5px;font-size:13.5px;color:#ffc9c2}
+  .ask-act{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap;align-items:center}
+  .ask-act button{padding:6px 13px;border-radius:9px;font-size:12.5px;font-weight:600;color:#fff;
+    background:rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+  .ask-act button:hover{background:rgba(255,255,255,.24)}
+  .ask-act .ask-ok{background:#58a182}
+  .ask-act select,.ask-act input{border:none;border-radius:8px;padding:6px 9px;font:inherit;font-size:12.5px;
+    background:rgba(255,255,255,.16);color:#fff}
+  .ask-act select option{color:#222}
+  .ask-done{font-size:13px;font-weight:700;color:rgba(255,255,255,.75)}
+  .ask-done.ok{color:#9df0c6} .ask-done.warn{color:#ffd79a}
+  .stg-qs li.settled{opacity:.62}
+  @media (max-width:1100px){ .ck-kpis{grid-template-columns:repeat(2,1fr)} }
+
   /* --- the rewritten deck --- */
   .stg-verdict{font-size:clamp(32px,5.4vw,62px);line-height:1.06;font-weight:750;letter-spacing:-1.4px;margin:12px 0 14px;max-width:16em}
   .stg-verdict.ok{color:#9df0c6} .stg-verdict.warn{color:#ffd79a} .stg-verdict.bad{color:#ff9d93}
@@ -1180,6 +1424,15 @@
   .ch-mit.done{color:var(--green);border-color:color-mix(in srgb, var(--green) 40%, transparent);background:var(--green-bg)}
   .ch-mit.late{color:var(--red);border-color:color-mix(in srgb, var(--red) 40%, transparent);background:var(--red-bg)}
   /* --- baseline diff --- */
+  .ch-dec{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
+  .ch-dec:last-of-type{border-bottom:none}
+  .ch-dec-i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    font-size:11px;font-weight:800;background:var(--bg-soft);color:var(--text-2)}
+  .ch-dec.done .ch-dec-i{background:var(--green-bg);color:var(--green)}
+  .ch-dec.deferred .ch-dec-i{background:var(--amber-bg);color:var(--amber)}
+  .ch-dec b{display:block;font-size:13.5px;font-weight:600;line-height:1.35}
+  .ch-dec i{display:block;font-style:normal;font-size:11.5px;color:var(--text-3);margin-top:2px}
+  .ch-dec .ch-mit{margin-left:auto}
   .ch-diffs{display:flex;flex-direction:column;gap:5px}
   .ch-diff{font-size:13px;padding:6px 11px;border-radius:9px;border-left:3px solid var(--border-strong);background:var(--bg-soft)}
   .ch-diff.add{border-left-color:var(--green)} .ch-diff.rem{border-left-color:var(--red)} .ch-diff.mov{border-left-color:var(--amber)}
@@ -1340,6 +1593,7 @@
       <div class="field-label">Due date</div><div><input type="date" id="pDue">
         <div class="conf-row" id="pConf"></div></div>
       <div class="field-label">Blocked by</div><button class="pf-select block-btn" id="pBlock"></button>
+      <div class="field-label" style="align-self:start;padding-top:5px">Decision</div><div id="pDec"></div>
       <div class="field-label">Priority</div><select id="pPriority"><option>Low</option><option>Medium</option><option>High</option></select>
       <div class="field-label">Status</div><select id="pStatus"><option>On track</option><option>At risk</option><option>Off track</option></select>
       <div class="field-label">Type</div><select id="pType"><option value="">Quest</option><option value="milestone">◆ Boss fight</option></select>
@@ -1885,6 +2139,7 @@ const taskInd = t => {
   if(t.links && t.links.length) h += `<span class="mini-ind" title="Links">🔗${t.links.length}</span>`;
   if(isBlocked(t)) h += `<span class="mini-ind blocked" title="Blocked by an incomplete task">⛔</span>`;
   if(t.block) h += `<span class="mini-ind blocked" title="${esc(blockLabel(t.block.kind))} · ${Math.max(0,Math.round((Date.now()-t.block.at)/86400000))}d">${blockIcon(t.block.kind)}</span>`;
+  if(t.decision) h += `<span class="mini-ind dec ${decLate(t.decision)?'late':''}" title="${esc(t.decision.q)}${t.decision.who?' · '+esc((user(t.decision.who)||{}).name||''):''}${t.decision.due?' · by '+fmtDate(t.decision.due):''}">⚖ ${decDays(t.decision)}d</span>`;
   return h;
 };
 const onlineUsers = () => liveUsers().filter(u => isOnline(u.id));
@@ -2599,6 +2854,7 @@ function renderSidebar(){
         toast(uiMode==='dnd' ? '🎲 D&D interface — roll for initiative!' : '💼 Standard interface');
       }},
       {label: LX('Hold the council','Run the review'), sub: '▶', onClick: () => openStage('review')},
+      {label: 'Steering board · short deck', sub: '◳', onClick: () => openStage('steco')},
       {label: LX('Hall screen (ambient)','Wall screen (ambient)'), sub: '📺', onClick: () => openStage('ambient')},
       '-',
       {label: u.pic ? LX('Change your face','Change your avatar') : LX('Choose your face','Choose your avatar'), sub: '🎭', onClick: openAvatarForge},
@@ -4594,11 +4850,32 @@ function renderCharter(){
           <div class="ch-row7 head"><span>${LX('Treasure','Deliverable')}</span><span>${LX('Promised','Promised')}</span><span>${LX('Actual','Actual')}</span><span>${LX('Gap','Gap')}</span></div>
           ${rows}</section>`;
       })()}
+      ${(() => {
+        const dec = (c.decisions||[]).slice(0, 8);
+        if(!dec.length) return '';
+        const ic = {done:'✓', deferred:'↷', info:'?'};
+        return `<section class="ch-card span12">
+          <h3><span class="ch-num">${(c.deliverables||[]).some(d=>d.due) ? '10' : '09'}</span> ${LX('Decisions taken','Decision log')}
+            <span class="ch-hint">${LX('written in the council, kept here','taken in the review, kept here')}</span></h3>
+          ${dec.map(d => {
+            const t = d.taskId ? db.tasks.find(x => x.id === d.taskId && !x.deleted) : null;
+            const u = d.ownerId ? user(d.ownerId) : null;
+            return `<div class="ch-dec ${d.outcome}">
+              <span class="ch-dec-i">${ic[d.outcome]||'·'}</span>
+              <div><b>${esc(d.text)}</b>
+                <i>${fmtDate(dstr(new Date(d.at)))}${u?' · '+esc(u.name):''}${d.due?' · by '+fmtDate(d.due):''}${d.outcome==='deferred'?' · '+LX('put off','deferred'):''}</i></div>
+              ${t ? `<span class="ch-mit ${t.completed?'done':''}" data-goto="${t.id}">${t.completed?'✓':'→'} ${esc(t.name.slice(0,30))}</span>` : ''}
+            </div>`;
+          }).join('')}
+        </section>`;
+      })()}
+
     </div>
     <div class="ch-foot">${LX('This pact is written once and reads itself every morning.','This charter is written once and keeps reading itself.')}
       · <button class="tool-btn" id="chPrint">⎙ ${LX('Print the pact','Print charter')}</button>
       · <button class="tool-btn" id="chPoster">▦ ${LX('Print the war banner','Print as poster')}</button>
-      · <button class="tool-btn" id="chStage">▶ ${LX('Hold the council','Run the review')}</button></div>
+      · <button class="tool-btn" id="chStage">▶ ${LX('Hold the council','Run the review')}</button>
+      · <button class="tool-btn" id="chSteco">◳ Steering board</button></div>
   </div>`;
 
   bindCharter(p);
@@ -4711,6 +4988,7 @@ function bindCharter(p){
   const bk = $('#chBack'); if(bk) bk.onclick = () => chPlanBackwards(p);
   const pre = $('#chPre'); if(pre) pre.onclick = () => openPremortem(p);
   const stg = $('#chStage'); if(stg) stg.onclick = () => openStage('review');
+  const stc = $('#chSteco'); if(stc) stc.onclick = () => openStage('steco');
   /* a risk becomes a task you can actually be held to */
   document.querySelectorAll('[data-chmit]').forEach(el => el.onclick = () => {
     const r = (c.risks||[]).find(x=>x.id===el.dataset.chmit);
@@ -5670,6 +5948,7 @@ const BLOCK_KINDS = {
   material: {icon:'📦', dnd:'The Famine',              std:'Missing material'},
   info:     {icon:'🌫', dnd:'The Fog',                 std:'Missing information'},
   other:    {icon:'❓', dnd:'The Unnamed',             std:'Something else'},
+  decision: {icon:'⚖', dnd:'The Verdict',             std:'Waiting for a decision'},
 };
 const blockLabel = k => (BLOCK_KINDS[k] ? (BLOCK_KINDS[k][uiMode] || BLOCK_KINDS[k].std) : k);
 const blockIcon  = k => (BLOCK_KINDS[k] ? BLOCK_KINDS[k].icon : '❓');
@@ -5695,8 +5974,66 @@ function blockEpisodes(pid){
   for(const t of (pid ? projTasks(pid) : liveTasks())){
     for(const ep of (t.blocks||[])) out.push({...ep, task:t, open:false});
     if(t.block) out.push({...t.block, task:t, open:true});
+    /* a pending decision holds the work exactly like a monster does, and the days
+       it waits are the number worth measuring */
+    for(const ep of (t.decisions||[])) out.push({kind:'decision', at:ep.at, until:ep.until, by:ep.by, task:t, open:false, dec:ep});
+    if(t.decision) out.push({kind:'decision', at:t.decision.at, by:t.decision.by, task:t, open:true, dec:t.decision});
   }
   return out;
+}
+/* ===== Decisions the PM raises, attached to the thing in danger =====
+   Three fields, all required: the question, WHO decides (not who does), and by when.
+   Without a name it hangs in the air; without a date it never expires and nothing
+   happens. A question with neither is not a request, it is a complaint. */
+const decOpen = pid => projTasks(pid).filter(t => t.decision);
+const decLate = d => d && d.due && d.due < todayStr();
+const decDays = d => Math.max(0, Math.round((Date.now() - (d.at||Date.now())) / 86400000));
+function decRaise(t, q, who, due){
+  if(!q || !q.trim()) return;
+  t.decision = {id: uid(), q: q.trim(), who: who || null, due: due || null, at: Date.now(), by: currentUserId};
+  stamp(t); save(); render();
+  if(who && who !== currentUserId) notify(who, 'needs your decision: ' + q.trim().slice(0,60), t.id);
+  logAct('raised a decision on “'+t.name+'”: '+q.trim().slice(0,50));
+  toast('⚖ ' + LX('Decision raised','Decision raised') + (who ? ' · ' + ((user(who)||{}).name||'') : ''));
+}
+function decResolve(t, outcome, note, ownerId, due){
+  const d = t.decision;
+  if(!d) return;
+  const waited = decDays(d);
+  (t.decisions = t.decisions || []).push({...d, until: Date.now(), outcome, note: note||'', waited});
+  delete t.decision;
+  stamp(t);
+  const p = db.projects.find(x => x.id === t.projectId);
+  if(p){
+    const c = charterOf(p);
+    c.decisions = c.decisions || [];
+    const rec = {id: uid(), text: d.q, outcome, ownerId: ownerId || d.who || null, due: due || null,
+      at: Date.now(), by: currentUserId, taskRef: t.id, waited};
+    if(outcome === 'done' && ownerId){
+      const nt = {id: uid(), projectId: p.id, sectionId: t.sectionId, name: note || d.q.replace(/\?$/,''),
+        assigneeId: ownerId, startDate: null, dueDate: due || todayStr(7), priority: 'High', status: 'On track',
+        completed: false, description: 'From the decision taken on ' + fmtDate(todayStr()) + ': ' + d.q,
+        order: Math.max(0, ...projTasks(p.id).map(x => x.order ?? 0)) + 1,
+        createdAt: Date.now(), updatedAt: Date.now(), updatedBy: currentUserId,
+        comments: [], subtasks: [], blockedBy: [], fields: {}, deleted: false};
+      db.tasks.push(nt);
+      rec.taskId = nt.id;
+      notify(ownerId, 'you own a decision from the review: ' + d.q.slice(0,60), nt.id);
+    }
+    c.decisions.unshift(rec);
+    stamp(p);
+  }
+  save(); render();
+  logAct('resolved a decision on “'+t.name+'” after '+waited+' days');
+  toast('⚖ ' + LX('Decision recorded','Decision recorded') + ' · ' + waited + LX(' days waited',' days waited'));
+}
+/* how long this project makes people wait for an answer */
+function decLatency(pid){
+  const eps = blockEpisodes(pid).filter(e => e.kind === 'decision');
+  const closed = eps.filter(e => !e.open);
+  const avg = closed.length ? Math.round(closed.reduce((a,e) => a + blockDays(e), 0) / closed.length) : null;
+  const expired = eps.filter(e => e.open && decLate(e.dec)).length;
+  return {n: eps.length, closed: closed.length, open: eps.length - closed.length, avg, expired};
 }
 function blockMenu(t, anchorEl){
   openPopMenu(anchorEl, [
@@ -5798,7 +6135,10 @@ function projectVerdict(p){
   else if(f.vs !== null && f.vs < -7){ head = LX(`We land ${Math.abs(f.vs)} days early`,`We finish ${Math.abs(f.vs)} days early`); }
   /* the reason, in order of how much it explains */
   const worstBlock = blockEpisodes(p.id).filter(e => e.open).sort((a,b) => blockDays(b) - blockDays(a))[0];
-  if(worstBlock) why = LX(`${blockLabel(worstBlock.kind)} has held “${worstBlock.task.name}” for ${blockDays(worstBlock)} days`,
+  if(worstBlock && worstBlock.kind === 'decision')
+    why = `a decision on “${worstBlock.task.name}” has been waiting ${blockDays(worstBlock)} days` +
+          (worstBlock.dec && worstBlock.dec.who ? ` for ${(user(worstBlock.dec.who)||{}).name||'someone'}` : '');
+  else if(worstBlock) why = LX(`${blockLabel(worstBlock.kind)} has held “${worstBlock.task.name}” for ${blockDays(worstBlock)} days`,
                           `${blockLabel(worstBlock.kind)} has been blocking “${worstBlock.task.name}” for ${blockDays(worstBlock)} days`);
   else if(blocked.length) why = LX(`${blocked.length} quests wait on something unfinished`,`${blocked.length} tasks are waiting on unfinished work`);
   else if(overdue.length) why = LX(`the oldest late quest is ${Math.abs(Math.round((new Date(overdue.sort((a,b)=>a.dueDate<b.dueDate?-1:1)[0].dueDate+'T00:00')-new Date(todayStr()+'T00:00'))/86400000))} days past its date`,
@@ -5810,26 +6150,69 @@ function projectVerdict(p){
 function reviewAsks(p){
   const ts = projTasks(p.id), out = [];
   const c = p.charter || {};
+  /* every ask carries the price of NOT deciding it: without a consequence a request
+     is just information, and information gets postponed */
   const soon = ts.filter(t => !t.completed && !t.assigneeId && t.dueDate && t.dueDate <= todayStr(7));
-  if(soon.length) out.push({q: LX(`Who takes ${soon.length} unclaimed quest${soon.length>1?'s':''} due this week?`,
-      `Who takes ${soon.length} unassigned task${soon.length>1?'s':''} due this week?`),
-    detail: soon.slice(0,3).map(t => t.name).join(' · '), by: LX('today','today')});
-  const openBlocks = blockEpisodes(p.id).filter(e => e.open).sort((a,b) => blockDays(b) - blockDays(a));
-  for(const e of openBlocks.slice(0,2)) out.push({
-    q: LX(`Who breaks the hold of ${blockLabel(e.kind)} on “${e.task.name}”?`, `Who clears ${blockLabel(e.kind)} on “${e.task.name}”?`),
-    detail: LX(`stopped for ${blockDays(e)} days`, `blocked for ${blockDays(e)} days`), by: LX('this week','this week')});
+  if(soon.length) out.push({id:'unassigned',
+    action: `Assign ${soon.length} task${soon.length>1?'s':''} due this week`,
+    q: `Who takes ${soon.length} unassigned task${soon.length>1?'s':''} due this week?`,
+    detail: soon.slice(0,3).map(t => t.name).join(' · '), by: 'today',
+    cost: `if nobody picks ${soon.length>1?'them':'it'} up, ${soon.length>1?'they go':'it goes'} late within seven days`});
+  const openBlocks = blockEpisodes(p.id).filter(e => e.open && e.kind !== 'decision')
+    .sort((a,b) => blockDays(b) - blockDays(a));
+  for(const e of openBlocks.slice(0,2)){
+    const behind = ts.filter(t => !t.completed && (t.blockedBy||[]).includes(e.task.id)).length;
+    out.push({id:'block:'+e.task.id,
+      action: `Clear ${blockLabel(e.kind)} on “${e.task.name.slice(0,40)}”`,
+      q: `Who clears ${blockLabel(e.kind)} on “${e.task.name}”?`,
+      detail: `blocked for ${blockDays(e)} days`, by: 'this week',
+      cost: behind ? `${behind} task${behind>1?'s':''} behind it slip one day for every day this stands`
+                   : `one more day of standstill for every day we wait`});
+  }
   const bareRisks = (c.risks||[]).filter(r => r.text && r.level === 'high' && !r.taskId);
-  if(bareRisks.length) out.push({q: LX(`Do we accept ${bareRisks.length} deadly peril${bareRisks.length>1?'s':''} with no countermeasure?`,
-      `Do we accept ${bareRisks.length} high risk${bareRisks.length>1?'s':''} with no mitigation?`),
-    detail: bareRisks[0].text.slice(0,70), by: LX('today','today')});
+  if(bareRisks.length) out.push({id:'risk',
+    action: `Put a mitigation on ${bareRisks.length} high risk${bareRisks.length>1?'s':''}`,
+    q: `Do we accept ${bareRisks.length} high risk${bareRisks.length>1?'s':''} with no mitigation?`,
+    detail: bareRisks[0].text.slice(0,70), by: 'today',
+    cost: 'if it happens we have no plan and no budget for it'});
   const f = forecast(p);
-  if(f.vs !== null && f.vs > 7) out.push({q: LX(`Do we move the deadline, cut scope, or add hands?`,`Do we move the deadline, cut scope, or add people?`),
-    detail: LX(`at this pace we land ${f.vs} days late`, `at the current pace we finish ${f.vs} days late`), by: LX('today','today')});
+  if(f.vs !== null && f.vs > 7) out.push({id:'deadline',
+    action: 'Move the deadline, cut scope or add people — and tell the team which',
+    q: 'Do we move the deadline, cut scope, or add people?',
+    detail: `at the current pace we finish ${f.vs} days late`, by: 'today',
+    cost: `every week without a decision adds about ${Math.max(1, Math.round(f.vs/4))} more days of slip`});
   const noDate = (c.deliverables||[]).filter(d => d.name && !d.due);
-  if(noDate.length) out.push({q: LX(`When are ${noDate.length} promised treasure${noDate.length>1?'s':''} due?`,
-      `When are ${noDate.length} promised deliverable${noDate.length>1?'s':''} due?`),
-    detail: noDate.map(d => d.name).slice(0,3).join(' · '), by: LX('today','today')});
+  if(noDate.length) out.push({id:'nodate',
+    action: `Put a date on ${noDate.length} promised deliverable${noDate.length>1?'s':''}`,
+    q: `When are ${noDate.length} promised deliverable${noDate.length>1?'s':''} due?`,
+    detail: noDate.map(d => d.name).slice(0,3).join(' · '), by: 'today',
+    cost: 'until they have a date we cannot tell anyone when they land'});
   return out.slice(0, 4);
+}
+/* a decision is only taken once it is written down, with a name on it */
+function recordDecision(p, ask, outcome, ownerId, due){
+  const c = charterOf(p);
+  c.decisions = c.decisions || [];
+  const dec = {id: uid(), text: ask.q, outcome, ownerId: ownerId || null, due: due || null,
+    at: Date.now(), by: currentUserId};
+  c.decisions.unshift(dec);
+  let task = null;
+  if(outcome === 'done' && ownerId){
+    task = {id: uid(), projectId: p.id, sectionId: (p.sections[0]||{}).id,
+      name: ask.action || ask.q.replace(/\?$/,''),
+      assigneeId: ownerId, startDate: null, dueDate: due || todayStr(7),
+      priority: 'High', status: 'On track', completed: false,
+      description: 'Decided in the review of ' + fmtDate(todayStr()) + '.',
+      order: Math.max(0, ...projTasks(p.id).map(x => x.order ?? 0)) + 1,
+      createdAt: Date.now(), updatedAt: Date.now(), updatedBy: currentUserId,
+      comments: [], subtasks: [], blockedBy: [], fields: {}, deleted: false};
+    db.tasks.push(task);
+    dec.taskId = task.id;
+    notify(ownerId, 'you own a decision from the review: ' + ask.q.slice(0,60), task.id);
+  }
+  stamp(p); save();
+  logAct('recorded a decision: ' + ask.q.slice(0, 60));
+  return {dec, task};
 }
 
 /* ================= The Stage: the meeting IS the app =================
@@ -5843,31 +6226,326 @@ function stageSlides(p){
   const ts = projTasks(p.id);
   const V = projectVerdict(p);
   const f = V.f;
+  const asks = reviewAsks(p);
   const team = assignableUsers(p);
   const week = ts.filter(t => !t.completed && t.dueDate && t.dueDate >= todayStr() && t.dueDate <= todayStr(7)).sort((a,b)=>a.dueDate<b.dueDate?-1:1);
   const overdue = ts.filter(isOverdue).sort((a,b)=>a.dueDate<b.dueDate?-1:1);
   const delta = reviewDelta(p);
-  const asks = reviewAsks(p);
   const open = ts.filter(t => !t.completed);
   const chain = mapCriticalPath(open.length ? open : ts).map(id => ts.find(t => t.id === id)).filter(Boolean);
   const logged = projHours(p.id).reduce((a,h)=>a+effH(h), 0);
   const slides = [];
   const fd = ds => ds ? fmtDate(ds) : '—';
 
-  /* 1 — the verdict: the answer first, the evidence under it */
-  slides.push({kind:'verdict', html:`
-    <div class="stg-eyebrow">${esc(p.name)} · ${new Date().toLocaleDateString(DATE_LOCALE,{day:'numeric', month:'long', year:'numeric'})}</div>
-    <h1 class="stg-verdict ${V.tone}">${esc(V.head)}</h1>
-    ${V.why ? `<p class="stg-lead">${LX('Because','Because')} ${esc(V.why)}.</p>` : ''}
-    <div class="stg-kpis">
-      <div class="kpi"><b>${V.pct}%</b><i>${LX('quests done','work done')}</i><u>${V.done}/${V.total}</u></div>
-      <div class="kpi ${V.overdue?'bad':''}"><b>${V.overdue}</b><i>${LX('late','late')}</i><u>${V.blocked} ${LX('blocked','blocked')}</u></div>
-      <div class="kpi"><b>${f.unknown||f.done ? '—' : f.v.avg.toFixed(1)}</b><i>${LX('quests/week','tasks/week')}</i><u>${LX('last 6 weeks','last 6 weeks')}</u></div>
-      <div class="kpi ${f.vs>3?'bad':f.vs!==null&&f.vs<=0?'ok':''}"><b>${f.done ? '✓' : f.unknown ? '?' : fd(f.date)}</b><i>${LX('projected finish','projected finish')}</i><u>${p.dueDate?LX('promised ','promised ')+fd(p.dueDate):LX('no deadline set','no deadline set')}</u></div>
-    </div>
-    <div class="stg-team">${team.map(u=>`<span class="stg-face">${avatarHtml(u)}<i>${esc(u.name.split(' ')[0])}</i></span>`).join('')}</div>`});
+  /* 1 — the cockpit: the five questions a board asks, in the order it asks them.
+     Every number carries its comparison underneath: a number without one is
+     decoration, and decoration is what makes a status page unreadable. */
+  const elapsed = (() => {
+    const starts = ts.map(t => t.startDate || t.dueDate).filter(Boolean).sort();
+    const first = starts[0], last = p.dueDate || starts[starts.length-1];
+    if(!first || !last || first >= last) return null;
+    const a = new Date(first+'T00:00'), b = new Date(last+'T00:00'), n = new Date(todayStr()+'T00:00');
+    return Math.max(0, Math.min(100, Math.round((n - a) / (b - a) * 100)));
+  })();
+  const gap = elapsed === null ? null : V.pct - elapsed;
+  const pace = f.unknown || f.done ? null : f.v;
+  const trend = pace ? (pace.weeks.slice(-2).reduce((a,b)=>a+b,0) / 2) - (pace.weeks.slice(0,3).reduce((a,b)=>a+b,0) / 3) : 0;
+  const topBlock = blockEpisodes(p.id).filter(e => e.open).sort((a,b)=>blockDays(b)-blockDays(a))[0];
+  const bestiary = (() => { const by = {};
+    for(const e of blockEpisodes(p.id)){ by[e.kind] = (by[e.kind]||0) + blockDays(e); }
+    const top = Object.entries(by).sort((a,b)=>b[1]-a[1])[0];
+    return top ? {kind: top[0], days: top[1]} : null; })();
 
-  /* 2 — the forecast, with the honesty about how much history it rests on */
+  /* ---------- what the steering committee asks for, computed once ----------
+     Milestones (overall and since the last report), the sections read as streams
+     of work with an owner, the same streams on a calendar, the hours against the
+     budget, and the list of deviations. Everything below is a view of these. */
+  const NODATE = '9999-12-31';
+  const msAll  = ts.filter(t => t.milestone).sort((a,b) => (a.dueDate||NODATE) < (b.dueDate||NODATE) ? -1 : 1);
+  const msDone = msAll.filter(t => t.completed);
+  const msOpen = msAll.filter(t => !t.completed);
+  const msLate = msOpen.filter(isOverdue);
+  const msPct  = msAll.length ? Math.round(msDone.length / msAll.length * 100) : 0;
+  const wasDone = new Set(((p.lastReview||{}).done) || []);
+  const msNew = p.lastReview ? msDone.filter(t => !wasDone.has(t.id)) : [];
+
+  /* a section is a stream. Its owner is the one set on it; with none set, the
+     person who is in fact carrying most of it — marked "de facto", never quietly. */
+  const streams = (p.sections||[]).map(s => {
+    const st = ts.filter(t => t.sectionId === s.id);
+    const dn = st.filter(t => t.completed).length;
+    let owner = s.assigneeId ? user(s.assigneeId) : null;
+    if(!owner){
+      const cnt = {};
+      st.forEach(t => { if(t.assigneeId) cnt[t.assigneeId] = (cnt[t.assigneeId]||0) + 1; });
+      const top = Object.entries(cnt).sort((a,b) => b[1]-a[1])[0];
+      owner = top ? user(top[0]) : null;
+    }
+    const ds = st.map(t => t.startDate || t.dueDate).filter(Boolean).sort();
+    const de = st.map(t => t.dueDate || t.startDate).filter(Boolean).sort();
+    return {s, st, dn, owner, inferred: !s.assigneeId && !!owner,
+      late: st.filter(isOverdue).length,
+      pct: st.length ? Math.round(dn / st.length * 100) : 0,
+      start: ds[0] || null, end: de[de.length-1] || null,
+      nextDue: st.filter(t => !t.completed && t.dueDate).sort((a,b) => a.dueDate < b.dueDate ? -1 : 1)[0] || null,
+      ms: st.filter(t => t.milestone && t.dueDate)};
+  }).filter(r => r.st.length);
+
+  /* one shared axis for the stream gantt */
+  const gt = (() => {
+    const rows = streams.filter(r => r.start && r.end);
+    if(!rows.length) return null;
+    const all = [todayStr()];
+    rows.forEach(r => { all.push(r.start, r.end); });
+    if(p.dueDate) all.push(p.dueDate);
+    all.sort();
+    const A = all[0], B = all[all.length-1];
+    const span = Math.max(1, (new Date(B+'T00:00') - new Date(A+'T00:00')) / 86400000);
+    return {A, B, rows, at: d => 2 + Math.max(0, Math.min(100,
+      (new Date(d+'T00:00') - new Date(A+'T00:00')) / 86400000 / span * 100)) * 0.96};
+  })();
+
+  /* hours: budget, burn, and where the hours went */
+  const bgtH = +p.budgetHours || 0;
+  const burn = bgtH ? Math.round(logged / bgtH * 100) : null;
+  const eac  = bgtH && V.pct >= 5 ? Math.round(logged / (V.pct / 100)) : null;  /* at this rate, hours at completion */
+  const hoursBy = (() => { const by = {};
+    projHours(p.id).forEach(h => { by[h.userId] = (by[h.userId]||0) + effH(h); });
+    return Object.entries(by).sort((a,b) => b[1]-a[1]); })();
+
+  /* the decisions the PM raised, needed here and on the decisions screen */
+  const raised = decOpen(p.id).sort((a,b) => decDays(b.decision) - decDays(a.decision));
+
+  /* the deviations, strongest first */
+  const devs = [];
+  if(delta){
+    if(delta.slipped.length){
+      const worst = delta.slipped.slice().sort((a,b) => b.days - a.days)[0];
+      devs.push({lv: worst.days > 7 ? 'bad' : 'warn', n: delta.slipped.length, k: LX('dates','dates'),
+        b: `${delta.slipped.length} date${delta.slipped.length>1?'s':''} moved since the last review`,
+        i: `worst: “${worst.t.name}”, +${worst.days} days`});
+    }
+    if(delta.deadline) devs.push({lv:'bad', n:'!', k: LX('deadline','deadline'),
+      b: `The project deadline moved to ${fd(delta.deadline.to)}`,
+      i: delta.deadline.from ? `it was ${fd(delta.deadline.from)}` : 'there was none before'});
+    if(delta.risks > 0) devs.push({lv:'warn', n:'+'+delta.risks, k: LX('perils','risks'),
+      b: `${delta.risks} new risk${delta.risks>1?'s':''} on the charter`,
+      i: 'each one needs a countermeasure and an owner'});
+  }
+  if(msLate.length) devs.push({lv:'bad', n: msLate.length, k: LX('boss fights','milestones'),
+    b: `${msLate.length} milestone${msLate.length>1?'s are past their date':' is past its date'}`,
+    i: msLate.slice(0,2).map(t => t.name).join(' · ')});
+  if(gap !== null && gap <= -10) devs.push({lv: gap <= -20 ? 'bad' : 'warn', n: gap, k: LX('schedule','schedule'),
+    b: `The work is ${Math.abs(gap)} points behind the clock`,
+    i: `${V.pct}% done against ${elapsed}% of the time spent`});
+  if(V.overdue) devs.push({lv: V.overdue >= 4 ? 'bad' : 'warn', n: V.overdue, k: LX('late','late'),
+    b: `${V.overdue} task${V.overdue>1?'s are past their date':' is past its date'}`,
+    i: overdue[0] ? `the oldest is “${overdue[0].name}”, due ${fd(overdue[0].dueDate)}` : ''});
+  if(topBlock) devs.push({lv:'bad', n: blockDays(topBlock)+'d', k: LX('held','blocked'),
+    b: `${blockLabel(topBlock.kind)} is holding “${topBlock.task.name}”`,
+    i: `open for ${blockDays(topBlock)} days`});
+  if(bgtH && burn !== null && burn - V.pct >= 10) devs.push({lv: burn - V.pct >= 25 ? 'bad' : 'warn',
+    n: '+'+(burn - V.pct), k: LX('ledger','hours'),
+    b: 'The hours are running ahead of the work',
+    i: `${burn}% of the budget spent for ${V.pct}% done${eac?` · about ${eac} h at completion`:''}`});
+
+  slides.push({kind:'cockpit', html:`
+    <div class="ck-band ${V.tone}"><span class="ck-dot"></span>
+      <b>${V.tone === 'ok' ? 'ON TRACK' : V.tone === 'warn' ? 'NEEDS ATTENTION' : 'OFF TRACK'}</b>
+      <span class="ck-proj">${esc(p.name)} · ${new Date().toLocaleDateString(DATE_LOCALE,{day:'numeric', month:'long', year:'numeric'})}</span></div>
+
+    <h1 class="stg-verdict ${V.tone}">${esc(V.head)}.</h1>
+    ${V.why ? `<p class="stg-lead">The risk is ${esc(V.why)}.</p>` : ''}
+
+    <div class="ck-kpis">
+      <div class="ck-tile">
+        <div class="ck-lab">Progress</div>
+        <div class="ck-bars">
+          <div class="ck-bar"><span style="width:${V.pct}%"></span><i>${V.pct}%</i><u>work done</u></div>
+          <div class="ck-bar time"><span style="width:${elapsed===null?0:elapsed}%"></span><i>${elapsed===null?'—':elapsed+'%'}</i><u>time spent</u></div>
+        </div>
+        <div class="ck-cmp ${gap===null?'':gap>=-5?'ok':gap>=-15?'warn':'bad'}">${gap===null ? `${V.done} of ${V.total} tasks`
+          : gap >= 5 ? `ahead of the clock by ${gap} points` : gap <= -5 ? `behind the clock by ${Math.abs(gap)} points` : 'level with the clock'}</div>
+      </div>
+
+      <div class="ck-tile">
+        <div class="ck-lab">Delivery</div>
+        <div class="ck-big ${f.vs>3?'bad':f.vs!==null&&f.vs<=0?'ok':''}">${f.done ? 'done' : f.unknown ? '—' : fd(f.date)}</div>
+        <div class="ck-cmp ${f.vs>3?'bad':f.vs!==null&&f.vs<=0?'ok':''}">${p.dueDate
+          ? (f.vs === null ? `promised ${fd(p.dueDate)}`
+             : f.vs > 0 ? `${f.vs} days after the promised ${fd(p.dueDate)}`
+             : f.vs < 0 ? `${Math.abs(f.vs)} days before the promised ${fd(p.dueDate)}` : `exactly on the promised date`)
+          : 'no deadline has been set'}</div>
+      </div>
+
+      <div class="ck-tile">
+        <div class="ck-lab">Pace</div>
+        <div class="ck-big">${pace ? pace.avg.toFixed(1) : '—'}<em>${trend > .3 ? '▲' : trend < -.3 ? '▼' : '▬'}</em></div>
+        <div class="ck-spark">${(pace ? pace.weeks : [0,0,0,0,0,0]).map(n =>
+          `<span style="height:${Math.max(8, Math.round(n / Math.max(1, pace?pace.best:1) * 100))}%"></span>`).join('')}</div>
+        <div class="ck-cmp">tasks closed per week, last six</div>
+      </div>
+
+      <div class="ck-tile ${asks.length?'call':''}">
+        <div class="ck-lab">Decisions needed</div>
+        <div class="ck-big ${asks.length?'bad':'ok'}">${asks.length}</div>
+        <div class="ck-cmp ${asks.length?'bad':'ok'}">${asks.length
+          ? `${asks[0].by === 'today' ? 'the first one today' : 'first one ' + asks[0].by} · see the last screen`
+          : 'nothing is waiting on this room'}</div>
+      </div>
+    </div>
+
+    <div class="ck-time">${chTimelineHtml(p)}</div>
+
+    <div class="ck-strip">
+      ${bestiary ? `<span>${blockIcon(bestiary.kind)} ${esc(blockLabel(bestiary.kind))} · <b>${bestiary.days} days lost</b></span>` : ''}
+      ${topBlock ? `<span class="bad">⛔ blocked now · <b>${esc(topBlock.task.name.slice(0,28))}</b> ${blockDays(topBlock)}d</span>` : ''}
+      <span class="${V.overdue?'bad':''}">⏰ <b>${V.overdue}</b> late</span>
+      <span>👥 <b>${team.length}</b> people</span>
+      ${msAll.length ? `<span>◆ <b>${msDone.length}</b> / ${msAll.length} milestones</span>` : ''}
+      ${+p.budgetHours ? `<span>⏱ <b>${eur(logged)}</b> / ${p.budgetHours} h</span>` : ''}
+    </div>`});
+
+  /* 2 — the milestones: the score overall, what closed since the last report,
+     and what the room is being asked to watch next. Three columns, one glance. */
+  slides.push({kind:'ms', title: !msAll.length
+      ? LX('No boss fights have been set yet','No milestones have been set yet')
+      : msDone.length === msAll.length
+        ? LX(`All ${msAll.length} boss fights are behind us`,`All ${msAll.length} milestones are done`)
+        : LX(`${msDone.length} of ${msAll.length} boss fights are won`,`${msDone.length} of ${msAll.length} milestones are done`),
+    html: !msAll.length
+      ? `<p class="stg-lead">${LX('Mark the fixed points of the campaign as ◆ boss fights and this page keeps the score.',
+          'Mark the fixed points of the plan as ◆ milestones and this page keeps the score.')}</p>`
+      : `<div class="ms-grid">
+      <div>
+        <h4>${LX('Overall','Overall')}</h4>
+        <div class="ms-score">${chRing(msPct, 92, msPct === 100 ? '#7fe3b4' : '#9ec3ff')}
+          <div><b>${msDone.length}<u>/ ${msAll.length}</u></b>
+            <i>${msOpen.length} ${LX('still open','still open')}${msLate.length
+              ? ` · <span class="bad">${msLate.length} ${LX('late','late')}</span>` : ''}</i></div></div>
+      </div>
+      <div>
+        <h4>${LX('Won since the last council','Closed since the last review')}${delta ? ` · ${delta.days} ${LX('days','days')}` : ''}</h4>
+        ${!p.lastReview
+          ? `<div class="stg-dash">${LX('First council — from the next one this column fills itself.','First review — from the next one this column fills itself.')}</div>`
+          : msNew.length
+            ? msNew.map(t => `<div class="ms-item new"><span class="ms-gem">◆</span><span class="nm">${esc(t.name)}</span>
+                <i>${fd(t.completedAt ? dstr(new Date(t.completedAt)) : t.dueDate)}</i></div>`).join('')
+            : `<div class="stg-dash">${LX('No boss fight was won in this period.','No milestone closed in this period.')}</div>`}
+      </div>
+      <div>
+        <h4>${LX('Next up','Next up')}</h4>
+        ${msOpen.length
+          ? msOpen.slice(0,6).map(t => `<div class="ms-item ${isOverdue(t)?'late':''}"><span class="ms-gem">◆</span>
+              <span class="nm">${esc(t.name)}</span>
+              <i>${fd(t.dueDate)}${t.assigneeId ? ' · ' + esc((user(t.assigneeId)||{}).name||'') : ''}</i></div>`).join('')
+          : `<div class="stg-dash">${LX('Every boss fight is behind us.','Every milestone is behind us.')}</div>`}
+      </div>
+    </div>`});
+
+  /* 3 — every section is a stream of work: who owns it and how far it has got.
+     The owner is the one set on the section, or, failing that, the person who is
+     in fact carrying most of it — stated as such, so nobody is quietly appointed. */
+  if(streams.length) slides.push({kind:'secs',
+    title: LX('Where each front stands','Where each stream stands'),
+    html: `<div class="sec-tab">
+      <div class="sec-hd"><span>${LX('Front','Stream')}</span><span>${LX('Owner','Owner')}</span>
+        <span>${LX('Progress','Progress')}</span><span style="text-align:right">%</span>
+        <span style="text-align:right">${LX('Status','Status')}</span></div>
+      ${streams.map(r => `<div class="sec-row ${r.late?'late':''}">
+        <b>${esc(r.s.name)}<i>${r.dn}/${r.st.length} ${LX('quests','tasks')}${r.ms.length?` · ◆ ${r.ms.length}`:''}</i></b>
+        <span class="sec-own">${r.owner
+          ? avatarHtml(r.owner,'sm') + `<span>${esc(r.owner.name)}${r.inferred?' <u>(de facto)</u>':''}</span>`
+          : `<span class="stg-dash">${LX('nobody','unassigned')}</span>`}</span>
+        <span class="sec-bar"><span style="width:${r.pct}%"></span></span>
+        <span class="sec-pct">${r.pct}%</span>
+        <span class="sec-st ${r.late?'bad':r.pct===100?'ok':''}">${r.late
+          ? `${r.late} ${LX('late','late')}`
+          : r.pct === 100 ? LX('complete','complete')
+          : r.nextDue ? fd(r.nextDue.dueDate) : LX('no date','no date')}</span>
+      </div>`).join('')}
+    </div>
+    ${(() => { const un = streams.filter(r => !r.owner).length;
+      return un ? `<div class="stg-foot">${un} ${LX('front','stream')}${un>1?'s':''} ${LX('has no owner at all — that is the first thing to settle.','has nobody on it — that is the first thing to settle.')}</div>` : ''; })()}`});
+
+  /* 4 — the same streams laid on one calendar: a gantt at the altitude a board
+     reads at. One bar per stream, the fill is the work done inside it, the gems
+     are its milestones, and the two vertical lines are today and the deadline. */
+  if(gt) slides.push({kind:'stream',
+    title: LX('The fronts on one axis','The streams on one calendar'),
+    html: `<div class="gt">
+      <div class="gt-row gt-head"><div></div><div class="gt-track">
+        <span class="gt-tag now" style="left:${gt.at(todayStr())}%;transform:translateX(${gt.at(todayStr())>78?'-100%':gt.at(todayStr())<8?'0':'-50%'})">${LX('today','today')} ${fd(todayStr())}</span>
+        ${p.dueDate ? `<span class="gt-tag due" style="left:${gt.at(p.dueDate)}%;transform:translateX(${gt.at(p.dueDate)>78?'-100%':gt.at(p.dueDate)<8?'0':'-50%'})">${LX('deadline','deadline')} ${fd(p.dueDate)}</span>` : ''}
+      </div></div>
+      ${gt.rows.map(r => {
+        const x = gt.at(r.start), w = Math.max(1.8, gt.at(r.end) - x);
+        return `<div class="gt-row">
+          <div class="gt-name">${esc(r.s.name)}<i>${r.owner?esc(r.owner.name):'—'}</i></div>
+          <div class="gt-track">
+            <div class="gt-bar ${r.late?'late':''}" style="left:${x}%;width:${w}%;--f:${r.pct}%"><u></u><b>${r.pct}%</b></div>
+            ${r.ms.map(m => `<span class="gt-gem ${m.completed?'done':''}" style="left:${gt.at(m.dueDate)}%" title="${esc(m.name)} · ${fd(m.dueDate)}"></span>`).join('')}
+            <i class="gt-now" style="left:${gt.at(todayStr())}%"></i>
+            ${p.dueDate ? `<i class="gt-dl" style="left:${gt.at(p.dueDate)}%"></i>` : ''}
+          </div></div>`;
+      }).join('')}
+      <div class="gt-axis"><div></div><div><span>${fd(gt.A)}</span><span>${fd(gt.B)}</span></div></div>
+    </div>
+    <div class="stg-foot">◆ ${LX('boss fights','milestones')} · ${LX('the fill is the work closed inside the front','the fill is the work closed inside the stream')}</div>`});
+
+  /* 5 — the deviations: everything that moved against the plan, each with the
+     size of the move. No deviation is a finding in itself, and it is said so. */
+  if(devs.length || p.lastReview) slides.push({kind:'dev',
+    title: devs.length
+      ? `${devs.length} ${LX('deviation','deviation')}${devs.length>1?'s':''} ${LX('to put on the table','to put on the table')}`
+      : LX('Nothing has moved against the plan','Nothing has moved against the plan'),
+    html: devs.length
+      ? `<div class="dev-list">${devs.map(d => `<div class="dv ${d.lv}">
+          <span class="dv-n">${esc(String(d.n))}</span>
+          <div><b>${esc(d.b)}</b>${d.i?`<i>${esc(d.i)}</i>`:''}</div>
+          <span class="dv-k">${esc(d.k)}</span></div>`).join('')}</div>
+        ${raised.length ? `<div class="stg-foot">${raised.length} ${LX('decision','decision')}${raised.length>1?'s are':' is'} ${LX('waiting on this room — see the decisions screen.','waiting on this room — see the decisions screen.')}</div>` : ''}`
+      : `<p class="stg-lead">${LX('Dates held, no new peril, no boss fight slipped since the last council.','Dates held, no new risk, no milestone slipped since the last review.')}</p>`});
+
+  /* 6 — the hours: budget against work done, not budget against the calendar.
+     Spending 60% of the budget is good news at 70% done and bad news at 30%. */
+  if(bgtH || logged) slides.push({kind:'bgt',
+    title: bgtH
+      ? LX(`${burn}% of the ledger is spent`,`${burn}% of the budget hours are spent`)
+      : LX(`${eur(logged)} hours written in the ledger`,`${eur(logged)} hours logged so far`),
+    html: `<div class="bgt-grid">
+      <div>
+        <div class="bgt-num">${eur(logged)}<em>${bgtH?`${LX('of','of')} ${bgtH} h ${LX('budget','budget')}`:LX('hours logged','hours logged')}</em></div>
+        ${bgtH ? `<div class="bgt-track ${burn>100?'over':''}">
+            <span style="width:${Math.min(100, burn)}%"></span>
+            <i style="left:${Math.min(100, V.pct)}%" title="work done"></i>
+          </div>
+          <div class="bgt-legend"><span>${burn}% ${LX('of the ledger spent','of the budget spent')}</span>
+            <span>▏ ${V.pct}% ${LX('of the work done','of the work done')}</span></div>
+          <div class="bgt-cmp ${burn-V.pct>=10?'bad':V.pct-burn>=10?'ok':''}">${
+              burn - V.pct >= 10
+                ? LX(`${burn-V.pct} points more ledger than work — the hours are running ahead of the result.`,
+                     `${burn-V.pct} points more budget than work — the hours are running ahead of the result.`)
+              : V.pct - burn >= 10
+                ? LX(`${V.pct-burn} points more work than ledger — the campaign is running lean.`,
+                     `${V.pct-burn} points more work than budget — the project is running lean.`)
+                : LX('Ledger and work are moving together.','Budget and work are moving together.')}</div>
+          ${eac ? `<div class="stg-foot">${LX('At this rate','At this rate')}: <b>${eac} h</b> ${LX('at completion','at completion')} — ${eac > bgtH
+              ? `<b class="bad">${eac-bgtH} h ${LX('over','over')}</b>` : `${bgtH-eac} h ${LX('under','under')}`} ${LX('the','the')} ${bgtH} h ${LX('budget','budget')}.${
+              +p.hourlyRate ? ` · ${eur(logged*p.hourlyRate)} € ${LX('spent','spent')}` : ''}</div>` : ''}`
+          : `<div class="stg-foot">${LX('No budget of hours has been set on this campaign — Settings › Budget hours.','No hour budget has been set on this project — Settings › Budget hours.')}</div>`}
+      </div>
+      <div>
+        <h4 class="bgt-h4">${LX('Hours by hand','Hours by person')}</h4>
+        <div class="bgt-who">${hoursBy.length ? hoursBy.slice(0,7).map(([hid, h]) => {
+            const hu = user(hid), mx = hoursBy[0][1] || 1;
+            return `<div class="row"><div><span>${hu?esc(hu.name):'—'}</span>
+              <div class="hb"><u style="width:${Math.round(h/mx*100)}%"></u></div></div><i>${eur(h)} h</i></div>`;
+          }).join('') : `<div class="stg-dash">${LX('Nothing written in the ledger yet.','No hours logged yet.')}</div>`}</div>
+      </div>
+    </div>`});
+
+  /* 7 — the forecast, with the honesty about how much history it rests on */
   slides.push({kind:'fore', title: f.done ? LX('Everything promised is done','Everything is done')
       : f.unknown ? LX('Not enough history to project yet','Not enough history to project yet')
       : f.vs === null ? LX(`At this pace we finish around ${fd(f.date)}`,`At this pace we finish around ${fd(f.date)}`)
@@ -5947,9 +6625,29 @@ function stageSlides(p){
       </div>`});
   }
 
-  /* 7 — the only slide that asks for something */
-  if(asks.length) slides.push({kind:'ask', title: LX('What the council must decide','What we need from this room'),
-    html: `<ol class="stg-qs">${asks.map(a=>`<li><b>${esc(a.q)}</b><span>${esc(a.detail)}${a.by?` · <b>${esc(a.by)}</b>`:''}</span></li>`).join('')}</ol>`});
+  /* 7 — the decisions the PM raised during the week. The rules no longer put words
+     in anyone's mouth: they sit underneath as suggestions, to be promoted or ignored. */
+  if(raised.length || asks.length) slides.push({kind:'ask', title: raised.length
+      ? `${raised.length} decision${raised.length>1?'s':''} waiting on this room`
+      : 'Nothing raised — but the data suggests this',
+    html: `${raised.length ? `<ol class="stg-qs asks">${raised.map((t,ai)=>{
+        const d = t.decision, w = user(d.who);
+        return `<li data-decix="${ai}" class="${decLate(d)?'overdue':''}">
+          <b>${esc(d.q)}</b>
+          <span>on “${esc(t.name)}” · ${w?esc(w.name):'nobody named'} · ${d.due?'by '+fmtDate(d.due):'no date'}
+            · <b class="${decLate(d)?'late':''}">waiting ${decDays(d)} days</b></span>
+          <div class="ask-act">
+            <button data-decdo="${ai}">✓ Decided</button>
+            <button data-decpost="${ai}">↷ Postpone</button>
+            <button data-decnone="${ai}">× Not needed</button>
+          </div>
+        </li>`;
+      }).join('')}</ol>` : ''}
+      ${asks.length ? `<div class="ask-sugg"><h4>The data also points at</h4>
+        ${asks.map((a,ai)=>`<div class="sg"><span>${esc(a.q)}</span>
+          <i>${esc(a.cost)}</i>
+          <button data-sugg="${ai}">+ raise it</button></div>`).join('')}</div>` : ''}
+      <div class="stg-foot">A decision that is not written down is a decision that was not taken.</div>`});
 
   /* 8 — the week, and the money */
   slides.push({kind:'week', title: week.length
@@ -5966,7 +6664,13 @@ function stageSlides(p){
 let stageTimer = null;
 function openStage(mode){
   const p = proj();
-  const slides = stageSlides(p);
+  let slides = stageSlides(p);
+  /* the board gets the short deck: answer, the three proofs that hold it up, the
+     decisions. Everything else is detail for the team's own review. */
+  if(mode === 'steco'){
+    const want = ['cockpit','ms','secs','stream','dev','bgt','ask'];
+    slides = want.map(k => slides.find(s2 => s2.kind === k)).filter(Boolean);
+  }
   let i = 0;
   const ov = document.createElement('div');
   ov.className = 'stage' + (mode === 'ambient' ? ' ambient' : '');
@@ -5979,7 +6683,7 @@ function openStage(mode){
     ov.remove();
     if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
     /* a review that was actually walked through becomes the new reference point */
-    if(mark && mode === 'review'){
+    if(mark && (mode === 'review' || mode === 'steco')){
       p.lastReview = reviewSnap(p);
       stamp(p); save();
       toast(LX('Council closed — the next one will show what moved','Review closed — the next one will show what moved'));
@@ -6002,6 +6706,57 @@ function openStage(mode){
         <button data-stclose title="Esc">✕</button>
         <button class="stg-end" data-stend title="${LX('Close the council and set the reference point','Close the review and set the reference point')}">${LX('Close the council','Close the review')}</button></div>`}`;
     ov.querySelectorAll('[data-stgo]').forEach(b => b.onclick = () => go(+b.dataset.stgo));
+    /* decisions are captured here, in the room, before anyone leaves it */
+    const asksNow = reviewAsks(p);
+    const raisedNow = decOpen(p.id).sort((a,b) => decDays(b.decision) - decDays(a.decision));
+    const settle = (li, label, cls) => { li.classList.add('settled');
+      li.querySelector('.ask-act').innerHTML = `<span class="ask-done ${cls}">${label}</span>`; };
+    ov.querySelectorAll('[data-decdo]').forEach(b => b.onclick = () => {
+      const li = b.closest('li'), t = raisedNow[+b.dataset.decdo];
+      if(!t || !t.decision) return;
+      li.querySelector('.ask-act').innerHTML = `
+        <input class="ask-note" placeholder="What was decided (becomes the task)">
+        <select class="ask-who">${assignableUsers(p).map(u=>`<option value="${u.id}" ${u.id===currentUserId?'selected':''}>${esc(u.name)}</option>`).join('')}</select>
+        <input type="date" class="ask-due" value="${todayStr(7)}">
+        <button class="ask-ok">Confirm</button>`;
+      li.querySelector('.ask-note').focus();
+      li.querySelector('.ask-ok').onclick = () => {
+        const note = li.querySelector('.ask-note').value.trim();
+        const who = li.querySelector('.ask-who').value, due = li.querySelector('.ask-due').value;
+        const waited = decDays(t.decision);
+        decResolve(t, 'done', note, who, due);
+        settle(li, `✓ ${esc((user(who)||{}).name||'')} · ${fmtDate(due)} · waited ${waited}d`, 'ok');
+      };
+    });
+    ov.querySelectorAll('[data-decpost]').forEach(b => b.onclick = () => {
+      const t = raisedNow[+b.dataset.decpost]; if(!t || !t.decision) return;
+      t.decision.due = todayStr(7); stamp(t); save();
+      settle(b.closest('li'), '↷ postponed to next week — still counting', 'warn');
+    });
+    ov.querySelectorAll('[data-decnone]').forEach(b => b.onclick = () => {
+      const t = raisedNow[+b.dataset.decnone]; if(!t || !t.decision) return;
+      decResolve(t, 'dropped', '', null, null);
+      settle(b.closest('li'), '× dropped', '');
+    });
+    /* a suggestion only becomes a decision once a person owns it */
+    ov.querySelectorAll('[data-sugg]').forEach(b => b.onclick = () => {
+      const a = asksNow[+b.dataset.sugg]; if(!a) return;
+      const host = a.id.startsWith('block:') ? db.tasks.find(x => x.id === a.id.slice(6)) : projTasks(p.id).find(t => !t.completed);
+      if(!host){ toast('No task to attach it to'); return; }
+      const row = b.closest('.sg');
+      row.innerHTML = `<span>${esc(a.q)}</span>
+        <select class="sg-who">${assignableUsers(p).map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('')}</select>
+        <input type="date" class="sg-due" value="${todayStr(7)}">
+        <button class="sg-ok">Raise on “${esc(host.name.slice(0,22))}”</button>`;
+      row.querySelector('.sg-ok').onclick = () => {
+        decRaise(host, a.q, row.querySelector('.sg-who').value, row.querySelector('.sg-due').value);
+        row.innerHTML = `<span class="ask-done ok">⚖ raised on “${esc(host.name.slice(0,30))}”</span>`;
+      };
+    });
+    const markDone = (li, label, cls) => {
+      li.classList.add('settled');
+      li.querySelector('.ask-act').innerHTML = `<span class="ask-done ${cls}">${label}</span>`;
+    };
     const bind = (sel, fn) => { const b = ov.querySelector(sel); if(b) b.onclick = fn; };
     bind('[data-stprev]', () => go(i-1));
     bind('[data-stnext]', () => go(i+1));
@@ -6019,6 +6774,14 @@ function openStage(mode){
     if(e.key === 'ArrowLeft' || e.key === 'PageUp'){ e.preventDefault(); e.stopPropagation(); go(i-1); }
   };
   document.addEventListener('keydown', onKey, true);
+  /* one listener, two CSS variables: the light and the tilt follow the pointer.
+     Values are clamped to ±1 so the effect stays a hint, not a funhouse. */
+  const look = e => {
+    const r = ov.getBoundingClientRect();
+    ov.style.setProperty('--mx', (((e.clientX - r.left) / r.width) - .5).toFixed(3));
+    ov.style.setProperty('--my', (((e.clientY - r.top) / r.height) - .5).toFixed(3));
+  };
+  ov.addEventListener('mousemove', look);
   paint();
   if(mode === 'ambient'){
     /* slow enough to actually read from across the room; the data is re-read on
@@ -6182,6 +6945,23 @@ function renderToday(){
           <button class="tool-btn ask-more" id="askStage">▶ ${LX('Hold the council','Run the review')}</button>
         </div>`;
       })()}
+      ${(() => {
+        const all = visProjects().flatMap(pr => decOpen(pr.id));
+        const mine = all.filter(t => t.decision.who === currentUserId);
+        const waiting = all.filter(t => t.decision.by === currentUserId && t.decision.who !== currentUserId);
+        if(!mine.length && !waiting.length) return '';
+        const row = (t, kind) => { const d = t.decision, w = user(d.who);
+          return `<div class="dec-row ${decLate(d)?'late':''}" data-goto="${t.id}">
+            <b>⚖ ${esc(d.q)}</b>
+            <i>${esc(t.name.slice(0,34))} · ${kind==='mine' ? (d.due?'by '+fmtDate(d.due):'no date') : (w?esc(w.name):'—')} · ${decDays(d)}d</i>
+          </div>`; };
+        return `<div class="rail-card dec-card">
+          ${mine.length ? `<h4>${LX('Your call','Waiting on you')} <span class="badge" style="position:static">${mine.length}</span></h4>
+            ${mine.map(t => row(t,'mine')).join('')}` : ''}
+          ${waiting.length ? `<h4 style="margin-top:${mine.length?'12px':'0'}">${LX('You are waiting for','You are waiting for')}</h4>
+            ${waiting.map(t => row(t,'theirs')).join('')}` : ''}
+        </div>`;
+      })()}
       <div class="rail-card">
         <h4>${L('nav_inbox')}${notifs.filter(n=>n.at>lastInboxRead).length?` <span class="badge" style="position:static">${notifs.filter(n=>n.at>lastInboxRead).length}</span>`:''}</h4>
         ${notifs.length ? notifs.slice(0,12).map(n=>{
@@ -6254,6 +7034,7 @@ function openPanel(id){
   $('#pRepeat').value = t.repeat||'';
   renderBlockBtn(t);
   renderConfRow(t);
+  renderDecision(t);
   $('#pSection').innerHTML = tp.sections.map(s=>`<option value="${s.id}" ${s.id===t.sectionId?'selected':''}>${esc(s.name)}</option>`).join('');
   $('#pDesc').value = t.description||'';
   /* custom fields */
@@ -6987,6 +7768,24 @@ function renderReports(){
       })()}
 
       ${(() => {
+        /* ---- how long a question waits here before it gets an answer ---- */
+        const lats = scoped.map(pp => decLatency(pp.id));
+        const nAll = lats.reduce((a,x)=>a+x.n,0), closedAll = lats.reduce((a,x)=>a+x.closed,0);
+        const openAll = lats.reduce((a,x)=>a+x.open,0), expAll = lats.reduce((a,x)=>a+x.expired,0);
+        const avgAll = closedAll ? Math.round(lats.reduce((a,x)=>a+(x.avg||0)*x.closed,0)/closedAll) : null;
+        if(!nAll) return '';
+        return `<div class="dash-card" style="grid-column:span 4">
+          <h3>⚖ ${LX('How long a decision waits here','How long a decision waits here')}</h3>
+          <div class="lat-row">
+            <div class="lat"><b>${avgAll===null?'—':avgAll}</b><i>days on average</i><u>${closedAll} answered</u></div>
+            <div class="lat ${openAll?'warn':''}"><b>${openAll}</b><i>still waiting</i><u>right now</u></div>
+            <div class="lat ${expAll?'bad':''}"><b>${expAll}</b><i>past their date</i><u>nobody answered in time</u></div>
+          </div>
+          <div class="muted" style="font-size:11.5px;margin-top:9px">${LX('The number no committee measures about itself: a decision that waits two weeks costs more than the work it was about.','The number no committee measures about itself: a decision that waits two weeks costs more than the work it was about.')}</div>
+        </div>`;
+      })()}
+
+      ${(() => {
         /* ---- calibration: what each promise is actually worth ---- */
         const people = liveUsers().map(u => ({u, c: calibration(u.id, reportScope||null)})).filter(x => x.c.tot >= 3);
         const mine = calibration(currentUserId, reportScope||null);
@@ -7022,6 +7821,61 @@ function goToTask(taskId){
   db.currentProjectId = t.projectId;
   db.currentView = 'list';
   save(); render(); openPanel(t.id);
+}
+
+/* the decision field: empty it is one button, open it is three required answers */
+function renderDecision(t){
+  const el = $('#pDec');
+  if(!el) return;
+  const d = t.decision;
+  const people = assignableUsers(db.projects.find(x => x.id === t.projectId));
+  if(!d){
+    el.innerHTML = `<button class="dec-raise" id="pDecNew">⚖ ${LX('This needs a decision','This needs a decision')}</button>`;
+    $('#pDecNew').onclick = () => {
+      el.innerHTML = `<div class="dec-form">
+        <input id="pDecQ" placeholder="${LX('What has to be decided? One line.','What has to be decided? One line.')}" autocomplete="off">
+        <div class="dec-row">
+          <select id="pDecWho"><option value="">${LX('who decides…','who decides…')}</option>${people.map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('')}</select>
+          <input type="date" id="pDecDue" value="${todayStr(7)}">
+          <button class="btn btn-primary" id="pDecOk">${LX('Raise','Raise')}</button>
+        </div>
+        <div class="dec-hint">${LX('Who decides — not who does. And a date, or it will never expire.','Who decides — not who does. And a date, or it never expires.')}</div>
+      </div>`;
+      $('#pDecQ').focus();
+      const go = () => {
+        const q = $('#pDecQ').value, who = $('#pDecWho').value, due = $('#pDecDue').value;
+        if(!q.trim()){ $('#pDecQ').focus(); return; }
+        if(!who || !due){ toast(LX('A decision needs a name and a date','A decision needs a name and a date')); return; }
+        decRaise(t, q, who, due);
+      };
+      $('#pDecOk').onclick = go;
+      $('#pDecQ').onkeydown = e => { if(e.key === 'Enter') go(); };
+    };
+    return;
+  }
+  const who = user(d.who);
+  el.innerHTML = `<div class="dec-open ${decLate(d)?'late':''}">
+      <b>⚖ ${esc(d.q)}</b>
+      <i>${who?esc(who.name):LX('nobody named','nobody named')} · ${d.due?LX('by ','by ')+fmtDate(d.due):LX('no date','no date')} · ${LX('waiting','waiting')} ${decDays(d)}${LX('d','d')}</i>
+      <div class="dec-acts">
+        <button data-decdone>✓ ${LX('Decided','Decided')}</button>
+        <button data-decdefer>↷ ${LX('Postpone a week','Postpone a week')}</button>
+        <button data-decdrop>× ${LX('Not needed','Not needed')}</button>
+      </div></div>`;
+  el.querySelector('[data-decdone]').onclick = () => {
+    el.querySelector('.dec-acts').innerHTML = `
+      <input id="pDecNote" placeholder="${LX('What was decided (becomes the task)','What was decided (becomes the task)')}" autocomplete="off">
+      <select id="pDecOwner">${people.map(u=>`<option value="${u.id}" ${u.id===currentUserId?'selected':''}>${esc(u.name)}</option>`).join('')}</select>
+      <input type="date" id="pDecBy" value="${todayStr(7)}">
+      <button class="btn btn-primary" id="pDecSave">${LX('Record','Record')}</button>`;
+    $('#pDecNote').focus();
+    $('#pDecSave').onclick = () => decResolve(t, 'done', $('#pDecNote').value.trim(), $('#pDecOwner').value, $('#pDecBy').value);
+  };
+  el.querySelector('[data-decdefer]').onclick = () => {
+    t.decision.due = todayStr(7); stamp(t); save(); renderDecision(t);
+    toast(LX('Pushed to next week — the wait keeps counting','Pushed to next week — the wait keeps counting'));
+  };
+  el.querySelector('[data-decdrop]').onclick = () => decResolve(t, 'dropped', '', null, null);
 }
 
 function renderBlockBtn(t){
@@ -7271,9 +8125,9 @@ function renderAdmin(){
 }
 
 /* ================= Help view (embedded versioned manual) ================= */
-const APP_VERSION = '2.33';
-const MANUAL_VERSION = '4.3';
-const MANUAL_DATE = '10 July 2026';
+const APP_VERSION = '2.38';
+const MANUAL_VERSION = '4.6';
+const MANUAL_DATE = '25 November 2026';
 const MANUAL_B64 = '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';
 function downloadManual(){
   try {
@@ -7371,15 +8225,21 @@ function renderHelp(){
     </div></details>
 
     <details><summary>1g · Il consiglio e lo schermo di sala</summary><div class="hbody">
-      <b>Il mazzo (v2.33)</b>, una schermata un messaggio — il titolo <i>è</i> la frase, non l'etichetta:<ol>
-      <li><b>Il verdetto</b>: una frase grande e colorata (“2 quest sono in ritardo”), <b>il perché</b> sotto (“il fornitore tiene fermo X da 11 giorni”) e quattro numeri: avanzamento, in ritardo/bloccate, <b>velocità reale</b> (quest chiuse a settimana), <b>data di fine proiettata contro la promessa</b>.</li>
+      <b>Il mazzo (v2.38)</b>, una schermata un messaggio — il titolo <i>è</i> la frase, non l'etichetta:<ol>
+      <li><b>Il verdetto (stato progetto)</b>: una frase grande e colorata (“2 quest sono in ritardo”), <b>il perché</b> sotto (“il fornitore tiene fermo X da 11 giorni”) e quattro riquadri: avanzamento contro tempo trascorso, <b>data di fine proiettata contro la promessa</b>, velocità reale, decisioni che aspettano. In fondo la striscia: ritardi, persone, <b>milestone fatte sul totale</b>, ore spese sul budget.</li>
+      <li><b>Le milestone</b>, in tre colonne: <b>quante ne sono state chiuse in tutto</b> (anello), <b>quali si sono chiuse dall'ultimo report</b> e <b>le prossime in arrivo</b> con data e responsabile. Le milestone sono le quest marcate ◆ (campo Tipo nella scheda, oppure scrivendo <code>*</code> nel testo rapido).</li>
+      <li><b>Dove sta ogni filone</b>: lo specchietto delle sezioni — nome, <b>owner</b>, barra e <b>percentuale di avanzamento</b>, quante quest su quante, quante milestone dentro, e lo stato (in ritardo / completo / prossima data). L'owner è quello impostato sulla sezione; se non c'è, l'app mostra chi di fatto ne porta la maggior parte e lo scrive <i>(de facto)</i> invece di nominarlo di nascosto.</li>
+      <li><b>I filoni su un solo calendario</b>: un gantt alla quota giusta per un comitato — una barra per sezione, il <b>riempimento è il lavoro chiuso dentro quel filone</b>, i rombi ◆ sono le sue milestone (verdi se fatte), e le due righe verticali sono <b>oggi</b> e la <b>deadline di progetto</b>. Nessun dettaglio di attività: serve a vedere quali filoni sforano la deadline.</li>
+      <li><b>Le deviazioni</b>: tutto ciò che si è mosso contro il piano, ognuna con la sua grandezza — date scivolate (e qual è la peggiore), deadline di progetto spostata, nuovi pericoli, milestone sfondate, scarto fra lavoro fatto e tempo trascorso, quest in ritardo, bloccanti aperti, ore che corrono più del lavoro. Se non si è mosso niente lo dice, invece di riempire la pagina.</li>
+      <li><b>Il budget ore (BGT)</b>: ore spese contro budget, con la <b>tacca bianca del lavoro fatto</b> sulla stessa barra — perché spendere il 50% è una buona notizia al 70% di avanzamento e una cattiva al 35%. Sotto, la <b>proiezione a fine lavoro</b> alle ore correnti e lo scarto dal budget; a destra, le ore per persona.</li>
       <li><b>La previsione</b>: quante ne restano, a che ritmo le chiudete, <b>fra quali due date si atterra</b> e la più probabile. Con l'istogramma delle ultime sei settimane. Se la storia è corta lo dice: sotto due settimane di dati non inventa una data, e fra due e tre settimane scrive che l'intervallo è provvisorio.</li>
       <li><b>Cosa è cambiato dall'ultimo consiglio</b>: chiuse, nuove, date scivolate (con quanti giorni), pericoli in più o in meno, deadline spostata. Esiste perché alla fine di ogni consiglio l'app <b>fotografa lo stato</b> — vedi “Close the council” in basso a destra.</li>
       <li><b>La catena critica</b>: la sequenza che decide la data di fine, con chi la tiene ferma adesso.</li>
       <li><b>I tesori promessi</b> con anelli e date.</li>
       <li><b>Dove si strozza</b>: giorni persi per mostro (dal bestiario) e cosa è in ritardo ora.</li>
-      <li><b>Serve una decisione</b>: due-quattro richieste esplicite con il “entro quando”. È l'unica schermata che chiede qualcosa, ed è quella che fa finire bene una riunione.</li>
+      <li><b>Le decisioni</b>: quelle che il PM ha alzato durante la settimana, da quanti giorni aspettano e su quale quest o milestone stanno; sotto, come suggerimento, quelle che i dati indicherebbero. È l'unica schermata che chiede qualcosa, ed è quella che fa finire bene una riunione.</li>
       <li><b>La settimana</b> e il consumo del budget ore.</li></ol>
+      <b>Lo steco</b> prende il mazzo corto, sette schermate nell'ordine in cui un comitato fa le domande: <i>stato progetto → milestone → filoni con owner e % → gantt dei filoni → deviazioni → budget ore → decisioni</i>. Le schermate che non hanno dati spariscono da sole: senza sezioni non c'è lo specchietto, senza date non c'è il gantt, senza ore non c'è il budget.<br><br>
       <b>Importante</b>: <i>Close the council</i> (in basso a destra) chiude e <b>registra il punto di riferimento</b>; la ✕ e Esc escono senza registrare nulla.<br><br>
       La riunione non si prepara: <b>si apre</b>. Da <b>Preferences → Hold the council</b>, dal fondo del patto, o dal pulsante nelle tre domande.<ul>
       <li><b>Consiglio (rassegna)</b>: schermo intero, una cosa per schermata — copertina con obiettivo e anello di avanzamento, bacchetta del tempo con le boss fight, i tesori promessi, <b>le tre domande</b>, ciò che è in ritardo o bloccato, i pericoli, la settimana che viene. Si gira con <b>← →</b> o <b>spazio</b>, <b>⛶</b> per il pieno schermo, <b>Esc</b> per uscire. Nessuna slide da fare: è la campagna viva, raccontata una pagina alla volta.</li>
@@ -7433,6 +8293,31 @@ function renderHelp(){
       <ul><li>La schermata di accesso ha una <b>ricerca</b> appena i profili superano i sette, con il contatore dei risultati, e la griglia <b>scorre</b> invece di spingere il pulsante fuori dallo schermo. Chi si è collegato più di recente compare per primo.</li>
       <li><b>I nomi importati da un piano non sono profili</b>: quando importi un Excel o un file di Project, le risorse diventano assegnatari ma <b>non compaiono fra chi può entrare</b>. Restano dietro al pulsante “Mostra anche i N nomi importati”, con il bordo tratteggiato e l'etichetta IMPORTED.</li>
       <li>Se uno di quei nomi sei davvero tu, cliccalo: l'app chiede conferma e <b>lo promuove a profilo</b> una volta per tutte.</li></ul>
+    </div></details>
+
+    <details><summary>1o · Lo steco: plancia, pragmatica, decisioni</summary><div class="hbody">
+      Due mazzi dallo stesso motore: <b>Run the review</b> (8 schermate, per la squadra) e <b>Steering board</b> (5, per il comitato). Il secondo si apre dal fondo del patto o da Preferences.<br><br>
+      <b>La plancia</b> (prima schermata) risponde in un colpo alle cinque domande che la testa di chi guarda si fa, in quell'ordine:<ul>
+      <li><b>Siamo a posto?</b> — fascia di stato colorata: ON TRACK / NEEDS ATTENTION / OFF TRACK.</li>
+      <li>La <b>frase</b>, nel carattere più grande di tutti: la conclusione per prima (principio di Minto), con la causa sotto.</li>
+      <li>Quattro riquadri, e <b>sotto ogni numero il suo paragone</b> — è quello che trasforma un numero in un KPI: <i>Progress</i> (due barre affiancate, lavoro fatto contro tempo consumato, e la frase “level with the clock”), <i>Delivery</i> (data proiettata contro promessa, in giorni), <i>Pace</i> (quest chiuse a settimana con la freccia di tendenza e l'istogramma), <i>Decisions needed</i>.</li>
+      <li>Una sola visualizzazione: la barra del tempo con le milestone. Niente torte accanto: competerebbero.</li>
+      <li>In fondo la riga dei fatti minori: mostro più costoso, blocco aperto, ritardi, persone, ore.</li></ul>
+      <b>Il colore è semaforo, non decorazione</b>: colorati solo la fascia e il riquadro che devia. Se tutto è rosso, niente è rosso.<br><br>
+      <b>Le richieste</b> (ultima schermata) portano ciascuna il <b>prezzo del non decidere</b> — “se non decidiamo: 1 task dietro slitta di un giorno per ogni giorno che passa” — perché senza conseguenza una richiesta è un'informazione, e le informazioni si rimandano.<br>
+      Su ogni richiesta ci sono tre pulsanti: <b>Decided</b> (scegli chi e entro quando: nasce subito il task assegnato), <b>Deferred</b>, <b>Need more</b>. Tutto finisce nel <b>Decision log</b> in fondo al patto, con data e nome. Una decisione non scritta è una decisione non presa.<br><br>
+      <b>Il metodo in sala</b>: manda <i>Print as poster</i> 24 ore prima (le decisioni si preparano fuori, in riunione si ratificano), tieni la riunione sulle cinque schermate in otto minuti, e chiudi con <b>Close the review</b>: fotografa lo stato, così il prossimo steco si apre con “cosa è cambiato”.
+    </div></details>
+
+    <details><summary>1p · Le decisioni (le alzi tu, non la macchina)</summary><div class="hbody">
+      Una decisione in sospeso <b>è un blocco</b>: la differenza è che si scioglie con qualcuno che dice sì o no, invece che con qualcuno che lavora. Per questo non c'è una sezione a parte: la decisione sta <b>attaccata alla quest o alla milestone in pericolo</b>.<ul>
+      <li><b>Alzarla</b>: pannello della quest → <b>⚖ This needs a decision</b>, oppure <code>⇧D</code> dalla lista. Tre campi, <b>tutti obbligatori</b>: la domanda in una riga, <b>chi decide</b> (non chi esegue) e <b>entro quando</b>. Senza un nome resta sospesa nell'aria; senza una data non scade mai e quindi non succede niente.</li>
+      <li><b>Si vede</b>: ⚖ con i giorni di attesa sulla riga, rosso quando la data è passata. In <b>Today</b>, colonna destra: “Waiting on you” e “You are waiting for”.</li>
+      <li><b>In riunione</b>: la schermata finale raccoglie <b>solo le decisioni che hai alzato tu</b>, ordinate per giorni di attesa. Tre pulsanti: <b>Decided</b> (chi e entro quando → nasce il task), <b>Postpone</b> (rimanda di una settimana, <i>ma l'attesa continua a contare</i>), <b>Not needed</b>.</li>
+      <li><b>I suggerimenti automatici</b> non si spacciano più per tue: stanno sotto, smorzati, sotto “The data also points at”, con un pulsante <b>+ raise it</b> che chiede nome e data come per tutte le altre. La macchina segnala, il PM decide se è una decisione.</li>
+      <li><b>Il numero che conta</b>, in Chronicles: <b>quanto aspetta una decisione qui dentro</b> — media dei giorni, quante sono ferme adesso, quante hanno superato la data senza risposta. È la misura che nessun comitato fa su sé stesso, e una decisione che aspetta due settimane costa più del lavoro di cui parlava.</li>
+      <li>Le attese finiscono anche nel <b>bestiario</b> come mostro “Waiting for a decision”, accanto a fornitori e macchine.</li></ul>
+      <b>Grafica dei mazzi</b>: consiglio e steco hanno profondità vera — le schede si sollevano dal piano, la luce e l'inclinazione seguono il puntatore, e <b>il riquadro che chiede una decisione sta più in alto di tutti</b>. La profondità serve a ordinare l'importanza, non a fare scena: con “riduci animazioni” attivo torna tutto piatto.
     </div></details>
 
     <details><summary>2 · Per iniziare &amp; ambienti</summary><div class="hbody"><ul>
@@ -8245,6 +9130,7 @@ function kbHelpMenu(){
     {label:'Move to section',       sub:'m'},
     {label:'Mark what blocks it',   sub:'b'},
     {label:'Turn it into a section', sub:'⇧S'},
+    {label:'Raise a decision',       sub:'⇧D'},
     {label:'Select for bulk',       sub:'x'},
     {label:'New task here',         sub:'n'},
     {label:'Search / quick add',    sub:'⌘K'},
@@ -8277,6 +9163,7 @@ document.addEventListener('keydown', e => {
   if(k === 'm'){ e.preventDefault(); kbMoveMenu(); return; }
   if(k === 'b'){ e.preventDefault(); const t = kbTask(); if(t) blockMenu(t, kbRow()); return; }
   if(k === 'S'){ e.preventDefault(); const t = kbTask(); if(t) taskToSection(t); return; }
+  if(k === 'D'){ e.preventDefault(); const t = kbTask(); if(t){ openPanel(t.id); setTimeout(() => { const b = $('#pDecNew'); if(b) b.click(); }, 60); } return; }
   if(k === 'x'){
     e.preventDefault();
     const id = kbCur;
