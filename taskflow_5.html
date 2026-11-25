@@ -11,6 +11,10 @@
     --bg:#ffffff; --bg-soft:#f9f8f8; --border:#edeae9; --border-strong:#cfcbcb;
     --text:#1e1f21; --text-2:#6d6e6f; --text-3:#9ca0a4;
     --green:#58a182; --green-bg:#dff3ea; --amber:#b47d0c; --amber-bg:#fdf0d1; --red:#c9403a; --red-bg:#ffe3e2;
+    /* The same hues, dark enough to be read as TEXT on the pastel fills above. The
+       plain --green/--amber/--red are fills and dots, where contrast with a label
+       does not arise; on a chip they landed at 2.65, 3.16 and 4.05 against 4.5. */
+    --green-ink:#3f745e; --amber-ink:#90640a; --red-ink:#b93b35; --blue-ink:#3e68bd;
     --purple:#8d84e8; --blue:#4573d2; --teal:#4ecbc4; --pink:#f26fb2; --orange:#ec8d71; --yellow:#f1bd6c;
     --radius:8px; --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.05);
     --shadow-lg:0 5px 25px rgba(0,0,0,.15);
@@ -63,6 +67,35 @@
   .avatar-stack{display:flex}
   .avatar-stack .avatar{margin-left:-8px;border:2px solid #fff}
   .avatar-stack .avatar:first-child{margin-left:0}
+  /* ===== The shell at narrow widths =====
+     Media queries existed for the charter, Today, the cockpit and the avatar forge, but
+     never for the frame around them: at 820px the sidebar still took 240 fixed pixels
+     and "+ Add task" — the primary action — was cut off the right edge. */
+  @media (max-width:1180px){
+    .topbar-row1{padding:10px 16px 6px;gap:9px}
+    .tabs{padding:0 16px;overflow-x:auto;scrollbar-width:none}
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{flex:0 0 auto}
+  }
+  @media (max-width:1024px){
+    /* the sidebar stops holding a column open and floats over the page instead */
+    .sidebar{position:fixed;top:0;bottom:0;left:0;z-index:40;box-shadow:0 0 40px rgba(0,0,0,.35)}
+    .sidebar.collapsed{margin-left:-240px;box-shadow:none}
+    #app:not(.nav-open) .sidebar:not(.collapsed){margin-left:-240px;box-shadow:none}
+    #app.nav-open .sidebar{margin-left:0;box-shadow:0 0 40px rgba(0,0,0,.35)}
+    #app.nav-open .nav-scrim{position:fixed;inset:0;z-index:39;background:rgba(18,20,28,.38)}
+    .proj-title{font-size:17px}
+    .proj-sub{display:none}
+  }
+  @media (max-width:860px){
+    /* labels go, the actions stay: a clipped primary button is worse than a bare icon */
+    .topbar-actions .btn span.lbl{display:none}
+    .topbar-actions .btn{padding:7px 9px}
+    .topbar-actions{gap:6px}
+    .proj-icon{width:32px;height:32px;font-size:14px}
+    .topbar-row1{padding:10px 12px 6px}
+    .tabs{padding:0 12px}
+  }
   .tabs{display:flex;gap:2px;padding:0 24px}
   .tab{display:flex;align-items:center;gap:7px;padding:9px 12px;color:var(--text-2);border-bottom:2px solid transparent;font-weight:500;user-select:none}
   .tab:hover{color:var(--text);background:var(--bg-soft);border-radius:6px 6px 0 0}
@@ -96,16 +129,16 @@
   .datecell{font-size:13px;color:var(--text-2)}
   .datecell.overdue{color:var(--red)}
   .chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:11px;font-size:12px;font-weight:500;white-space:nowrap}
-  .chip.p-High{background:var(--red-bg);color:var(--red)}
-  .chip.p-Medium{background:var(--amber-bg);color:var(--amber)}
-  .chip.p-Low{background:var(--green-bg);color:var(--green)}
-  .chip.s-On-track{background:var(--green-bg);color:var(--green)}
-  .chip.s-At-risk{background:var(--amber-bg);color:var(--amber)}
-  .chip.s-Off-track{background:var(--red-bg);color:var(--red)}
+  .chip.p-High{background:var(--red-bg);color:var(--red-ink)}
+  .chip.p-Medium{background:var(--amber-bg);color:var(--amber-ink)}
+  .chip.p-Low{background:var(--green-bg);color:var(--green-ink)}
+  .chip.s-On-track{background:var(--green-bg);color:var(--green-ink)}
+  .chip.s-At-risk{background:var(--amber-bg);color:var(--amber-ink)}
+  .chip.s-Off-track{background:var(--red-bg);color:var(--red-ink)}
   /* computed section status (auto, derived from child tasks — not manually settable) */
-  .chip.ss-ok{background:var(--green-bg);color:var(--green)}
-  .chip.ss-risk{background:var(--amber-bg);color:var(--amber)}
-  .chip.ss-late{background:var(--red-bg);color:var(--red)}
+  .chip.ss-ok{background:var(--green-bg);color:var(--green-ink)}
+  .chip.ss-risk{background:var(--amber-bg);color:var(--amber-ink)}
+  .chip.ss-late{background:var(--red-bg);color:var(--red-ink)}
   .chip.ss-crit{background:var(--red);color:#fff;font-weight:700}
   .chip.ss-done{background:#e9eaeb;color:#5b6065}
   .add-task-row{padding:8px 24px 8px 52px;color:var(--text-3);cursor:pointer;border-bottom:1px solid transparent}
@@ -114,6 +147,8 @@
   .add-section-btn{margin:14px 24px;color:var(--text-2)}
   /* section meta row: owner / due / priority / status / progress bar */
   .sec-meta{display:flex;align-items:center;gap:10px;margin-left:auto;padding-right:6px}
+  .sec-progress-inline{display:inline-flex;align-items:center;margin-left:12px}
+  .sec-progress-inline .sec-progress-wrap{min-width:0}
   .sec-meta .datecell{font-size:12px}
   .sec-progress-wrap{display:flex;align-items:center;gap:6px;min-width:90px}
   .sec-progress{width:56px;height:5px;border-radius:3px;background:var(--border);overflow:hidden;flex-shrink:0}
@@ -124,8 +159,11 @@
   .col-meta-row{display:flex;align-items:center;gap:6px;padding:0 6px 8px;margin-top:-4px}
 
   /* ===== Board view ===== */
-  .board{display:flex;gap:12px;padding:16px 24px;align-items:flex-start;min-height:calc(100% - 32px)}
-  .col{width:280px;min-width:280px;background:var(--bg-soft);border-radius:10px;padding:10px;display:flex;flex-direction:column;max-height:calc(100vh - 210px)}
+  .board{display:flex;gap:12px;padding:16px;align-items:flex-start;min-height:calc(100% - 32px)}
+  /* Four 280px columns plus gutters came to four pixels more than the content area, so
+     a board that looks like it fits grew a scrollbar. Let the columns share the width
+     instead, and only scroll once they genuinely cannot. */
+  .col{flex:1 1 280px;min-width:248px;max-width:340px;background:var(--bg-soft);border-radius:10px;padding:10px;display:flex;flex-direction:column;max-height:calc(100vh - 210px)}
   .col-head{display:flex;align-items:center;gap:8px;padding:2px 6px 10px;font-weight:600}
   .col-count{color:var(--text-3);font-weight:400;font-size:12px}
   .col-cards{display:flex;flex-direction:column;gap:8px;overflow-y:auto;min-height:30px;padding:2px}
@@ -139,7 +177,9 @@
   .col-add{margin-top:8px;padding:7px;border-radius:8px;color:var(--text-2);text-align:left}
   .col-add:hover{background:#efeded;color:var(--text)}
   .col.drag-over{outline:2px dashed var(--accent);outline-offset:-2px}
-  .board-add-col{min-width:270px;padding:10px;border-radius:10px;border:1px dashed var(--border-strong);color:var(--text-2);text-align:center;height:44px}
+  /* this is an affordance, not a column: it was holding a rigid 270px that pushed the
+     real columns down to their minimum and then off the edge */
+  .board-add-col{flex:0 1 190px;min-width:96px;padding:10px;border-radius:10px;border:1px dashed var(--border-strong);color:var(--text-2);text-align:center;height:44px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
   .board-add-col:hover{background:var(--bg-soft)}
 
   /* ===== Timeline ===== */
@@ -157,8 +197,10 @@
   .tl-bar:hover{filter:brightness(1.08)}
   .tl-bar.done-bar{opacity:.95;text-decoration:line-through;text-decoration-color:rgba(255,255,255,.7)}
   .tl-ms.done-bar{color:#868b90 !important;opacity:1}
-  .tl-today{position:absolute;top:0;bottom:0;width:2px;background:var(--accent);z-index:2}
-  .tl-today::before{content:"Today";position:sticky;top:56px;background:var(--accent);color:#fff;font-size:10px;padding:1px 5px;border-radius:4px;margin-left:-18px}
+  /* today is the most ordinary fact on the page, so it does not get the alarm colour —
+     the charter's rail already marks it in ink, and these two should agree */
+  .tl-today{position:absolute;top:0;bottom:0;width:2px;background:var(--text);opacity:.55;z-index:2}
+  .tl-today::before{content:"Today";position:sticky;top:56px;background:var(--text);color:var(--bg);font-size:10px;padding:1px 5px;border-radius:4px;margin-left:-18px}
   .tl-wknd-col{position:absolute;top:0;bottom:0;background:rgba(0,0,0,.025)}
   .tl-section-label{padding:10px 24px 4px;font-weight:600;font-size:13px;color:var(--text-2);border-bottom:1px solid var(--border);background:var(--bg-soft);cursor:pointer;user-select:none}
   .tl-section-label:hover{color:var(--text)}
@@ -185,7 +227,7 @@
   .panel.open{transform:translateX(0)}
   .panel-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border)}
   .panel-complete{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;border:1px solid var(--border-strong);font-weight:500;font-size:13px}
-  .panel-complete.done{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+  .panel-complete.done{background:var(--green-bg);border-color:var(--green-ink);color:var(--green-ink)}
   .icon-btn{padding:6px;border-radius:6px;color:var(--text-2)}
   .icon-btn:hover{background:var(--bg-soft);color:var(--text)}
   .panel-body{padding:18px 22px;overflow-y:auto;flex:1}
@@ -196,6 +238,17 @@
   .field-label{color:var(--text-2);font-size:13px}
   .field-grid select,.field-grid input[type=date]{border:1px solid transparent;border-radius:6px;padding:6px 8px;background:transparent;outline:none;max-width:220px}
   .field-grid select:hover,.field-grid input[type=date]:hover{border-color:var(--border);background:var(--bg-soft)}
+  /* the browser's own calendar button is a different weight and colour from every
+     other control in this column — tone it to the same muted grey the chevrons use */
+  .field-grid input[type=date]::-webkit-calendar-picker-indicator{opacity:.4;cursor:pointer;
+    transition:opacity .12s}
+  .field-grid input[type=date]:hover::-webkit-calendar-picker-indicator{opacity:.75}
+  /* The panel used to sit flush against a fully lit list, so it read as a column
+     beside the page rather than a layer on top of it. */
+  .panel-scrim{position:fixed;inset:0;z-index:49;background:rgba(18,20,28,.28);
+    opacity:0;pointer-events:none;transition:opacity .22s ease}
+  .panel-scrim.on{opacity:1;pointer-events:auto}
+  @media (prefers-reduced-motion:reduce){ .panel-scrim{transition:none} }
   .desc-box{width:100%;min-height:110px;border:1px solid var(--border);border-radius:8px;padding:10px;outline:none;resize:vertical;line-height:1.5}
   .desc-box:focus{border-color:var(--border-strong)}
   .panel-foot{padding:12px 22px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
@@ -220,6 +273,9 @@
   .login-overlay{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;align-items:center;justify-content:center}
   .login-card{width:460px;max-width:92vw;text-align:center}
   .login-card{width:560px}
+  /* .logo is coloured for the dark sidebar. On the white login card that is near-white
+     on white — 1.04:1, the product name invisible on the first screen anyone sees. */
+  .login-card .logo{color:var(--text);justify-content:center}
   .login-users{margin:20px 0 10px}
   .login-search{display:flex;align-items:center;gap:9px;margin-bottom:12px}
   .login-search input{flex:1;border:1px solid var(--border-strong);border-radius:10px;padding:9px 12px;font:inherit;font-size:14px;
@@ -244,9 +300,9 @@
   .login-user{position:relative}
   .user-del{position:absolute;top:2px;right:2px;color:var(--text-3);font-size:14px;line-height:1;padding:3px 7px;border-radius:6px;display:none}
   .login-user:hover .user-del{display:block}
-  .user-del:hover{background:var(--red-bg);color:var(--red)}
+  .user-del:hover{background:var(--red-bg);color:var(--red-ink)}
   .pf-del{color:var(--text-3);padding:4px 7px;border-radius:6px;font-size:13px}
-  .pf-del:hover{background:var(--red-bg);color:var(--red)}
+  .pf-del:hover{background:var(--red-bg);color:var(--red-ink)}
   .login-user .avatar{width:44px;height:44px;font-size:16px}
   .login-add{display:flex;gap:8px;margin-top:8px}
   .login-add input{flex:1;border:1px solid var(--border-strong);border-radius:6px;padding:8px 10px;outline:none}
@@ -301,7 +357,7 @@
   .sub-row .sub-name{flex:1;font-size:13.5px}
   .sub-row .sub-name.done{color:var(--text-3);text-decoration:line-through}
   .sub-del{color:var(--text-3);padding:2px 6px;border-radius:4px;font-size:14px;line-height:1}
-  .sub-del:hover{background:var(--red-bg);color:var(--red)}
+  .sub-del:hover{background:var(--red-bg);color:var(--red-ink)}
   .sub-add input{width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:8px 12px;outline:none;margin-top:8px}
   .sub-add input:focus{border-color:var(--accent)}
   .dep-chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg-soft);border:1px solid var(--border);border-radius:12px;padding:2px 5px 2px 10px;font-size:12px;margin:2px 4px 2px 0;max-width:200px}
@@ -367,7 +423,7 @@
   .section-header:hover .sec-actions,.col-head:hover .sec-actions{display:inline-flex}
   .sec-actions button{color:var(--text-3);padding:2px 6px;border-radius:5px;font-size:12px;line-height:1}
   .sec-actions button:hover{background:var(--bg-soft);color:var(--text)}
-  .sec-actions button.del:hover{background:var(--red-bg);color:var(--red)}
+  .sec-actions button.del:hover{background:var(--red-bg);color:var(--red-ink)}
   .tl-bar{cursor:grab;user-select:none}
   .tl-bar:active{cursor:grabbing}
   .tl-ms{user-select:none}
@@ -597,7 +653,7 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 1px 3px rgba(18,20,28,.22)}
   .tl-bar:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.45), 0 4px 10px -2px rgba(18,20,28,.35);transform:translateY(-1px)}
   .tl-bar{transition:box-shadow .15s, transform .15s}
-  .tl-today{box-shadow:0 0 10px 1px rgba(201,64,58,.4)}
+  .tl-today{box-shadow:0 0 10px 1px rgba(30,31,33,.25)}
 
   /* --- floating layers: each one a step further off the page --- */
   .dd-panel,.pop-menu,.mention-dd{box-shadow:var(--hl), var(--d3);background-image:var(--gloss)}
@@ -640,7 +696,7 @@
   .imp-or{text-align:center;font-size:11.5px;color:var(--text-3);margin:14px 0 10px;letter-spacing:.3px}
   .imp-mpp{margin-top:16px;font-size:12px;line-height:1.5;color:var(--text-2);background:var(--bg-soft);
     border-radius:11px;padding:12px 14px;border-left:3px solid var(--border-strong);transition:border-color .2s, background .2s}
-  .imp-mpp.loud{border-left-color:var(--amber);background:var(--amber-bg);color:var(--text)}
+  .imp-mpp.loud{border-left-color:var(--amber-ink);background:var(--amber-bg);color:var(--text)}
   .imp-opts{display:flex;gap:18px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--text-2);margin-bottom:12px}
   .imp-opts label{display:inline-flex;align-items:center;gap:6px}
   .imp-opts select{border:1px solid var(--border-strong);border-radius:7px;padding:4px 7px;background:var(--bg);color:var(--text);font:inherit;font-size:12.5px}
@@ -660,16 +716,16 @@
   /* ===== Blocks, bets and the premortem ===== */
   .block-btn{text-align:left;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .block-btn i{font-style:normal;color:var(--text-3);font-size:11.5px}
-  .block-btn.on{border-color:color-mix(in srgb, var(--red) 45%, transparent);background:var(--red-bg);color:var(--red);font-weight:600}
+  .block-btn.on{border-color:color-mix(in srgb, var(--red) 45%, transparent);background:var(--red-bg);color:var(--red-ink);font-weight:600}
   .conf-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:6px}
   .conf-row:empty{display:none}
   .conf-q{font-size:11px;color:var(--text-3);margin-right:2px}
   .conf-chip{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;border:1px solid var(--border-strong);
     color:var(--text-2);background-image:var(--gloss);transition:transform .1s, box-shadow .12s}
   .conf-chip:hover{transform:translateY(-1px);box-shadow:var(--d1)}
-  .conf-chip.on.c-high{background:var(--green-bg);color:var(--green);border-color:color-mix(in srgb, var(--green) 45%, transparent)}
-  .conf-chip.on.c-mid{background:var(--amber-bg);color:var(--amber);border-color:color-mix(in srgb, var(--amber) 45%, transparent)}
-  .conf-chip.on.c-low{background:var(--red-bg);color:var(--red);border-color:color-mix(in srgb, var(--red) 45%, transparent)}
+  .conf-chip.on.c-high{background:var(--green-bg);color:var(--green-ink);border-color:color-mix(in srgb, var(--green) 45%, transparent)}
+  .conf-chip.on.c-mid{background:var(--amber-bg);color:var(--amber-ink);border-color:color-mix(in srgb, var(--amber) 45%, transparent)}
+  .conf-chip.on.c-low{background:var(--red-bg);color:var(--red-ink);border-color:color-mix(in srgb, var(--red) 45%, transparent)}
   /* bestiary rows */
   .best-row{display:grid;grid-template-columns:26px minmax(120px,1.1fr) minmax(90px,1.6fr) 86px 40px minmax(0,1fr);
     align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13.5px}
@@ -1012,7 +1068,7 @@
   .dec-row select{flex:1;min-width:110px} .dec-row .btn{padding:6px 12px}
   .dec-hint{font-size:11px;color:var(--text-3);line-height:1.4}
   .dec-open{border-left:3px solid var(--amber);background:var(--amber-bg);border-radius:0 11px 11px 0;padding:10px 13px}
-  .dec-open.late{border-left-color:var(--red);background:var(--red-bg)}
+  .dec-open.late{border-left-color:var(--red-ink);background:var(--red-bg)}
   .dec-open b{display:block;font-size:13.5px;line-height:1.35}
   .dec-open i{display:block;font-style:normal;font-size:11.5px;color:var(--text-2);margin-top:3px}
   .dec-acts{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
@@ -1022,8 +1078,8 @@
   .dec-acts input,.dec-acts select{border:1px solid var(--border-strong);border-radius:7px;padding:5px 8px;
     font:inherit;font-size:12px;background:var(--bg);color:var(--text);outline:none}
   .dec-acts input#pDecNote{flex:1;min-width:150px}
-  .mini-ind.dec{background:var(--amber-bg);color:var(--amber);font-weight:700}
-  .mini-ind.dec.late{background:var(--red-bg);color:var(--red)}
+  .mini-ind.dec{background:var(--amber-bg);color:var(--amber-ink);font-weight:700}
+  .mini-ind.dec.late{background:var(--red-bg);color:var(--red-ink)}
   .dec-card{border-left:3px solid var(--amber)}
   .dec-row[data-goto]{padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}
   .dec-row[data-goto]:last-child{border-bottom:none}
@@ -1276,16 +1332,16 @@
     background:var(--bg);outline:none;font-family:inherit}
   .ch-date:hover{border-color:var(--border-strong)}
   .ch-date:focus{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent)}
-  .ch-date.late{color:var(--red);border-color:color-mix(in srgb, var(--red) 45%, transparent);background:var(--red-bg)}
+  .ch-date.late{color:var(--red-ink);border-color:color-mix(in srgb, var(--red) 45%, transparent);background:var(--red-bg)}
   .ch-inplan{font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;cursor:pointer;
     color:color-mix(in srgb, var(--pc) 70%, var(--text));border-radius:20px;padding:2px 8px;
     border:1px solid color-mix(in srgb, var(--pc) 35%, transparent);
     background:color-mix(in srgb, var(--pc) 11%, transparent)}
   .ch-inplan:hover{background:color-mix(in srgb, var(--pc) 22%, transparent)}
-  .ch-inplan.done{color:var(--green);border-color:color-mix(in srgb, var(--green) 40%, transparent);background:var(--green-bg)}
+  .ch-inplan.done{color:var(--green-ink);border-color:color-mix(in srgb, var(--green) 40%, transparent);background:var(--green-bg)}
   .ch-del{opacity:0;color:var(--text-3);font-size:17px;line-height:1;padding:2px 6px;border-radius:6px;flex-shrink:0}
   .ch-deliv:hover .ch-del,.ch-item:hover .ch-del,.ch-risk:hover .ch-del,.ch-con:hover .ch-del{opacity:1}
-  .ch-del:hover{background:var(--red-bg);color:var(--red)}
+  .ch-del:hover{background:var(--red-bg);color:var(--red-ink)}
   .ch-add{margin-top:10px;font-size:13px;color:var(--text-3);cursor:pointer;padding:6px 8px;border-radius:9px;
     border:1px dashed var(--border-strong);display:inline-block}
   .ch-add:hover{color:var(--text);background:var(--bg-soft);border-style:solid}
@@ -1319,9 +1375,9 @@
 
   .ch-risk{display:flex;align-items:center;gap:10px;border-radius:11px;padding:7px 10px;border:1px solid var(--border);margin-bottom:6px;
     border-left-width:4px}
-  .ch-risk.lv-high{border-left-color:var(--red);background-image:linear-gradient(90deg, var(--red-bg), transparent 45%)}
-  .ch-risk.lv-medium{border-left-color:var(--amber);background-image:linear-gradient(90deg, var(--amber-bg), transparent 45%)}
-  .ch-risk.lv-low{border-left-color:var(--green);background-image:linear-gradient(90deg, var(--green-bg), transparent 45%)}
+  .ch-risk.lv-high{border-left-color:var(--red-ink);background-image:linear-gradient(90deg, var(--red-bg), transparent 45%)}
+  .ch-risk.lv-medium{border-left-color:var(--amber-ink);background-image:linear-gradient(90deg, var(--amber-bg), transparent 45%)}
+  .ch-risk.lv-low{border-left-color:var(--green-ink);background-image:linear-gradient(90deg, var(--green-bg), transparent 45%)}
   .ch-lv{flex-shrink:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;border:none;background:transparent;
     color:var(--text-2);outline:none;cursor:pointer}
   /* --- drift strip --- */
@@ -1424,15 +1480,15 @@
     border:1px solid var(--border-strong);background:var(--bg);flex-shrink:0;max-width:260px;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
   .ch-mit:hover{border-color:var(--text-3)}
-  .ch-mit.done{color:var(--green);border-color:color-mix(in srgb, var(--green) 40%, transparent);background:var(--green-bg)}
-  .ch-mit.late{color:var(--red);border-color:color-mix(in srgb, var(--red) 40%, transparent);background:var(--red-bg)}
+  .ch-mit.done{color:var(--green-ink);border-color:color-mix(in srgb, var(--green) 40%, transparent);background:var(--green-bg)}
+  .ch-mit.late{color:var(--red-ink);border-color:color-mix(in srgb, var(--red) 40%, transparent);background:var(--red-bg)}
   /* --- baseline diff --- */
   .ch-dec{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
   .ch-dec:last-of-type{border-bottom:none}
   .ch-dec-i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
     font-size:11px;font-weight:800;background:var(--bg-soft);color:var(--text-2)}
-  .ch-dec.done .ch-dec-i{background:var(--green-bg);color:var(--green)}
-  .ch-dec.deferred .ch-dec-i{background:var(--amber-bg);color:var(--amber)}
+  .ch-dec.done .ch-dec-i{background:var(--green-bg);color:var(--green-ink)}
+  .ch-dec.deferred .ch-dec-i{background:var(--amber-bg);color:var(--amber-ink)}
   .ch-dec b{display:block;font-size:13.5px;font-weight:600;line-height:1.35}
   .ch-dec i{display:block;font-style:normal;font-size:11.5px;color:var(--text-3);margin-top:2px}
   .ch-dec .ch-mit{margin-left:auto}
@@ -1484,7 +1540,11 @@
   .tstat{border:1px solid var(--border);border-radius:12px;padding:11px 13px;background-image:var(--gloss);box-shadow:var(--hl), var(--d1)}
   .tstat-n{font-size:24px;font-weight:700;line-height:1.1}
   .tstat-l{font-size:11.5px;color:var(--text-2);margin-top:2px}
-  .tstat.bad .tstat-n{color:var(--red)} .tstat.warn .tstat-n{color:var(--amber)} .tstat.ok .tstat-n{color:var(--green)}
+  .tstat.bad .tstat-n{color:var(--red-ink)} .tstat.warn .tstat-n{color:var(--amber-ink)} .tstat.ok .tstat-n{color:var(--green-ink)}
+  /* a row of big bold zeroes competes with the one number that is not zero, and a
+     green "Done today: 0" congratulates you on nothing */
+  .tstat.zero{background:none;box-shadow:none;border-color:var(--border)}
+  .tstat.zero .tstat-n{color:var(--text-3);font-weight:600}
   /* the list grid is sized for the full-width project view: inside the narrower
      Today column it must be re-stated, or the last cells spill under the rail */
   .today .list-head,.today .list-row{padding-left:0;padding-right:0;
@@ -1520,6 +1580,8 @@
 </head>
 <body>
 <div id="app">
+  <!-- only visible under 1024px, where the sidebar floats over the page -->
+  <div class="nav-scrim" id="navScrim" hidden></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-top">
       <div class="logo" style="font-size:15px"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
@@ -1560,9 +1622,9 @@
         </div>
         <div class="topbar-actions">
           <div class="avatar-stack" id="teamStack"></div>
-          <button class="btn" id="updBtn" title="Post a project status update" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px"><path d="M17 3l4 4L8 20l-5 1 1-5z"/></svg> Update</button>
+          <button class="btn" id="updBtn" title="Post a project status update" style="display:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:-1px"><path d="M17 3l4 4L8 20l-5 1 1-5z"/></svg> <span class="lbl">Update</span></button>
           <button class="btn" id="searchBtn" title="Search (Ctrl+K)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
-          <button class="btn" id="syncBtn" title="Set up team sync"><span class="sync-dot" id="syncDot"></span><span id="syncLabel">Team sync</span></button>
+          <button class="btn" id="syncBtn" title="Set up team sync"><span class="sync-dot" id="syncDot"></span><span class="lbl" id="syncLabel">Team sync</span></button>
           <button class="btn btn-primary" id="addTaskBtn">+ New quest</button>
         </div>
       </div>
@@ -1581,6 +1643,7 @@
 </div>
 
 <!-- Task detail panel -->
+<div class="panel-scrim" id="panelScrim"></div>
 <div class="panel" id="panel">
   <div class="panel-rz" id="panelRz" title="Drag to resize"></div>
   <div class="panel-head">
@@ -1870,7 +1933,14 @@ const IRK = (id=curEnv) => id==='default' ? 'taskflow-inbox-read' : 'taskflow-in
 const HK = (id=curEnv) => id==='default' ? 'handle' : 'handle::' + id;
 const saveEnvs = () => { try { localStorage.setItem('dm-envs', JSON.stringify(envs)); localStorage.setItem('dm-env-cur', curEnv); } catch(e){} };
 const emptyDb = () => ({users:[], projects:[], tasks:[], activity:[], presence:{}, notifications:[], templates:[], hours:[], portfolios:[], currentPortfolioId:null, currentProjectId:null, currentView:'today'});
-const COLORS = ['#f06a6a','#4573d2','#58a182','#8d84e8','#ec8d71','#f26fb2','#4ecbc4','#f1bd6c'];
+/* ===== Two palettes, and the difference between them is the point =====
+   Red, amber and green mean something here: late, at risk, on track. When the same
+   hues are also handed out to sections, projects and chart series, a "To do" bar comes
+   out alarm-red and the timeline looks like it is on fire when nothing is wrong.
+   CAT is the categorical set — it only has to tell things APART — and it deliberately
+   avoids the signal hues, leaning cool so the saturated warm colours stay exclusive to
+   danger. COLORS stays as the name the rest of the code already uses. */
+const COLORS = ['#3d6fd6','#8d84e8','#1c7f8d','#d47bc0','#5aa9e0','#6b4fc4','#7f9ac4','#a55996'];
 const uid = () => Math.random().toString(36).slice(2,10);
 /* local-timezone date string (toISOString would shift dates for UTC+X timezones) */
 const dstr = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -2684,9 +2754,28 @@ const fmtDate = (ds, loc) => { if(!ds) return ''; const d = new Date(ds+'T00:00'
 const isOverdue = t => t.dueDate && !t.completed && t.dueDate < todayStr();
 const initialsOf = u => esc(u.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
 /* a chosen face when there is one, initials otherwise — same box either way */
+/* White initials on a mid-tone swatch read at 2.4:1 on the lighter half of the palette
+   — at 10px that is a smudge, not a name. Rather than dull every colour down, pick the
+   ink the swatch can actually carry: the same rule a label system uses. */
+const relLum = c => {
+  const h = String(c||'').replace('#','');
+  const n = h.length === 3 ? h.split('').map(x=>x+x) : h.match(/\w\w/g);
+  if(!n || n.length < 3) return 0;
+  const [r,g,b] = n.slice(0,3).map(x => { let v = parseInt(x,16)/255;
+    return v <= 0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+};
+/* Not a luminance threshold — a threshold leaves the swatches that sit right on it
+   (the violet and the sage) picking white at 3.1:1. Ask which ink the colour actually
+   carries better and take that one. */
+const INK_DARK_L = 0.063;   /* luminance of #1e1f21 plus the 0.05 the formula adds */
+const inkOn = bg => {
+  const L = relLum(bg) + 0.05;
+  return (1.05 / L) >= (L / INK_DARK_L) ? '#ffffff' : '#1e1f21';
+};
 const avatarHtml = (u,cls='') => !u ? '' : u.pic
   ? `<span class="avatar face ${cls}" title="${esc(u.name)}">${picHtml(u.pic)}</span>`
-  : `<span class="avatar ${cls}" style="background:${u.color}" title="${esc(u.name)}">${initialsOf(u)}</span>`;
+  : `<span class="avatar ${cls}" style="background:${u.color};color:${inkOn(u.color)}" title="${esc(u.name)}">${initialsOf(u)}</span>`;
 const chip = (val,pref) => val ? `<span class="chip ${pref}-${val.replace(/ /g,'-')}">${esc(val)}</span>` : '<span class="muted">—</span>';
 
 /* ===== Computed section status =====
@@ -3022,8 +3111,10 @@ function renderList(){
       <div class="section-header ${closed?'closed':''}" data-sec-toggle="${s.id}" draggable="true" title="${LX('Drag to reorder chapters','Drag to reorder sections')}">
         <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
         ${esc(s.name)} <span class="section-count">${ts.length}</span>
+        ${/* the bar belongs to this section, so it sits with its name rather than
+             floating off at the far right where it reads as a page-level number */''}
+        <span class="sec-progress-inline">${secProgressBar(sst)}</span>
         <span class="sec-meta">
-          ${secProgressBar(sst)}
           ${s.assigneeId ? avatarHtml(user(s.assigneeId),'sm') : ''}
           ${s.dueDate ? `<span class="datecell${sOverdue?' overdue':''}">${fmtDate(s.dueDate)}</span>` : ''}
           ${s.priority ? chip(s.priority,'p') : ''}
@@ -4291,9 +4382,9 @@ function workloadGridHtml(users, open){
     wks.push({s:dstr(a), e:dstr(b), label:a.toLocaleDateString(DATE_LOCALE,{day:'numeric',month:'short'})});
   }
   const cellStyle = n => n===0 ? 'color:var(--text-3)' :
-    n<=2 ? 'background:var(--green-bg);color:var(--green);font-weight:600' :
-    n<=4 ? 'background:var(--amber-bg);color:var(--amber);font-weight:600' :
-    'background:var(--red-bg);color:var(--red);font-weight:700';
+    n<=2 ? 'background:var(--green-bg);color:var(--green-ink);font-weight:600' :
+    n<=4 ? 'background:var(--amber-bg);color:var(--amber-ink);font-weight:600' :
+    'background:var(--red-bg);color:var(--red-ink);font-weight:700';
   const td2 = 'padding:7px 10px;border-bottom:1px solid var(--border);text-align:center;font-size:13px;border-radius:6px';
   const rows2 = users.map(u=>{
     const cells = wks.map(w=>{
@@ -5085,7 +5176,9 @@ function bindCharter(p){
    drop notes, because the thing no planner ever keeps is WHY the plan looks like
    this. Positions and notes live on the project, so they sync like everything else
    and the map you arranged is the map you find tomorrow. */
-const MAP_W = 168, MAP_H = 52, MAP_COL = 250, MAP_ROW = 74;
+/* MAP_H is the height of a one-line node; a two-line title grows past it, and at a row
+   pitch of 74 two stacked cards touched. The pitch has to clear the tall case. */
+const MAP_W = 168, MAP_H = 52, MAP_COL = 250, MAP_ROW = 96;
 let mapView = {x: 40, y: 30, z: 1};
 let mapSel = null;                 /* the node under inspection */
 let mapShowDone = lsGet('dm-mapdone') === '1';
@@ -5146,10 +5239,14 @@ function mapLayout(p, tasks){
   for(const d of Object.keys(cols)){
     cols[d].forEach((t, i) => { pos[t.id] = {x: 30 + (+d) * MAP_COL, y: 30 + i * MAP_ROW}; });
   }
-  /* the unlinked ones park on the right in a block two wide, so a long list of
-     them does not turn into an unreadable strip */
-  const lx = 30 + (maxD + 1.35) * MAP_COL;
-  loose.forEach((t, i) => { pos[t.id] = {x: lx + (i % 2) * (MAP_W + 22), y: 30 + Math.floor(i / 2) * MAP_ROW}; });
+  /* The unlinked ones used to park to the RIGHT of the longest chain, so a chain three
+     deep pushed them past the edge of the canvas while the whole lower half sat empty.
+     Put them underneath instead, wrapped to the width the chain already occupies: the
+     same reading order, inside the frame, using the space that was going to waste. */
+  const chainBottom = Object.values(cols).reduce((b, c) => Math.max(b, 30 + c.length * MAP_ROW), 30);
+  const perRow = Math.max(3, maxD + 1);
+  loose.forEach((t, i) => { pos[t.id] = {x: 30 + (i % perRow) * MAP_COL,
+                                         y: chainBottom + 28 + Math.floor(i / perRow) * MAP_ROW}; });
   /* anything you moved by hand wins */
   for(const t of tasks) if(m.pos[t.id]) pos[t.id] = m.pos[t.id];
   return {pos, looseIds: new Set(loose.map(t => t.id))};
@@ -7035,10 +7132,10 @@ function renderToday(){
         <div class="today-add-hint">↵ ${LX('creates it in','creates it in')} <b>${esc(proj().name)}</b> · ${LX('unassigned goes to you','unassigned goes to you')}</div>
       </div>
       <div class="today-stats">
-        <div class="tstat ${late.length?'bad':''}"><div class="tstat-n">${late.length}</div><div class="tstat-l">${LX('Overdue','Late')}</div></div>
-        <div class="tstat ${now.length?'warn':''}"><div class="tstat-n">${now.length}</div><div class="tstat-l">Due today</div></div>
-        <div class="tstat"><div class="tstat-n">${week.length}</div><div class="tstat-l">Next 7 days</div></div>
-        <div class="tstat ok"><div class="tstat-n">${done.length}</div><div class="tstat-l">Done today</div></div>
+        <div class="tstat ${late.length?'bad':'zero'}"><div class="tstat-n">${late.length}</div><div class="tstat-l">${LX('Overdue','Late')}</div></div>
+        <div class="tstat ${now.length?'warn':'zero'}"><div class="tstat-n">${now.length}</div><div class="tstat-l">Due today</div></div>
+        <div class="tstat ${week.length?'':'zero'}"><div class="tstat-n">${week.length}</div><div class="tstat-l">Next 7 days</div></div>
+        <div class="tstat ${done.length?'ok':'zero'}"><div class="tstat-n">${done.length}</div><div class="tstat-l">Done today</div></div>
       </div>
       ${(late.length+now.length+week.length+later.length+done.length) ? head : ''}
       ${band(LX('Overdue — deal with these first','Late — deal with these first'), late, 'var(--red)')}
@@ -7081,7 +7178,7 @@ function renderToday(){
         ${notifs.length ? notifs.slice(0,12).map(n=>{
           const u = user(n.actorId);
           return `<div class="act-row ${n.at>lastInboxRead?'inbox-unread':''}" data-goto="${n.taskId||''}" style="cursor:${n.taskId?'pointer':'default'}">
-            ${u?avatarHtml(u,'sm'):'<span class="avatar sm" style="background:#9ca0a4">?</span>'}<div>
+            ${u?avatarHtml(u,'sm'):'<span class="avatar sm" style="background:#6d6e6f">?</span>'}<div>
             <div class="act-text"><b>${esc(u?u.name:'Someone')}</b> ${esc(n.text)}</div>
             <div class="act-time">${new Date(n.at).toLocaleString(DATE_LOCALE,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
           </div></div>`;
@@ -7175,13 +7272,14 @@ function openPanel(id){
   updateCompleteBtn(t);
   autoGrow($('#pName'));
   $('#panel').classList.add('open');
+  $('#panelScrim').classList.add('on');
 }
 function updateCompleteBtn(t){
   const b = $('#pComplete');
   b.classList.toggle('done', t.completed);
   b.querySelector('span').textContent = t.completed ? 'Completed' : L('complete');
 }
-function closePanel(){ $('#panel').classList.remove('open'); currentTaskId = null; }
+function closePanel(){ $('#panel').classList.remove('open'); $('#panelScrim').classList.remove('on'); currentTaskId = null; }
 function curTask(){ return db.tasks.find(x=>x.id===currentTaskId); }
 function autoGrow(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
 
@@ -7196,7 +7294,7 @@ function highlightMentions(txt){
 function renderComments(t){
   $('#pComments').innerHTML = (t.comments||[]).map(c=>{
     const u = user(c.userId);
-    return `<div class="comment">${u?avatarHtml(u,'sm'):'<span class="avatar sm" style="background:#9ca0a4">?</span>'}<div class="comment-body">
+    return `<div class="comment">${u?avatarHtml(u,'sm'):'<span class="avatar sm" style="background:#6d6e6f">?</span>'}<div class="comment-body">
       <div class="comment-meta"><b>${esc(u?u.name:'Unknown')}</b>${new Date(c.at).toLocaleString(DATE_LOCALE,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
       <div class="comment-text">${highlightMentions(c.text)}</div></div></div>`;
   }).join('') || '<div class="muted" style="font-size:13px;margin-bottom:10px">No comments yet.</div>';
@@ -8217,7 +8315,7 @@ function renderAdmin(){
     ${liveUsers().map(u=>`
       <div class="trash-row" style="text-decoration:none">
         ${avatarHtml(u,'sm')}
-        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.name)} ${u.isAdmin?'<span class="chip" style="background:var(--green-bg);color:var(--green)">🛡 Admin</span>':''}</span>
+        <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.name)} ${u.isAdmin?'<span class="chip" style="background:var(--green-bg);color:var(--green-ink)">🛡 Admin</span>':''}</span>
         <span class="muted" style="font-size:12px;width:80px">${u.pin?'🔑 PIN set':'no PIN'}</span>
         <button class="btn" data-adm-reset="${u.id}" ${u.pin?'':'disabled style="opacity:.4;cursor:default"'}>Reset PIN</button>
         <button class="btn" data-adm-toggle="${u.id}">${u.isAdmin?'Revoke admin':'Make admin'}</button>
@@ -8244,8 +8342,8 @@ function renderAdmin(){
 }
 
 /* ================= Help view (embedded versioned manual) ================= */
-const APP_VERSION = '2.39';
-const MANUAL_VERSION = '4.7';
+const APP_VERSION = '2.40';
+const MANUAL_VERSION = '4.8';
 const MANUAL_DATE = '25 November 2026';
 const MANUAL_B64 = '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';
 function downloadManual(){
@@ -8438,7 +8536,10 @@ function renderHelp(){
       <li><b>I suggerimenti automatici</b> non si spacciano più per tue: stanno sotto, smorzati, sotto “The data also points at”, con un pulsante <b>+ raise it</b> che chiede nome e data come per tutte le altre. La macchina segnala, il PM decide se è una decisione.</li>
       <li><b>Il numero che conta</b>, in Chronicles: <b>quanto aspetta una decisione qui dentro</b> — media dei giorni, quante sono ferme adesso, quante hanno superato la data senza risposta. È la misura che nessun comitato fa su sé stesso, e una decisione che aspetta due settimane costa più del lavoro di cui parlava.</li>
       <li>Le attese finiscono anche nel <b>bestiario</b> come mostro “Waiting for a decision”, accanto a fornitori e macchine.</li></ul>
-      <b>Grafica dei mazzi</b>: consiglio e steco hanno profondità vera — le schede si sollevano dal piano, la luce e l'inclinazione seguono il puntatore, e <b>il riquadro che chiede una decisione sta più in alto di tutti</b>. La profondità serve a ordinare l'importanza, non a fare scena: con “riduci animazioni” attivo torna tutto piatto.
+      <b>Grafica dei mazzi</b>: consiglio e steco hanno profondità vera — le schede si sollevano dal piano, la luce e l'inclinazione seguono il puntatore, e <b>il riquadro che chiede una decisione sta più in alto di tutti</b>. La profondità serve a ordinare l'importanza, non a fare scena: con “riduci animazioni” attivo torna tutto piatto.<br><br>
+      <b>Due palette, e la differenza è il punto.</b> Rosso, ambra e verde qui <i>significano</i> qualcosa: in ritardo, a rischio, in linea. Finché gli stessi colori venivano distribuiti anche a sezioni, progetti e barre dei grafici, una barra “To do” usciva rosso allarme e la timeline sembrava in fiamme a progetto sano. Ora i colori di segnale sono riservati allo stato, e per distinguere le cose fra loro c'è una palette separata, volutamente fredda. Anche la riga di <i>oggi</i> sulla timeline non è più rossa: oggi è il fatto più normale della pagina.<br><br>
+      <b>Leggibilità.</b> Le pillole di stato e priorità e le iniziali negli avatar passano il contrasto AA: l'inchiostro delle iniziali è scelto colore per colore, chiaro o scuro a seconda di cosa quella tinta regge davvero. I colori che hai già assegnato a persone e progetti restano i tuoi — non li ho riscritti, è solo l'inchiostro sopra che si adatta.<br><br>
+      <b>Schermi stretti.</b> Sotto i 1024px la barra laterale non tiene più aperta una colonna: scompare e il pulsante ☰ la fa comparire sopra la pagina, con il resto velato. Si chiude toccando fuori, con Esc, o appena scegli dove andare. Sotto gli 860px i pulsanti in alto perdono l'etichetta e tengono l'icona, così l'azione principale non finisce mai tagliata fuori dallo schermo.
     </div></details>
 
     <details><summary>2 · Per iniziare &amp; ambienti</summary><div class="hbody"><ul>
@@ -8507,7 +8608,7 @@ function renderHelp(){
 function renderActivity(){
   $('#view').innerHTML = db.activity.length ? db.activity.map(a=>{
     const u = user(a.userId);
-    return `<div class="act-row">${u?avatarHtml(u,'sm'):'<span class="avatar sm" style="background:#9ca0a4">?</span>'}<div>
+    return `<div class="act-row">${u?avatarHtml(u,'sm'):'<span class="avatar sm" style="background:#6d6e6f">?</span>'}<div>
       <div class="act-text"><b>${esc(u?u.name:'Someone')}</b> ${esc(a.text)}</div>
       <div class="act-time">${new Date(a.at).toLocaleString(DATE_LOCALE,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
     </div></div>`;
@@ -9176,7 +9277,28 @@ $('#impInput').onchange = e => {
 };
 
 /* ================= Init ================= */
-$('#burger').onclick = () => $('#sidebar').classList.toggle('collapsed');
+/* Wide: the sidebar is a column, so the burger gives its space back to the content.
+   Narrow: it floats over the page, so the burger is the only way in and out, and a
+   scrim catches the tap outside. One button, the meaning the width calls for. */
+const NAV_FLOAT = () => window.matchMedia('(max-width:1024px)').matches;
+const navScrim = $('#navScrim');
+const setNav = open => {
+  $('#app').classList.toggle('nav-open', open);
+  navScrim.hidden = !open;
+};
+$('#burger').onclick = () => {
+  if(NAV_FLOAT()) setNav(!$('#app').classList.contains('nav-open'));
+  else $('#sidebar').classList.toggle('collapsed');
+};
+navScrim.onclick = () => setNav(false);
+$('#panelScrim').onclick = () => closePanel();
+/* going somewhere closes the drawer: on a narrow screen it is covering what you asked for */
+$('#sidebar').addEventListener('click', e => {
+  if(NAV_FLOAT() && e.target.closest('.side-item, .proj-item, .side-proj')) setNav(false);
+});
+/* leaving the narrow range must not strand the page in a state only that range has */
+window.addEventListener('resize', () => { if(!NAV_FLOAT()) setNav(false); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && $('#app').classList.contains('nav-open')) setNav(false); });
 document.querySelectorAll('[data-nav]').forEach(el => el.onclick = () => {
   const nav = el.dataset.nav;
   if(nav === 'admin'){
